@@ -1,6 +1,6 @@
 const $=id=>document.getElementById(id);
 const TOTAL_PHASES=200;
-const sizes=Array.from({length:TOTAL_PHASES},(_,i)=>10+Math.floor(i/20));
+function sizeForLevel(n){const categoryPhase=Math.ceil(n/2);return Math.min(20,10+Math.floor((categoryPhase-1)/9))}
 const pairs={
  letters:[["O","Q"],["C","G"],["P","R"],["E","F"],["M","N"],["U","V"],["D","O"],["H","N"],["T","I"],["I","J"]],
  numbers:[["0","8"],["3","8"],["6","9"],["5","6"],["2","7"],["1","7"],["8","9"],["3","9"],["0","6"],["2","3"]]
@@ -23,7 +23,7 @@ function showPhases(){
  }
  show("phases");
 }
-function sizeForLevel(n){return sizes[Math.max(0,Math.min(TOTAL_PHASES-1,n-1))]}
+
 function difficultyFor(n){if(n<=40)return "ATENÇÃO";if(n<=80)return "OBSERVAÇÃO";if(n<=120)return "DESAFIADOR";if(n<=160)return "DIFÍCIL";return "EXTREMO"}
 function startPhase(n){level=Math.max(1,Math.min(TOTAL_PHASES,n));category=phaseCategory(level);score=0;lives=3;best=readNumber(storageKey("best"),0);$("levelPill").textContent="FASE "+level;show("game");newBoard()}
 function updateStats(){
