@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#10182c">
+<title>Desafio Lógico | ACRIO GAMES</title>
+<style>
+:root{--bg:#0b1020;--panel:#151f36;--panel2:#1c2b49;--cyan:#63def4;--blue:#729cff;--gold:#ffd166;--text:#f5f7ff;--muted:#aab7d1;--green:#49d6a0;--red:#ff7185}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#29436f 0,#111a30 43%,#080d19 100%);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text)}
+.app{width:min(100%,560px);margin:auto;padding:15px 15px 28px}.top{display:flex;justify-content:space-between;align-items:center;margin:5px 0 18px}.brand{font-size:12px;letter-spacing:1.8px;font-weight:900;color:var(--cyan)}.pill{background:#243451;border:1px solid #3b527a;border-radius:30px;padding:8px 12px;font-size:12px;font-weight:800}
+.hero{text-align:center;padding:13px 0 19px}.mark{width:70px;height:70px;margin:auto auto 11px;border-radius:23px;background:linear-gradient(145deg,#6ce5f5,#6289ff);display:grid;place-items:center;color:#091326;font-size:37px;font-weight:1000;box-shadow:0 12px 35px #4bcde544}.hero h1{font-size:28px;line-height:1.05;margin:0;font-weight:950;letter-spacing:-.7px}.hero p{margin:8px 0 0;color:var(--muted);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 14px}.stat{padding:11px 7px;background:#111b30;border:1px solid #293b5b;border-radius:15px;text-align:center}.stat b{display:block;font-size:18px}.stat span{font-size:10px;letter-spacing:.7px;color:var(--muted);text-transform:uppercase}
+.card{padding:19px;background:linear-gradient(155deg,#1b2945,#121b30);border:1px solid #344a6e;border-radius:22px;box-shadow:0 18px 44px #0005}.card h2{font-size:19px;margin:0 0 7px}.desc{color:var(--muted);font-size:13px;line-height:1.55;margin:0}
+.btn{width:100%;border:0;border-radius:14px;padding:14px 12px;font-size:14px;font-weight:900;cursor:pointer}.primary{background:linear-gradient(100deg,var(--cyan),#83a9ff);color:#091326}.secondary{background:#273957;color:#eef4ff;border:1px solid #3e557c}.start{margin-top:17px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.tile{padding:13px;background:#17243c;border:1px solid #304464;border-radius:15px}.tile b{font-size:13px;display:block}.tile small{font-size:11px;color:var(--muted)}
+.progress{height:7px;background:#26334d;border-radius:20px;overflow:hidden;margin:8px 0 17px}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));width:0}
+.tagrow{display:flex;justify-content:space-between;align-items:center;gap:8px}.tag{font-size:10px;font-weight:900;color:var(--cyan);background:#1b3a51;padding:7px 10px;border-radius:30px}.difficulty{font-size:10px;color:var(--gold);font-weight:900;letter-spacing:.6px}.question{font-size:19px;line-height:1.48;font-weight:750;margin:22px 0;white-space:pre-wrap;overflow-wrap:anywhere}.answer{width:100%;border:1px solid #40577c;border-radius:14px;background:#0c1528;color:#fff;padding:15px;font-size:17px;outline:none}.answer:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #63def422}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}.feedback{display:none;margin-top:13px;border-radius:13px;padding:13px;font-size:13px;line-height:1.55}.feedback.show{display:block}.feedback.good{background:#12392f;border:1px solid #267c65}.feedback.bad{background:#3b1d2b;border:1px solid #804057}.nav{display:flex;justify-content:space-between;gap:9px;margin-top:13px}.nav .btn{width:50%;font-size:12px}.screen{display:none}.screen.active{display:block}.foot{font-size:11px;color:var(--muted);text-align:center;margin:16px 0}.menu-title{font-size:15px;margin:17px 0 9px}.category-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cat{font-size:11px;color:#dce7ff;background:#17243b;border:1px solid #2e4264;border-radius:12px;padding:10px}
+@media(min-width:480px){.app{padding-top:24px}.question{font-size:21px}}
+</style>
+</head>
+<body><main class="app">
+<header class="top"><div class="brand">ACRIO GAMES</div><div class="pill" id="levelPill">FASE 1 / 1.000</div></header>
+<section id="home" class="screen active">
+<div class="hero"><div class="mark">?</div><h1>DESAFIO LÓGICO</h1><p>Uma mente afiada encontra o caminho.</p></div>
+<div class="stats"><div class="stat"><b>1.000</b><span>Fases planejadas</span></div><div class="stat"><b>7</b><span>Desafios</span></div><div class="stat"><b>4</b><span>Patamares</span></div></div>
+<div class="card"><h2>Vamos testar sua lógica?</h2><p class="desc">Resolva desafios variados e avance por níveis cada vez mais exigentes. Seu progresso fica salvo neste aparelho.</p><button class="btn primary start" onclick="startGame()">COMEÇAR A JOGAR</button></div>
+<h3 class="menu-title">O que você vai encontrar</h3><div class="category-list"><div class="cat">🧨 Palitos e equações</div><div class="cat">⚖️ Balança com animais</div><div class="cat">👀 Atenção visual</div><div class="cat">🍎 Matemática com figuras</div><div class="cat">📏 Alturas e medidas</div><div class="cat">🧠 Charadas e lógica</div><div class="cat">🔢 Sequências numéricas</div></div>
+<p class="foot">Primeira versão de desenvolvimento • Jogo offline</p>
+</section>
+<section id="game" class="screen">
+<div class="stats"><div class="stat"><b id="done">0</b><span>Resolvidas</span></div><div class="stat"><b id="streak">0</b><span>Sequência</span></div><div class="stat"><b id="percent">0%</b><span>Progresso</span></div></div>
+<div class="progress"><i id="bar"></i></div>
+<div class="card"><div class="tagrow"><span class="tag" id="category">CATEGORIA</span><span class="difficulty" id="difficulty">FÁCIL</span></div>
+<div class="question" id="question">Carregando desafio...</div>
+<input id="answer" class="answer" autocomplete="off" placeholder="Digite sua resposta">
+<div class="actions"><button class="btn primary" onclick="checkAnswer()">CONFERIR</button><button class="btn secondary" onclick="showHint()">DICA</button></div>
+<div id="feedback" class="feedback"></div><div class="nav"><button class="btn secondary" onclick="goHome()">MENU</button><button class="btn secondary" id="nextBtn" onclick="nextPhase()" disabled>PRÓXIMA FASE →</button></div>
+</div><p class="foot">Leia todas as pistas antes de responder.</p>
+</section>
+<section id="finish" class="screen"><div class="hero"><div class="mark">★</div><h1>PARABÉNS!</h1><p>Você concluiu todas as fases disponíveis nesta versão.</p></div><button class="btn primary" onclick="restart()">RECOMEÇAR</button></section>
+</main><script src="fases.js"></script><script src="game.js"></script></body></html>
