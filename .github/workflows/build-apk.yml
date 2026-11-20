@@ -25,7 +25,7 @@ jobs:
       - name: Prepare offline game assets
         run: |
           mkdir -p android/app/src/main/assets
-          cp index.html game.js fases.js android/app/src/main/assets/
+          cp index.html game.js fases.js matchsticks.js android/app/src/main/assets/
       - name: Build debug APK
         working-directory: android
         run: gradle --no-daemon assembleDebug
