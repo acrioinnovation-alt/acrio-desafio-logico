@@ -1,13 +1,13 @@
 const $=id=>document.getElementById(id);
 const TOTAL_PHASES=100;
-function sizeForLevel(n){return Math.min(20,10+Math.floor(n/10))}
-const pairs={
- letters:[["O","0"],["I","1"],["S","5"],["B","8"],["Z","2"]],
- numbers:[["6","9"],["0","O"],["1","I"],["5","S"],["8","B"]]
-};
-let category="letters",level=1,score=0,lives=3,best=0,locked=false,oddIndex=-1,advanceTimer=null;
-function phaseCategory(n){return n%2===1?"letters":"numbers"}
-function categoryName(n){return phaseCategory(n)==="letters"?"LETRAS":"NÚMEROS"}
+// O quadro começa em 10×10 e cresce gradualmente até 20×20.
+function sizeForLevel(n){return Math.min(20,10+Math.ceil((n-1)/9))}
+const similarPairs=[
+ ["O","0"],["6","9"],["5","S"],["8","B"],["1","I"],["2","Z"],
+ ["E","F"],["V","Y"],["M","N"],["C","G"],["P","R"],["U","V"],
+ ["D","O"],["V","W"]
+];
+let level=1,score=0,lives=3,best=0,locked=false,oddIndex=-1,advanceTimer=null;
 function storageKey(suffix){return "ache_diferente_misto_"+suffix}
 function readNumber(key,fallback=0){const n=Number(localStorage.getItem(key));return Number.isFinite(n)&&n>=0?n:fallback}
 function completedPhases(){try{const v=JSON.parse(localStorage.getItem(storageKey("completed"))||"[]");return Array.isArray(v)?v.filter(n=>Number.isInteger(n)&&n>=1&&n<=TOTAL_PHASES):[]}catch(e){return []}}
@@ -18,7 +18,7 @@ function showPhases(){
  $("levelPill").textContent="ACHE O DIFERENTE";
  document.querySelector(".phase-head .tag").textContent="100 FASES";
  document.querySelector("#phases .card h2").textContent="Escolha uma fase";
- document.querySelector("#phases .card .desc").textContent="100 fases com caracteres parecidos. O quadro aumenta gradualmente de 10×10 até 20×20, exigindo mais atenção a cada etapa.";
+ document.querySelector("#phases .card .desc").textContent="100 fases com pares de letras e números visualmente parecidos. O quadro cresce gradualmente de 10×10 até 20×20.";
  const list=$("phaseList");list.innerHTML="";const completed=completedPhases();
  for(let i=1;i<=TOTAL_PHASES;i++){
   const b=document.createElement("button");b.className="phase-btn"+(completed.includes(i)?" done":"");b.textContent=String(i).padStart(3,"0");
@@ -26,9 +26,8 @@ function showPhases(){
  }
  show("phases");
 }
-
 function difficultyFor(n){if(n<=20)return "ATENÇÃO";if(n<=40)return "OBSERVAÇÃO";if(n<=60)return "DESAFIADOR";if(n<=80)return "DIFÍCIL";return "EXTREMO"}
-function startPhase(n){level=Math.max(1,Math.min(TOTAL_PHASES,n));category=phaseCategory(level);score=0;lives=3;best=readNumber(storageKey("best"),0);$("levelPill").textContent="FASE "+level;show("game");newBoard()}
+function startPhase(n){level=Math.max(1,Math.min(TOTAL_PHASES,n));score=0;lives=3;best=readNumber(storageKey("best"),0);$("levelPill").textContent="FASE "+level;show("game");newBoard()}
 function updateStats(){
  $("score").textContent=score;$("lives").textContent="❤️".repeat(lives)+"🖤".repeat(3-lives);$("best").textContent=best;
  $("levelPill").textContent="ACHE O DIFERENTE · FASE "+level;$("bar").style.width=(level/TOTAL_PHASES*100)+"%";
@@ -36,13 +35,11 @@ function updateStats(){
 function newBoard(){
  if(advanceTimer)clearTimeout(advanceTimer);
  if(lives<=0)return endGame();
- locked=false;category=phaseCategory(level);
- const n=sizeForLevel(level),total=n*n,pool=pairs[category],pair=pool[Math.floor(Math.random()*pool.length)];
+ locked=false;
+ const n=sizeForLevel(level),total=n*n,pair=similarPairs[Math.floor(Math.random()*similarPairs.length)];
  oddIndex=Math.floor(Math.random()*total);
- $("levelTag").textContent="FASE "+level+" · "+categoryName(level)+" · "+n+"×"+n;
+ $("levelTag").textContent="FASE "+level+" · "+n+"×"+n;
  $("difficulty").textContent=difficultyFor(level);$("gridSize").textContent=total.toLocaleString("pt-BR")+" caracteres";
- document.querySelector("#home .desc").textContent="100 fases de atenção visual, com letras e números de formatos parecidos. A dificuldade aumenta gradualmente."; 
- document.querySelector(".category span").textContent="100 fases · Letras e números parecidos · Quadros progressivos";
  const grid=$("grid");grid.innerHTML="";grid.style.gridTemplateColumns="repeat("+n+",minmax(0,1fr))";
  const frag=document.createDocumentFragment(),font=Math.max(9,Math.min(25,Math.floor(320/n)));
  for(let i=0;i<total;i++){
