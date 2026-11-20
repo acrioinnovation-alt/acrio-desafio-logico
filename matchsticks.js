@@ -81,8 +81,8 @@
   next[pos]+=seg;
   const digits=next.map(s=>DIGITS[key(s)]);
   if(digits.some(v=>v===undefined)){selected=null;render();$("matchStatus").textContent="Essa forma não é um número";return}
-  board=next;selected=null;render();
-  if(eqValid(digits,catalog[phase-1].op)){win()}else{$("matchStatus").textContent="Ainda não está correto. Continue tentando."}
+  board=next;selected=null;
+  if(eqValid(digits,catalog[phase-1].op)){render();win()}else{locked=true;render();$("matchFeedback").className="feedback show bad";$("matchFeedback").textContent="Essa movimentação não corrigiu a conta. Toque em RECOMEÇAR para tentar novamente.";$("matchStatus").textContent="Tentativa encerrada";}
  }
  function win(){
   locked=true;score=100+(phase*10);best=Math.max(best,score);localStorage.setItem("palitos_best",String(best));
