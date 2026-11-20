@@ -68,6 +68,8 @@
 @media(max-width:390px){.balance-row{grid-template-columns:22px minmax(0,1fr) 15px 58px;gap:3px;padding:8px 0}.balance-animal{width:56px}.balance-animal img{width:45px;height:45px}.balance-weight{font-size:20px}.balance-answers{gap:7px}.balance-option{font-size:14px}}
 \n@media(max-width:390px){.app{padding-left:9px;padding-right:9px}.grid-wrap{padding:5px}.game-grid{gap:1px}.cell{border-radius:0;background:transparent;border:0}.card{padding:13px}.phase-list{gap:5px}.phase-btn{min-height:39px}.match-board{gap:5px;padding:17px 5px}.match-digit{transform:scale(.9);margin:-4px}}
  .visual-image{display:flex;justify-content:center;align-items:center;margin:10px 0;padding:8px;background:#0b1729;border:1px solid #2c4668;border-radius:16px;overflow:hidden}.visual-image svg{display:block;width:100%;max-width:420px;height:auto;border-radius:12px}.visual-image text{user-select:none}
+
+.balance-scene{padding:6px;background:#f4f7fb;border:1px solid #c5d4e5;border-radius:16px;overflow:hidden}.balance-puzzle-image{display:block;width:100%;height:auto;max-width:100%;object-fit:contain;border-radius:11px}
 </style>
 </head>
 <body><main class="app">
@@ -77,7 +79,7 @@
 <div class="card"><h2>Modalidade</h2><p class="desc">Entre diretamente nos 50 desafios. Letras e números aparecem ao longo das fases, sem tela para escolher entre eles.</p>
 <div class="category-grid">
 <button class="category" onclick="showPhases()"><div class="symbol">◉</div><strong>ACHE O DIFERENTE</strong><span>50 fases · Letras e números parecidos · Quadros de 10×10 a 18×18</span></button>
-<button class="category" onclick="showBalancePhases()"><div class="symbol">⚖</div><strong>DESAFIO DAS BALANÇAS</strong><span>50 fases · 3 animais · 4 alternativas por desafio</span></button>\n<button class="category" onclick="showMatchPhases()"><div class="symbol">〽</div><strong>DESAFIO DOS PALITOS</strong><span>50 fases · Mova palitos para corrigir a conta · Sem retirar ou acrescentar</span></button>
+<button class="category" onclick="showBalancePhases()"><div class="symbol">⚖</div><strong>DESAFIO DAS BALANÇAS</strong><span>10 fases · imagens originais · 4 alternativas por desafio</span></button>\n<button class="category" onclick="showMatchPhases()"><div class="symbol">〽</div><strong>DESAFIO DOS PALITOS</strong><span>50 fases · Mova palitos para corrigir a conta · Sem retirar ou acrescentar</span></button>
 <button class="category" onclick="showVisualPhases()"><div class="symbol">🧩</div><strong>DESAFIOS VISUAIS</strong><span>50 fases · Enigmas com imagens · 4 alternativas por desafio</span></button>
 </div></div>
 <p class="foot">Jogo offline • Progresso salvo neste aparelho</p>
@@ -117,24 +119,23 @@
 </section>
 
 <section id="balancePhases" class="screen">
-<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">50 DESAFIOS</span></div>
-<div class="card"><h2>Desafio das Balanças</h2><p class="desc">Observe as três pesagens, descubra o peso de cada animal e escolha o peso total dos três. São quatro alternativas por fase.</p><div class="phase-list" id="balancePhaseList"></div></div>
+<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag" id="balancePhaseCount">10 DESAFIOS</span></div>
+<div class="card"><h2>Desafio das Balanças</h2><p class="desc">Observe as três pesagens da imagem e descubra o peso total dos três animais. Cada fase usa uma das imagens originais.</p><div class="phase-list" id="balancePhaseList"></div></div>
 <p class="foot">Seu progresso nesta modalidade fica salvo neste aparelho.</p>
 </section>
 <section id="balances" class="screen">
-<div class="stats"><div class="stat"><b id="balanceDone">0/50</b><span>Concluídas</span></div><div class="stat"><b id="balanceBest">0</b><span>Recorde</span></div><div class="stat"><b>4</b><span>Alternativas</span></div></div>
+<div class="stats"><div class="stat"><b id="balanceDone">0/10</b><span>Concluídas</span></div><div class="stat"><b id="balanceBest">0</b><span>Recorde</span></div><div class="stat"><b>4</b><span>Alternativas</span></div></div>
 <div class="progress"><i id="balanceBar"></i></div>
 <div class="card">
-<div class="tagrow"><span class="tag" id="balanceLevel">FASE 1 DE 50</span><span class="difficulty" id="balanceDifficulty">INICIANTE</span></div>
-<div class="balance-intro"><h2>Quanto pesa cada dupla?</h2><p>As balanças revelam o peso combinado dos animais</p></div>
-<div class="balance-scene"><div id="balanceClues"></div></div>
-<div class="balance-animals" id="balanceAnimals"></div>
+<div class="tagrow"><span class="tag" id="balanceLevel">FASE 1 DE 10</span><span class="difficulty" id="balanceDifficulty">INICIANTE</span></div>
+<div class="balance-intro"><h2>Resolva o desafio</h2><p>Observe as três pesagens e descubra o peso que falta</p></div>
+<div class="balance-scene"><img id="balancePuzzleImage" class="balance-puzzle-image" src="balancas/desafio-01.jpg" alt="Desafio das balanças"></div>
 <div class="balance-question" id="balanceQuestion">Quanto pesam os três animais juntos?</div>
 <div class="balance-answers" id="balanceAnswers"></div>
 <div id="balanceFeedback" class="feedback" aria-live="polite"></div>
 <div class="nav"><button class="btn secondary" onclick="showBalancePhases()">FASES</button><button class="btn secondary" onclick="goHome()">MENU</button></div>
 </div>
-<p class="balance-tip">Dica: some os três resultados das pesagens. Cada animal aparece duas vezes nessa soma!</p>
+<p class="balance-tip">Dica: some os valores das três primeiras pesagens. Cada animal aparece duas vezes nessa soma!</p>
 </section>
 \n<section id="visualPhases" class="screen">
 <div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">50 DESAFIOS</span></div>
