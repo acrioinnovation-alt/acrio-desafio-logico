@@ -1,6 +1,6 @@
 const $=id=>document.getElementById(id);
 const TOTAL_PHASES=100;
-function sizeForLevel(n){return Math.min(20,10+Math.floor((n-1)/10))}
+function sizeForLevel(n){return Math.min(20,10+Math.floor(n/10))}
 const pairs={
  letters:[["O","0"],["I","1"],["S","5"],["B","8"],["Z","2"]],
  numbers:[["6","9"],["0","O"],["1","I"],["5","S"],["8","B"]]
@@ -18,7 +18,7 @@ function showPhases(){
  $("levelPill").textContent="ACHE O DIFERENTE";
  document.querySelector(".phase-head .tag").textContent="100 FASES";
  document.querySelector("#phases .card h2").textContent="Escolha uma fase";
- document.querySelector("#phases .card .desc").textContent="100 fases com caracteres parecidos. O quadro aumenta gradualmente de 10×10 até 19×19, exigindo mais atenção a cada etapa.";
+ document.querySelector("#phases .card .desc").textContent="100 fases com caracteres parecidos. O quadro aumenta gradualmente de 10×10 até 20×20, exigindo mais atenção a cada etapa.";
  const list=$("phaseList");list.innerHTML="";const completed=completedPhases();
  for(let i=1;i<=TOTAL_PHASES;i++){
   const b=document.createElement("button");b.className="phase-btn"+(completed.includes(i)?" done":"");b.textContent=String(i).padStart(3,"0");
