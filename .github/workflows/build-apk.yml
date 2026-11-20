@@ -26,6 +26,23 @@ jobs:
         run: |
           mkdir -p android/app/src/main/assets
           cp index.html game.js fases.js matchsticks.js balance.js visualpuzzles.js android/app/src/main/assets/
+      - name: Download the 10 user-provided balance puzzle images
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p android/app/src/main/assets/balancas
+          curl -fLsS 'https://uce40a374c8a9809cfb8cf986937.dl.dropboxusercontent.com/cd/0/get/DMRaXo5MLCgRWKAtNaYZ2_ggfgYkJ_qkGBJgKd91np2ofpxesC3iJSt7lqrV0bHnzPTcbiWFN0UIkWeQoOuzyw18Hde4-Tr8ycsFTiJcwa6prq9qZv-KP8ql1En0Oc065iD44hxwF2KsdylacRSdxWZreNaXbnymQAWtqAUCl2Tbfw/file?c_luid=96c6d381' -o android/app/src/main/assets/balancas/desafio-01.jpg
+          curl -fLsS 'https://uc03c37113fbb348ee6d6abc7879.dl.dropboxusercontent.com/cd/0/get/DMSxkBLzb1fnr0l_eiz7C35FWpNRlf6Mg3g0d_hw7OwaJCoeu0Gm_My7Tx97-sQUdNvaLnsptGPBn15ZEc0UP93Pg-C_06BHtrgD6Y8P5r4UcMxMFzDPOhshK9Ws_56E-4kf92Ft_oNDM3ZTTtI-G5i5Ms2jUy0KxGwTny_bIz-bmQ/file?c_luid=96c6d381' -o android/app/src/main/assets/balancas/desafio-02.jpg
+          curl -fLsS 'https://uc202e7d608b90bc1857386febc5.dl.dropboxusercontent.com/cd/0/get/DMTH5rETWU5GFk5DlS9uaqpD91PVrdVOxrFxQ7YWImO-0DUeD7K85YuwPQGE-YECv7CV5aVpfDhtzZ0IVcKejS4QpT6F3ZyK7oPfFfvwCzVMo9-T-WlYYtwycMirSxl83c9W514cKfbNg_gsXRekwoI5xriFXOTmpB7FaBsGDMbWaQ/file?c_luid=96c6d381' -o android/app/src/main/assets/balancas/desafio-03.jpg
+          curl -fLsS 'https://uc2dc9ea51f056161999e977a466.dl.dropboxusercontent.com/cd/0/get/DMTADpvJgJ5nCEnn0aGqb9mwJvm4qek0jdXSSMScmZkHxfMmWAb00x57kUexKkDhBwHSELY1_YpQ_icYOqF10w0F2cElYX4gzi_GMezVL3BiSYu0LhPR2hE8r3R2Q17dusqve3UT-Frjd3F7emZEfnWTa_R-XRfxwfdeA5Z8UKjxwg/file?c_luid=96c6d381' -o android/app/src/main/assets/balancas/desafio-04.jpg
+          curl -fLsS 'https://ucc3fc5a4b8fdd7d78403ca93579.dl.dropboxusercontent.com/cd/0/get/DMTBymYl8jJrxXI3aHbP4oDhWIsHzmQwfTmg0NynFqtMkNnEDkXj0szVJ5w7tjBn_LRiAJpLundp_YBNOB0Ecy81JowAzuB7jhbbofmdslblQ72R8veUGtc6aXEgzKURNXKuELn5ziZasrUgL-mfm7GrS4F-BhpdCd00dwxsn82YYg/file?c_luid=96c6d381' -o android/app/src/main/assets/balancas/desafio-05.jpg
+          curl -fLsS 'https://uc943188d9534ccd56c187594340.dl.dropboxusercontent.com/cd/0/get/DMSQl7cPNhjLyj_fxkZ0CH8SjeiE6n1O-wIp7EQbEFlqexGmYU2HoGcav_d3N6FbjnN5iVDca_6k6B-M8mNyOmh94fZZ8HrxTJmEpxgbvxzmYYJR0CfDEIs1QP0b0U4CGvaoX7ZI3RyhB7sLKMdyh1K6A3lq8SGUfLoRsSZsDGOBVQ/file?c_luid=96c6d381' -o android/app/src/main/assets/balancas/desafio-06.jpg
+          curl -fLsS 'https://uc3916d98b7ecd8d24687103c8fe.dl.dropboxusercontent.com/cd/0/get/DMSG-KnDkKPZSgCmzafMGGmxyb2J87ZNhIB8FzN_ymfSZWrDVzuoUFkztUAfG4XnOvNfGFSAnY7vIeCZ2dvRAu2Y9PvqkLVTcd4ZilPKEPs-bFIjkn9FdrDSfXpz4GxS3KR5dEdQQSDCG5oOK8KmEDstLEBQ-6BJ7TSEcVk3z_XLRw/file?c_luid=96c6d381' -o android/app/src/main/assets/balancas/desafio-07.jpg
+          curl -fLsS 'https://uc1810c0739a4be21d223fdb0596.dl.dropboxusercontent.com/cd/0/get/DMR_Ksy0XBEtvkA5Ugssecn8L3-ML2-hdRLL7d0Y-jRIGGW64WmdHjnY2-Wwy2bg7YN3Pps1J0WyQezCTKfMl9j7x6ZPiPoIVOaDIyxqeNZ3aXGyjyBQAnhyA-RpAxslaHD8rXiKd8dTk61tqbiv0JZMxm-9u-n7khBdZ5wmryVKJg/file?c_luid=96c6d381' -o android/app/src/main/assets/balancas/desafio-08.jpg
+          curl -fLsS 'https://uc707f050f55b629aa0747b3b1f9.dl.dropboxusercontent.com/cd/0/get/DMRsES3CgRnyrq2L3W6ShyFOzK24mbeV4UP-RWkqnNR_Ty_Bb92eJhi9goXgBOd_trJGIJr4Hei2_NSF6uvu8zOimeIo5pBkybmmuN_kdU7fykLYSY5iKFRFdUFs2ZV0whPj_ereqF6fSEV7r6RoG2FIQ7X2gqN0WwRprnwu3grzuA/file?c_luid=96c6d381' -o android/app/src/main/assets/balancas/desafio-09.jpg
+          curl -fLsS 'https://uc0ae60f12d8e48bda5ead681efc.dl.dropboxusercontent.com/cd/0/get/DMTKkSxsZLkRhyP133oxVShMobyMbufORZEAQw3Eb0CV2VXwehcSdDk_1dJi8Zzj6Mb2MbjV9wRmX_L7TvFqDUsTXHRHhCb7JwJ6bSHUsodttx7s8INVfSMzf8uvBGnhUUja92tle0sKsseO84g8cNXFS_lzId9oAt99aK_0m8dd4g/file?c_luid=96c6d381' -o android/app/src/main/assets/balancas/desafio-10.jpg
+          test "$(find android/app/src/main/assets/balancas -type f -name '*.jpg' | wc -l)" -eq 10
+          file android/app/src/main/assets/balancas/*.jpg
       - name: Build debug APK
         working-directory: android
         run: gradle --no-daemon assembleDebug
