@@ -28,7 +28,7 @@
 .match-seg.on.v{background:repeating-linear-gradient(90deg,transparent 0 2px,#8c542b22 2px 3px),linear-gradient(90deg,#8b552e 0%,#bd8149 25%,#e2b47a 55%,#c18a52 82%,#85502c 100%)}
 .match-seg.on.h::after{content:"";position:absolute;right:-7px;top:50%;transform:translateY(-50%);width:10px;height:12px;border-radius:48% 55% 55% 48%;background:radial-gradient(ellipse at 32% 27%,#ffaaa0 0%,#e64c43 35%,#b31f25 72%,#74151a 100%);box-shadow:inset -1px -1px 2px #5e1119,0 1px 2px #0009}
 .match-seg.on.v::after{content:"";position:absolute;left:50%;top:-7px;transform:translateX(-50%);width:12px;height:10px;border-radius:48% 48% 55% 55%;background:radial-gradient(ellipse at 32% 27%,#ffaaa0 0%,#e64c43 35%,#b31f25 72%,#74151a 100%);box-shadow:inset -1px -1px 2px #5e1119,0 1px 2px #0009}
-.match-seg.off{opacity:.18;background:#34475c;border:1px dashed #71839a;box-shadow:none;border-radius:2px}
+.match-seg.off{opacity:0;background:transparent;border:0;box-shadow:none;border-radius:2px;cursor:crosshair}.match-seg.on{cursor:grab}.match-seg.on:active{cursor:grabbing}
 .match-seg.selected{filter:brightness(1.3);outline:2px solid #ffd166;outline-offset:3px;box-shadow:0 0 14px #ffb83d, inset 0 1px 1px #fff8d5}
 .match-op{font-size:30px;font-weight:950;color:#f5f8ff;min-width:23px;text-align:center;text-shadow:0 2px 5px #000}
 .match-target{display:flex;gap:8px;justify-content:center;margin:12px 0;color:var(--muted);font-size:12px}
@@ -81,7 +81,7 @@
 <div class="match-target"><span id="matchMoveLabel">1 movimento</span><span id="matchStatus">Escolha um palito</span></div>
 <div id="matchFeedback" class="feedback" aria-live="polite"></div>
 <div class="match-actions"><button class="btn secondary" onclick="showMatchPhases()">FASES</button><button class="btn secondary" onclick="resetMatchMove()">RECOMEÇAR ↻</button></div>
-</div><p class="foot">Toque em um palito aceso e depois em um espaço vazio. Nenhum palito pode ser criado ou descartado.</p>
+</div><p class="foot">Segure um palito e arraste até um espaço vazio. Nenhum palito pode ser criado ou descartado.</p>
 </section>
 <section id="finish" class="screen"><div class="hero"><div class="mark">★</div><h1>DESAFIOS CONCLUÍDOS!</h1><p id="finishText">Você completou os 100 desafios.</p></div><div class="card"><h2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
 </main><script src="game.js"></script><script src="matchsticks.js"></script></body></html>
