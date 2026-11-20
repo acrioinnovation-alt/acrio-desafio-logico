@@ -27,21 +27,24 @@ jobs:
           mkdir -p android/app/src/main/assets
           cp index.html game.js fases.js matchsticks.js balance.js visualpuzzles.js android/app/src/main/assets/
           mkdir -p android/app/src/main/assets/balancas
-      - name: Download the 10 balance puzzle images
+      - name: Download the original balance image folder from Dropbox
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p balancas android/app/src/main/assets/balancas
-          curl -fLsS 'https://ucbf649157d1bf551584d289064e.dl.dropboxusercontent.com/cd/0/get/DMQL4RNXzaJY7i0_3y6pE27UrDhOzplzJzkCG8z9fQg1cgsj3H44I_QuCF_C3n6m9nRZty7M9NKA0ms3W8ZiRQUm_OHfs5022pvsXviRNIa0JQT6uL0uboLSoW9ltblHctKkdOpLmQNWFqyngLvpzl7Z1I470qXSL1UXgLmKFq4glQ/file?c_luid=96c6d381' -o balancas/desafio-01.jpg
-          curl -fLsS 'https://uc512132e0ce71fd985d7526d9cd.dl.dropboxusercontent.com/cd/0/get/DMQ271EdQJMumvtqHDz_FQ-j8RjPAtDpY6Rm7JzjeRS_aK3dc27yPPwDmRSsyOQgGdpEWOk1FfREaFzIchbLl_k2eJggQQrdfyMOeHE57jdqIjMrEY8QA6sj3wDiJQ2JVkIe5SKQ_-9Jh6rxza_MCZf_JXAI7x1MLc2PVeXXzjBfHA/file?c_luid=96c6d381' -o balancas/desafio-02.jpg
-          curl -fLsS 'https://uc4fcacb6d5c3b6c7f965e41b6d7.dl.dropboxusercontent.com/cd/0/get/DMQnfBuNERIvDo3qK_cEFm8hAQ4QxN1LgKmjpBGjspeKQA_FDrn0vCPwK7l_0fnTIqPlLXprSgBfCCDlgUcP2SEwYM3O32nRRsmHhK0st18ugNbMbda7MQWu6M82zsxc4SjWnRYGCNmLstcKc9ldMqPT3BY4IN7jkElDertkmbKUxg/file?c_luid=96c6d381' -o balancas/desafio-03.jpg
-          curl -fLsS 'https://ucf0397d7434c788e112f29317a3.dl.dropboxusercontent.com/cd/0/get/DMQI7woV1LoGokc4zv64ZfacqjcXEdifaThp1VIQbqGRmxbcPBDvpgoiikBmo5MmGEzw4mnHyq6rTjtuqEZaStUw5QkYnzNBPXCCk_CJpng06Q39cPx8hhXGrJ24L5XjKX630ob0jfPaenWeMz8j0ptNFhamNoHT9wGl0lIeEKVzvA/file?c_luid=96c6d381' -o balancas/desafio-04.jpg
-          curl -fLsS 'https://ucadcb262f1e44454154b103663c.dl.dropboxusercontent.com/cd/0/get/DMS2APjMGs7bl4zAIqtijmqm1q_bnFYJqCgz43iK8XFSQayNPOLa5lfWaqv33ZqSVUu4eueczwWoDna_Y3XKQoyzGxfPJ8WC_i9mpRKDN_tM1y8oRurpnubXafx2uCEMUqpjdaZtMKpwasSPl3XCKEsrUkcTSpnP_lem9BdUQwAtpw/file?c_luid=96c6d381' -o balancas/desafio-05.jpg
-          curl -fLsS 'https://ucdf5ecc780b26dd931c109645f6.dl.dropboxusercontent.com/cd/0/get/DMSQKL84POK_XK5rP_3nE78wHXlfvn0n0d-uWHS6FGKLL8xN4IxU8kwBxbS1r5eGIR8S0HwI9R7NwW5GgeJndArFE1VwnqfVZdGVHAlrR5xOJLeBo4UDZiRp88LiOp8VP2UHpepjL2IxpO92oudlKQDfZw4b2q3b8E4tz6f6O154nQ/file?c_luid=96c6d381' -o balancas/desafio-06.jpg
-          curl -fLsS 'https://uc13308d3a1347ce9624d66b5021.dl.dropboxusercontent.com/cd/0/get/DMRHaVrs8R1IKGG4QFaeiCOofo373-be3NTAPM8nbSKfx3T-mU1WyKpxkXNICAYcIeeoKwA1UsEYrbgkD_cholwV0-7PMG7PEV0pxLPtQjCRrLgzvt_6nxYNE_qdQKBQZKZ_HkdfnCF4cPA8FGc_9h3EOxbYQPhwjsuns5bUo0N-ww/file?c_luid=96c6d381' -o balancas/desafio-07.jpg
-          curl -fLsS 'https://uc9bbf09675d638019046014ce13.dl.dropboxusercontent.com/cd/0/get/DMSWnkJg59jsy8XSfjQS7LWxMBPAH6rWGSVEE6cpBW9YBnvFTpuWxiBlXIIHqVPlBTRcym6aYbTp8xUh0er-jagMiupFjEZIL9qY_W-cz7qvwqdVj0v75NyaknWMwn-HJMGylLHqeCKS4_IbkhFThrTEdXSX5i-UW6NLBWCK2gSwwA/file?c_luid=96c6d381' -o balancas/desafio-08.jpg
-          curl -fLsS 'https://uc0b85e7b57794c9246ec226d08e.dl.dropboxusercontent.com/cd/0/get/DMTZdJobYKtn9rteCBXBfPN4RSBvNpUGx1YKjF6s0eSQ04Gm8gw9iB4qI1WgDRuka_ikzjftFONyxRCEbtiNbuDyIGxjXlUBWJ1C2Z70cuU_vGOvje3afxc6nG_etrOpKaWaYcMapZHDHkprhowq5jTtjETjGinON8LqK2W5vuLeQA/file?c_luid=96c6d381' -o balancas/desafio-09.jpg
-          curl -fLsS 'https://ucb61d55c691fcd2cbe230e985db.dl.dropboxusercontent.com/cd/0/get/DMTEQRZEq-9x9w8h2SfbeSxPPOj6o9hIkO00pLOzeikiY5rmMJpWcPC_bSr2y4qfuxkWY7MIWLxTNl8VU46gno7EKHhEQMKwGT5P8GAp723aO9Yn9Mff2BttTnXGDSJ_CZZDTESNEXuMvreQclt7yn29nKRtJHD4l15qxPfemg8vzg/file?c_luid=96c6d381' -o balancas/desafio-10.jpg
+          curl --retry 3 --retry-all-errors --max-time 180 -fLsS 'https://www.dropbox.com/scl/fo/xn2lmolz4fbdyle8u67il/AAev7fQWfeI_OTlPysjKTrk?rlkey=bhhk9q0y1qzpm80k4lvzxgd26&st=k6egz5ga&dl=1' -o /tmp/balancas-dropbox.zip
+          unzip -t /tmp/balancas-dropbox.zip
+          unzip -jo /tmp/balancas-dropbox.zip '*.jpg' -d balancas
+          mv balancas/IMG-20261120-WA9535.jpg balancas/desafio-01.jpg
+          mv balancas/IMG-20261120-WA4075.jpg balancas/desafio-02.jpg
+          mv balancas/IMG-20261120-WA3868.jpg balancas/desafio-03.jpg
+          mv balancas/IMG-20261120-WA4794.jpg balancas/desafio-04.jpg
+          mv balancas/IMG-20261120-WA7909.jpg balancas/desafio-05.jpg
+          mv balancas/IMG-20261120-WA1893.jpg balancas/desafio-06.jpg
+          mv balancas/IMG-20261120-WA7674.jpg balancas/desafio-07.jpg
+          mv balancas/IMG-20261120-WA2840.jpg balancas/desafio-08.jpg
+          mv balancas/IMG-20261120-WA9530.jpg balancas/desafio-09.jpg
+          mv balancas/IMG-20261120-WA6148.jpg balancas/desafio-10.jpg
           test "$(find balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 10
           cp balancas/*.jpg android/app/src/main/assets/balancas/
       - name: Upload balance images for verification
