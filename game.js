@@ -1,7 +1,7 @@
 const $=id=>document.getElementById(id);
-const TOTAL_PHASES=100;
-// O quadro começa em 10×10 e cresce gradualmente até 20×20.
-function sizeForLevel(n){return Math.min(20,10+Math.ceil((n-1)/9))}
+const TOTAL_PHASES=50;
+// 50 fases: quadros crescem gradualmente de 10×10 até 18×18.
+function sizeForLevel(n){return Math.min(18,10+Math.floor((n-1)/6))}
 const similarPairs=[
  ["O","0"],["6","9"],["5","S"],["8","B"],["1","I"],["2","Z"],
  ["E","F"],["V","Y"],["M","N"],["C","G"],["P","R"],["U","V"],
@@ -16,9 +16,9 @@ function goHome(){if(advanceTimer)clearTimeout(advanceTimer);show("home");$("lev
 function showPhases(){
  if(advanceTimer)clearTimeout(advanceTimer);
  $("levelPill").textContent="ACHE O DIFERENTE";
- document.querySelector(".phase-head .tag").textContent="100 FASES";
+ document.querySelector(".phase-head .tag").textContent="50 FASES";
  document.querySelector("#phases .card h2").textContent="Escolha uma fase";
- document.querySelector("#phases .card .desc").textContent="100 fases com pares de letras e números visualmente parecidos. O quadro cresce gradualmente de 10×10 até 20×20.";
+ document.querySelector("#phases .card .desc").textContent="50 fases com pares de letras e números visualmente parecidos. O quadro cresce gradualmente de 10×10 até 18×18.";
  const list=$("phaseList");list.innerHTML="";const completed=completedPhases();
  for(let i=1;i<=TOTAL_PHASES;i++){
   const b=document.createElement("button");b.className="phase-btn"+(completed.includes(i)?" done":"");b.textContent=String(i).padStart(3,"0");
@@ -55,7 +55,7 @@ function choose(i,button){
   if(score>best){best=score;localStorage.setItem(storageKey("best"),String(best))}
   const completed=completedPhases();if(!completed.includes(level)){completed.push(level);completed.sort((a,b)=>a-b);localStorage.setItem(storageKey("completed"),JSON.stringify(completed))}
   $("feedback").className="feedback show good";
-  $("feedback").textContent=level===TOTAL_PHASES?"Excelente! Você concluiu as 100 fases!":"Muito bem! Você encontrou o diferente. Próxima fase…";
+  $("feedback").textContent=level===TOTAL_PHASES?"Excelente! Você concluiu as 50 fases!":"Muito bem! Você encontrou o diferente. Próxima fase…";
   updateStats();advanceTimer=setTimeout(()=>{if(level>=TOTAL_PHASES)endCategory();else{level++;newBoard()}},700);
  }else{
   lives--;button.classList.add("wrong");button.disabled=true;$("feedback").className="feedback show bad";
@@ -63,6 +63,6 @@ function choose(i,button){
   updateStats();if(lives<=0){locked=true;advanceTimer=setTimeout(endGame,850)}
  }
 }
-function endGame(){show("finish");$("finishText").textContent="Você chegou à fase "+level+" de 100. Seu progresso continua salvo.";$("finalScore").textContent=score+" pontos · Recorde: "+best;$("levelPill").textContent="FIM DE JOGO"}
-function endCategory(){show("finish");$("finishText").textContent="Você completou as 100 fases de Ache o Diferente!";$("finalScore").textContent=score+" pontos · Recorde: "+best;$("levelPill").textContent="DESAFIOS CONCLUÍDOS"}
+function endGame(){show("finish");$("finishText").textContent="Você chegou à fase "+level+" de 50. Seu progresso continua salvo.";$("finalScore").textContent=score+" pontos · Recorde: "+best;$("levelPill").textContent="FIM DE JOGO"}
+function endCategory(){show("finish");$("finishText").textContent="Você completou as 50 fases de Ache o Diferente!";$("finalScore").textContent=score+" pontos · Recorde: "+best;$("levelPill").textContent="DESAFIOS CONCLUÍDOS"}
 function restart(){startPhase(level)}
