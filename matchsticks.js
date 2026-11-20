@@ -3,49 +3,7 @@
  // Visual dos fósforos: madeira, cabeça vermelha e relevo, sem alterar a lógica do jogo.
  const matchstickStyle = document.createElement("style");
  matchstickStyle.id = "real-matchstick-style";
- matchstickStyle.textContent = `
-  #matchBoard .match-seg.on {
-   border: 1px solid rgba(112,62,25,.55) !important;
-   border-radius: 999px !important;
-   overflow: hidden;
-   transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
-   box-shadow: inset 0 1px 2px rgba(255,245,218,.8),
-               inset 0 -2px 3px rgba(100,48,16,.28),
-               0 2px 3px rgba(42,25,12,.28) !important;
-  }
-  #matchBoard .match-seg.on.h {
-   background: linear-gradient(180deg, #f5d39b 0%, #d99a55 28%, #bd7738 72%, #8d4c25 100%) !important;
-   position: relative;
-  }
-  #matchBoard .match-seg.on.h::after {
-   content: "";
-   position: absolute;
-   right: -1px; top: 50%; transform: translateY(-50%);
-   width: 23%; height: 115%; border-radius: 50%;
-   background: radial-gradient(circle at 35% 30%, #ff8b83 0%, #d93630 48%, #8e1718 100%);
-   box-shadow: 0 0 2px rgba(90,0,0,.45);
-  }
-  #matchBoard .match-seg.on.v {
-   background: linear-gradient(90deg, #9b5b2c 0%, #d99a55 24%, #f2c987 52%, #bd7738 82%, #87451f 100%) !important;
-   position: relative;
-  }
-  #matchBoard .match-seg.on.v::after {
-   content: "";
-   position: absolute;
-   left: 50%; top: -1px; transform: translateX(-50%);
-   width: 115%; height: 23%; border-radius: 50%;
-   background: radial-gradient(circle at 35% 30%, #ff9188 0%, #d93630 48%, #8e1718 100%);
-   box-shadow: 0 0 2px rgba(90,0,0,.45);
-  }
-  #matchBoard .match-seg.on.selected {
-   filter: brightness(1.16) saturate(1.2);
-   box-shadow: 0 0 0 3px rgba(255,190,65,.45), 0 0 12px rgba(255,145,35,.8),
-               inset 0 1px 2px rgba(255,245,218,.8) !important;
-   transform: scale(1.08);
-   z-index: 3;
-  }
-  #matchBoard .match-seg.off { opacity: .22; }
- `;
+ matchstickStyle.textContent = ``;
  if (!document.getElementById("real-matchstick-style")) document.head.appendChild(matchstickStyle);
 
  const $=id=>document.getElementById(id);
