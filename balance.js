@@ -59,7 +59,7 @@
   if(locked)return;locked=true;
   const p=catalog[phase-1],ok=value===p.answer;
   document.querySelectorAll("#balanceAnswers .balance-option").forEach(b=>{
-   b.disabled=true;if(Number(b.dataset.value)===p.answer)b.classList.add("correct");
+   b.disabled=true;
   });
   const fb=$("balanceFeedback");
   const sum=p.sums.reduce((a,b)=>a+b,0);
@@ -70,7 +70,7 @@
    fb.textContent="Correto! "+p.answer+" kg.";
   }else{
    button.classList.add("wrong");fb.className="feedback show bad";
-   fb.textContent="Não foi dessa vez. Resposta: "+p.answer+" kg.";
+   fb.textContent="Não foi dessa vez. Tente observar novamente as relações entre os animais.";
   }
   updateProgress();
   const next=document.createElement("button");next.className="btn primary start";
