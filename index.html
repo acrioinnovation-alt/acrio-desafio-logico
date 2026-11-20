@@ -23,14 +23,14 @@
 <header class="top"><div class="brand">ACRIO GAMES</div><div class="pill" id="levelPill">MENU PRINCIPAL</div></header>
 <section id="home" class="screen active">
 <div class="hero"><div class="mark">◉</div><h1>ACHE O<br>DIFERENTE</h1><p>Encontre o único caractere diferente no quadro.</p></div>
-<div class="card"><h2>Modalidade</h2><p class="desc">Entre diretamente nos 200 desafios. Letras e números aparecem ao longo das fases, sem tela para escolher entre eles.</p>
+<div class="card"><h2>Modalidade</h2><p class="desc">Entre diretamente nos 100 desafios. Letras e números aparecem ao longo das fases, sem tela para escolher entre eles.</p>
 <div class="category-grid">
-<button class="category" onclick="showPhases()"><div class="symbol">◉</div><strong>ACHE O DIFERENTE</strong><span>200 fases · Letras e números · Quadros de 10×10 a 20×20</span></button>
+<button class="category" onclick="showPhases()"><div class="symbol">◉</div><strong>ACHE O DIFERENTE</strong><span>100 fases · Letras e números parecidos · Quadros de 10×10 a 20×20</span></button>
 </div></div>
 <p class="foot">Jogo offline • Progresso salvo neste aparelho</p>
 </section>
 <section id="phases" class="screen">
-<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">200 DESAFIOS</span></div>
+<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">100 DESAFIOS</span></div>
 <div class="card"><h2>Escolha qualquer fase</h2><p class="desc">As fases ficam disponíveis para teste. Letras e números são intercalados automaticamente. O quadro começa em 10×10 e cresce até 20×20.</p><div class="phase-list" id="phaseList"></div></div>
 <p class="foot">O progresso e o recorde ficam salvos neste aparelho.</p>
 </section>
@@ -45,5 +45,5 @@
 <div class="nav"><button class="btn secondary" onclick="showPhases()">FASES</button><button class="btn secondary" onclick="newBoard()">NOVO QUADRO ↻</button></div>
 </div><p class="foot">O diferente pode aparecer em qualquer posição, inclusive no centro.</p>
 </section>
-<section id="finish" class="screen"><div class="hero"><div class="mark">★</div><h1>DESAFIOS CONCLUÍDOS!</h1><p id="finishText">Você completou os 200 desafios.</p></div><div class="card"><h2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
+<section id="finish" class="screen"><div class="hero"><div class="mark">★</div><h1>DESAFIOS CONCLUÍDOS!</h1><p id="finishText">Você completou os 100 desafios.</p></div><div class="card"><h2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
 </main><script src="game.js"></script></body></html>
