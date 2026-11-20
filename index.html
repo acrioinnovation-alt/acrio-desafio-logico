@@ -70,16 +70,40 @@
  .visual-image{display:flex;justify-content:center;align-items:center;margin:10px 0;padding:8px;background:#0b1729;border:1px solid #2c4668;border-radius:16px;overflow:hidden}.visual-image svg{display:block;width:100%;max-width:420px;height:auto;border-radius:12px}.visual-image text{user-select:none}
 
 .balance-scene{padding:6px;background:#f4f7fb;border:1px solid #c5d4e5;border-radius:16px;overflow:hidden}.balance-puzzle-image{display:block;width:100%;height:auto;max-width:100%;object-fit:contain;border-radius:11px}
+
+/* Redesign visual: interface de jogo mobile */
+html{background:#071426}
+body{background:radial-gradient(ellipse at 50% -12%,#315b88 0,#122944 38%,#071426 78%);-webkit-font-smoothing:antialiased}
+.app{width:min(100%,620px);padding:15px 15px 34px}
+.top{margin:3px 2px 12px}.brand{letter-spacing:2.2px}.pill{font-size:10px;letter-spacing:.7px}
+.hero{padding:24px 0}.mark{width:76px;height:76px;border-radius:25px;margin-bottom:16px;box-shadow:0 12px 34px #4bcde544,inset 0 2px 0 #ffffff88}
+.hero h1{font-size:clamp(29px,8vw,39px);letter-spacing:-1.3px}.hero p{color:#b7c9df;font-size:13px}
+.card{padding:19px;border-radius:24px;background:linear-gradient(155deg,#172f4e,#0d1e34);border-color:#2e4c6d;box-shadow:0 16px 42px #0004,inset 0 1px 0 #ffffff08}
+.card h2{letter-spacing:-.3px}.desc{font-size:12px}
+.category-grid{gap:11px;margin-top:17px}
+.category{position:relative;display:grid;grid-template-columns:58px 1fr;grid-template-rows:auto auto;align-items:center;column-gap:13px;min-height:91px;text-align:left;padding:15px;border:1px solid #365777;border-radius:19px;background:linear-gradient(110deg,#1c4162,#142b47 78%);box-shadow:0 6px 15px #0002;overflow:hidden}
+.category:after{content:"›";position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:30px;color:#8caed0;font-weight:300}
+.category .symbol{grid-row:1/3;width:54px;height:54px;border-radius:17px;display:grid;place-items:center;margin:0;background:linear-gradient(145deg,#5ce1ed,#789bff);color:#09203a;font-size:28px;box-shadow:0 5px 15px #4bcde533}
+.category strong{font-size:14px;letter-spacing:.35px;margin:0 28px 5px 0}.category span{font-size:11px;line-height:1.35;max-width:245px}
+.btn{border-radius:15px;font-size:13px;letter-spacing:.3px;transition:transform .15s,filter .15s}.btn:active,.category:active,.phase-btn:active{transform:scale(.975);filter:brightness(1.12)}
+.primary{box-shadow:0 5px 15px #58dce633}
+.phase-list{gap:8px;margin-top:16px}.phase-btn{min-height:46px;border-radius:13px;background:linear-gradient(145deg,#1b3657,#132943);box-shadow:0 3px 8px #0002}
+.phase-btn.done{background:linear-gradient(145deg,#155b49,#104032)}
+.stats{gap:8px;margin-bottom:13px}.stat{padding:11px 5px;border-radius:15px}
+.tag{letter-spacing:.5px}.instruction{color:#d2dfef}.progress{height:7px;border-radius:20px}.progress i{border-radius:20px}
+.foot{color:#8fa6c0;margin:16px 0}
+@media(max-width:390px){.app{padding-left:10px;padding-right:10px}.card{padding:15px}.phase-list{gap:6px}.phase-btn{min-height:42px}}
+
 </style>
 </head>
 <body><main class="app">
 <header class="top"><div class="brand">ACRIO GAMES</div><div class="pill" id="levelPill">MENU PRINCIPAL</div></header>
 <section id="home" class="screen active">
-<div class="hero"><div class="mark">◉</div><h1>ACHE O<br>DIFERENTE</h1><p>Encontre o único caractere diferente no quadro.</p></div>
-<div class="card"><h2>Modalidade</h2><p class="desc">Entre diretamente nos 50 desafios. Letras e números aparecem ao longo das fases, sem tela para escolher entre eles.</p>
+<div class="hero"><div class="mark">◉</div><h1>DESAFIO<br>LÓGICO</h1><p>Treine sua mente. Supere cada desafio.</p></div>
+<div class="card"><h2>Escolha seu desafio</h2>
 <div class="category-grid">
-<button class="category" onclick="showPhases()"><div class="symbol">◉</div><strong>ACHE O DIFERENTE</strong><span>50 fases · Letras e números parecidos · Quadros de 10×10 a 18×18</span></button>
-<button class="category" onclick="showBalancePhases()"><div class="symbol">⚖</div><strong>DESAFIO DAS BALANÇAS</strong><span>10 fases · imagens originais · 4 alternativas por desafio</span></button>\n<button class="category" onclick="showMatchPhases()"><div class="symbol">〽</div><strong>DESAFIO DOS PALITOS</strong><span>50 fases · Mova palitos para corrigir a conta · Sem retirar ou acrescentar</span></button>
+<button class="category" onclick="showPhases()"><div class="symbol">◉</div><strong>ACHE O DIFERENTE</strong><span>50 fases · Encontre o caractere diferente</span></button>
+<button class="category" onclick="showBalancePhases()"><div class="symbol">⚖</div><strong>DESAFIO DAS BALANÇAS</strong><span>10 fases · Descubra o peso correto</span></button>\n<button class="category" onclick="showMatchPhases()"><div class="symbol">〽</div><strong>DESAFIO DOS PALITOS</strong><span>50 fases · Mova um palito e resolva a conta</span></button>
 
 </div></div>
 <p class="foot">Jogo offline • Progresso salvo neste aparelho</p>
