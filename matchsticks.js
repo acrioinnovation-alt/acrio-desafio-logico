@@ -67,22 +67,29 @@
     const on=mask.includes(seg);el.className="match-seg "+(seg==="a"||seg==="d"||seg==="g"?"h ":"v ")+(on?"on":"off")+(selected&&selected.pos===pos&&selected.seg===seg?" selected":"");
     el.classList.add(seg);el.setAttribute("aria-label",on?"Palito "+seg:"Espaço vazio "+seg);
     el.disabled=locked;
-    if(on){el.addEventListener("pointerdown",ev=>beginDrag(ev,pos,seg));}else{el.addEventListener("pointerup",ev=>finishDrag(ev,pos,seg));}
+    el.addEventListener("click",()=>handleTap(pos,seg,on));
     digit.appendChild(el);
    }
    root.appendChild(digit);
    if(pos===0||pos===1){const op=document.createElement("span");op.className="match-op";op.textContent=pos===0?item.op:"=";root.appendChild(op)}
   });
  }
- function beginDrag(ev,pos,seg){
-  if(locked||!board[pos].includes(seg))return;
-  ev.preventDefault();selected={pos,seg};
-  $("matchStatus").textContent="Solte sobre um espaço vazio";
-  ev.currentTarget.classList.add("selected");
- }
- function finishDrag(ev,pos,seg){
-  if(locked||!selected||board[pos].includes(seg))return;
-  ev.preventDefault();
+ function handleTap(pos,seg,isOn){
+  if(locked)return;
+  if(isOn){
+   selected={pos,seg};
+   render();
+   $("matchStatus").textContent="Agora toque em um espaço vazio para colocar o palito";
+   return;
+  }
+  if(!selected){
+   $("matchStatus").textContent="Primeiro toque em um palito aceso";
+   return;
+  }
+  if(selected.pos===pos){
+   $("matchStatus").textContent="Escolha um espaço vazio em outro número";
+   return;
+  }
   const next=board.map(s=>s);
   next[selected.pos]=next[selected.pos].replace(selected.seg,"");
   next[pos]+=seg;
@@ -92,16 +99,6 @@
   if(eqValid(digits,catalog[phase-1].op)){render();win()}
   else{locked=true;render();$("matchFeedback").className="feedback show bad";$("matchFeedback").textContent="Essa movimentação não corrigiu a conta. Toque em RECOMEÇAR para tentar novamente.";$("matchStatus").textContent="Tentativa encerrada";}
  }
- document.addEventListener("pointerup",ev=>{
-  if(!selected||locked)return;
-  const el=document.elementFromPoint(ev.clientX,ev.clientY);
-  if(!el||!el.classList.contains("match-seg")||el.classList.contains("on")){selected=null;render();return}
-  const digit=el.closest(".match-digit");
-  if(!digit){selected=null;render();return}
-  const pos=Array.from($("matchBoard").querySelectorAll(".match-digit")).indexOf(digit);
-  const seg="abcdefg".split("").find(s=>el.classList.contains(s));
-  if(pos>=0&&seg)finishDrag(ev,pos,seg);else{selected=null;render()}
- });
  function win(){
   locked=true;score=100+(phase*10);best=Math.max(best,score);localStorage.setItem("palitos_best",String(best));
   const done=completed();if(!done.includes(phase)){done.push(phase);done.sort((a,b)=>a-b);localStorage.setItem("palitos_completed",JSON.stringify(done))}
