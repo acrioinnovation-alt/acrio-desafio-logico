@@ -16,6 +16,22 @@
 .phase-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:12px 0}.phase-list{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:14px}.phase-btn{border:1px solid #3b5577;background:#1a2f4d;color:white;border-radius:11px;min-height:43px;font-weight:900;font-size:13px}.phase-btn.done{border-color:#2c9876;background:#124333;color:#9ff3d2}.phase-btn:active,.category:active{transform:scale(.97)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:0 0 12px}.stat{padding:10px 5px;background:#101f35;border:1px solid #2b4364;border-radius:14px;text-align:center}.stat b{display:block;font-size:18px}.stat span{font-size:9px;letter-spacing:.6px;color:var(--muted);text-transform:uppercase}
 .tagrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.tag{font-size:10px;font-weight:950;color:var(--cyan);background:#1b3b54;padding:7px 10px;border-radius:30px}.difficulty{font-size:10px;color:var(--gold);font-weight:950;letter-spacing:.6px}.instruction{text-align:center;color:var(--muted);font-size:13px;margin:5px 0 13px}.grid-wrap{padding:9px;background:#0b1729;border:1px solid #2c4668;border-radius:17px;overflow:hidden}.game-grid{display:grid;gap:2px;width:100%;margin:auto;touch-action:manipulation}.cell{min-width:0;aspect-ratio:1;border:1px solid #314b6d;border-radius:4px;background:linear-gradient(145deg,#1c3454,#152944);color:#f6f9ff;font-family:Arial,sans-serif;font-weight:850;display:grid;place-items:center;padding:0;line-height:1;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}.cell:active{transform:scale(.94);background:#31577c}.cell.correct{background:#176b55;border-color:#58e3ae;color:white}.cell.wrong{background:#762f47;border-color:#ff8496}.grid-footer{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px;margin:10px 2px 0}.feedback{display:none;margin-top:12px;border-radius:13px;padding:12px;font-size:13px;line-height:1.45}.feedback.show{display:block}.feedback.good{background:#12392f;border:1px solid #267c65}.feedback.bad{background:#3b1d2b;border:1px solid #804057}.progress{height:6px;background:#263750;border-radius:20px;overflow:hidden;margin:8px 0 14px}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));width:0}.nav{display:flex;gap:9px;margin-top:12px}.nav .btn{font-size:12px}.foot{font-size:10px;color:var(--muted);text-align:center;margin:14px 0}
+.match-board{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;padding:18px 8px;background:#091729;border:1px solid #2c4668;border-radius:17px;min-height:130px}
+.match-digit{position:relative;width:42px;height:76px;flex:none}
+.match-seg{position:absolute;background:#d9e6f5;border:1px solid #a9bad0;border-radius:5px;box-shadow:0 2px 5px #0006;cursor:pointer;touch-action:manipulation}
+.match-seg.on{background:linear-gradient(180deg,#fff0b8,#ffbd55);border-color:#ffda87}
+.match-seg.selected{background:#64e6f2;box-shadow:0 0 12px #64e6f2}
+.match-seg.off{background:#263b55;border:1px dashed #526985;opacity:.7}
+.match-seg.h{width:26px;height:7px;left:8px}
+.match-seg.v{width:7px;height:26px}
+.match-seg.a{top:0}.match-seg.g{top:34px}.match-seg.d{bottom:0}
+.match-seg.f{left:0;top:5px}.match-seg.b{right:0;top:5px}.match-seg.e{left:0;bottom:5px}.match-seg.c{right:0;bottom:5px}
+.match-op{font-size:27px;font-weight:950;color:#f5f8ff;min-width:20px;text-align:center}
+.match-target{display:flex;gap:8px;justify-content:center;margin:12px 0;color:var(--muted);font-size:12px}
+.match-target span{background:#1a2f4d;border:1px solid #3b5577;border-radius:9px;padding:8px 10px}
+.match-actions{display:flex;gap:8px;margin-top:12px}
+.match-actions .btn{font-size:12px}
+.match-seg:focus{outline:2px solid var(--cyan);outline-offset:2px}
 @media(max-width:390px){.app{padding-left:9px;padding-right:9px}.grid-wrap{padding:5px}.game-grid{gap:1px}.cell{border-radius:2px}.card{padding:13px}.phase-list{gap:5px}.phase-btn{min-height:39px}}
 </style>
 </head>
@@ -26,6 +42,7 @@
 <div class="card"><h2>Modalidade</h2><p class="desc">Entre diretamente nos 100 desafios. Letras e números aparecem ao longo das fases, sem tela para escolher entre eles.</p>
 <div class="category-grid">
 <button class="category" onclick="showPhases()"><div class="symbol">◉</div><strong>ACHE O DIFERENTE</strong><span>100 fases · Letras e números parecidos · Quadros de 10×10 a 20×20</span></button>
+<button class="category" onclick="showMatchPhases()"><div class="symbol">〽</div><strong>DESAFIO DOS PALITOS</strong><span>50 fases · Mova palitos para corrigir a conta · Sem retirar ou acrescentar</span></button>
 </div></div>
 <p class="foot">Jogo offline • Progresso salvo neste aparelho</p>
 </section>
@@ -45,5 +62,22 @@
 <div class="nav"><button class="btn secondary" onclick="showPhases()">FASES</button><button class="btn secondary" onclick="newBoard()">NOVO QUADRO ↻</button></div>
 </div><p class="foot">O diferente pode aparecer em qualquer posição, inclusive no centro.</p>
 </section>
+<section id="matchPhases" class="screen">
+<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">50 DESAFIOS</span></div>
+<div class="card"><h2>Desafio dos Palitos</h2><p class="desc">Escolha uma fase. Mova exatamente um palito: toque no palito que deseja mover e depois no espaço vazio onde ele ficará.</p><div class="phase-list" id="matchPhaseList"></div></div>
+<p class="foot">Seu progresso nesta modalidade é separado e fica salvo neste aparelho.</p>
+</section>
+<section id="matches" class="screen">
+<div class="stats"><div class="stat"><b id="matchScore">0</b><span>Pontos</span></div><div class="stat"><b id="matchDone">0/50</b><span>Concluídas</span></div><div class="stat"><b id="matchRecord">0</b><span>Recorde</span></div></div>
+<div class="progress"><i id="matchBar"></i></div>
+<div class="card">
+<div class="tagrow"><span class="tag" id="matchLevelTag">FASE 1 · PALITOS</span><span class="difficulty" id="matchDifficulty">NÍVEL 1</span></div>
+<p class="instruction">Mova exatamente um palito para formar uma conta correta</p>
+<div class="match-board" id="matchBoard" aria-label="Equação feita com palitos"></div>
+<div class="match-target"><span id="matchMoveLabel">1 movimento</span><span id="matchStatus">Escolha um palito</span></div>
+<div id="matchFeedback" class="feedback" aria-live="polite"></div>
+<div class="match-actions"><button class="btn secondary" onclick="showMatchPhases()">FASES</button><button class="btn secondary" onclick="resetMatchMove()">RECOMEÇAR ↻</button></div>
+</div><p class="foot">Toque em um palito aceso e depois em um espaço vazio. Nenhum palito pode ser criado ou descartado.</p>
+</section>
 <section id="finish" class="screen"><div class="hero"><div class="mark">★</div><h1>DESAFIOS CONCLUÍDOS!</h1><p id="finishText">Você completou os 100 desafios.</p></div><div class="card"><h2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
-</main><script src="game.js"></script></body></html>
+</main><script src="game.js"></script><script src="matchsticks.js"></script></body></html>
