@@ -67,10 +67,10 @@
    const finished=done();if(!finished.includes(phase)){finished.push(phase);finished.sort((a,b)=>a-b);localStorage.setItem(STORE+"done",JSON.stringify(finished))}
    if(finished.length>best())localStorage.setItem(STORE+"best",String(finished.length));
    fb.className="feedback show good";
-   fb.textContent="Correto! "+p.sums.join(" + ")+" = "+sum+". Cada animal aparece duas vezes nas três pesagens. "+sum+" ÷ 2 = "+p.answer+" kg.";
+   fb.textContent="Correto! "+p.answer+" kg.";
   }else{
    button.classList.add("wrong");fb.className="feedback show bad";
-   fb.textContent="Ainda não. Some as três pesagens: "+p.sums.join(" + ")+" = "+sum+". Divida por 2, pois cada animal aparece duas vezes. Resposta: "+p.answer+" kg.";
+   fb.textContent="Não foi dessa vez. Resposta: "+p.answer+" kg.";
   }
   updateProgress();
   const next=document.createElement("button");next.className="btn primary start";
