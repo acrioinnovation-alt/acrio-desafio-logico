@@ -1,9 +1,9 @@
 const $=id=>document.getElementById(id);
-const TOTAL_PHASES=200;
-function sizeForLevel(n){const categoryPhase=Math.ceil(n/2);return Math.min(20,10+Math.floor((categoryPhase-1)/9))}
+const TOTAL_PHASES=100;
+function sizeForLevel(n){return Math.min(20,10+Math.floor((n-1)/10))}
 const pairs={
- letters:[["O","Q"],["C","G"],["P","R"],["E","F"],["M","N"],["U","V"],["D","O"],["H","N"],["T","I"],["I","J"]],
- numbers:[["0","8"],["3","8"],["6","9"],["5","6"],["2","7"],["1","7"],["8","9"],["3","9"],["0","6"],["2","3"]]
+ letters:[["O","0"],["I","1"],["S","5"],["B","8"],["Z","2"]],
+ numbers:[["6","9"],["0","O"],["1","I"],["5","S"],["8","B"]]
 };
 let category="letters",level=1,score=0,lives=3,best=0,locked=false,oddIndex=-1,advanceTimer=null;
 function phaseCategory(n){return n%2===1?"letters":"numbers"}
@@ -16,6 +16,9 @@ function goHome(){if(advanceTimer)clearTimeout(advanceTimer);show("home");$("lev
 function showPhases(){
  if(advanceTimer)clearTimeout(advanceTimer);
  $("levelPill").textContent="ACHE O DIFERENTE";
+ document.querySelector(".phase-head .tag").textContent="100 FASES";
+ document.querySelector("#phases .card h2").textContent="Escolha uma fase";
+ document.querySelector("#phases .card .desc").textContent="100 fases com caracteres parecidos. O quadro aumenta gradualmente de 10×10 até 19×19, exigindo mais atenção a cada etapa.";
  const list=$("phaseList");list.innerHTML="";const completed=completedPhases();
  for(let i=1;i<=TOTAL_PHASES;i++){
   const b=document.createElement("button");b.className="phase-btn"+(completed.includes(i)?" done":"");b.textContent=String(i).padStart(3,"0");
@@ -24,7 +27,7 @@ function showPhases(){
  show("phases");
 }
 
-function difficultyFor(n){if(n<=40)return "ATENÇÃO";if(n<=80)return "OBSERVAÇÃO";if(n<=120)return "DESAFIADOR";if(n<=160)return "DIFÍCIL";return "EXTREMO"}
+function difficultyFor(n){if(n<=20)return "ATENÇÃO";if(n<=40)return "OBSERVAÇÃO";if(n<=60)return "DESAFIADOR";if(n<=80)return "DIFÍCIL";return "EXTREMO"}
 function startPhase(n){level=Math.max(1,Math.min(TOTAL_PHASES,n));category=phaseCategory(level);score=0;lives=3;best=readNumber(storageKey("best"),0);$("levelPill").textContent="FASE "+level;show("game");newBoard()}
 function updateStats(){
  $("score").textContent=score;$("lives").textContent="❤️".repeat(lives)+"🖤".repeat(3-lives);$("best").textContent=best;
@@ -38,6 +41,8 @@ function newBoard(){
  oddIndex=Math.floor(Math.random()*total);
  $("levelTag").textContent="FASE "+level+" · "+categoryName(level)+" · "+n+"×"+n;
  $("difficulty").textContent=difficultyFor(level);$("gridSize").textContent=total.toLocaleString("pt-BR")+" caracteres";
+ document.querySelector("#home .desc").textContent="100 fases de atenção visual, com letras e números de formatos parecidos. A dificuldade aumenta gradualmente."; 
+ document.querySelector(".category span").textContent="100 fases · Letras e números parecidos · Quadros progressivos";
  const grid=$("grid");grid.innerHTML="";grid.style.gridTemplateColumns="repeat("+n+",minmax(0,1fr))";
  const frag=document.createDocumentFragment(),font=Math.max(9,Math.min(25,Math.floor(320/n)));
  for(let i=0;i<total;i++){
@@ -53,7 +58,7 @@ function choose(i,button){
   if(score>best){best=score;localStorage.setItem(storageKey("best"),String(best))}
   const completed=completedPhases();if(!completed.includes(level)){completed.push(level);completed.sort((a,b)=>a-b);localStorage.setItem(storageKey("completed"),JSON.stringify(completed))}
   $("feedback").className="feedback show good";
-  $("feedback").textContent=level===TOTAL_PHASES?"Excelente! Você concluiu os 200 desafios!":"Muito bem! Você encontrou o diferente. Próxima fase…";
+  $("feedback").textContent=level===TOTAL_PHASES?"Excelente! Você concluiu as 100 fases!":"Muito bem! Você encontrou o diferente. Próxima fase…";
   updateStats();advanceTimer=setTimeout(()=>{if(level>=TOTAL_PHASES)endCategory();else{level++;newBoard()}},700);
  }else{
   lives--;button.classList.add("wrong");button.disabled=true;$("feedback").className="feedback show bad";
@@ -61,6 +66,6 @@ function choose(i,button){
   updateStats();if(lives<=0){locked=true;advanceTimer=setTimeout(endGame,850)}
  }
 }
-function endGame(){show("finish");$("finishText").textContent="Você chegou à fase "+level+" de 200. Seu progresso continua salvo.";$("finalScore").textContent=score+" pontos · Recorde: "+best;$("levelPill").textContent="FIM DE JOGO"}
-function endCategory(){show("finish");$("finishText").textContent="Você completou os 200 desafios de Ache o Diferente!";$("finalScore").textContent=score+" pontos · Recorde: "+best;$("levelPill").textContent="DESAFIOS CONCLUÍDOS"}
+function endGame(){show("finish");$("finishText").textContent="Você chegou à fase "+level+" de 100. Seu progresso continua salvo.";$("finalScore").textContent=score+" pontos · Recorde: "+best;$("levelPill").textContent="FIM DE JOGO"}
+function endCategory(){show("finish");$("finishText").textContent="Você completou as 100 fases de Ache o Diferente!";$("finalScore").textContent=score+" pontos · Recorde: "+best;$("levelPill").textContent="DESAFIOS CONCLUÍDOS"}
 function restart(){startPhase(level)}
