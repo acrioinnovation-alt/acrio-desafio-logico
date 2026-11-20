@@ -80,7 +80,7 @@
 <div class="category-grid">
 <button class="category" onclick="showPhases()"><div class="symbol">◉</div><strong>ACHE O DIFERENTE</strong><span>50 fases · Letras e números parecidos · Quadros de 10×10 a 18×18</span></button>
 <button class="category" onclick="showBalancePhases()"><div class="symbol">⚖</div><strong>DESAFIO DAS BALANÇAS</strong><span>10 fases · imagens originais · 4 alternativas por desafio</span></button>\n<button class="category" onclick="showMatchPhases()"><div class="symbol">〽</div><strong>DESAFIO DOS PALITOS</strong><span>50 fases · Mova palitos para corrigir a conta · Sem retirar ou acrescentar</span></button>
-<button class="category" onclick="showVisualPhases()"><div class="symbol">🧩</div><strong>DESAFIOS VISUAIS</strong><span>50 fases · Enigmas com imagens · 4 alternativas por desafio</span></button>
+
 </div></div>
 <p class="foot">Jogo offline • Progresso salvo neste aparelho</p>
 </section>
@@ -137,21 +137,6 @@
 </div>
 
 </section>
-\n<section id="visualPhases" class="screen">
-<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">50 DESAFIOS</span></div>
-<div class="card"><h2>Desafios Visuais</h2><p class="desc">Observe a imagem, descubra o padrão e escolha uma das quatro alternativas.</p><div class="phase-list" id="visualPhaseList"></div></div>
-<p class="foot">Seu progresso nesta modalidade fica salvo neste aparelho.</p>
-</section>
-<section id="visualGame" class="screen">
-<div class="stats"><div class="stat"><b id="visualLevel">FASE 1 DE 50</b><span>Desafio</span></div><div class="stat"><b>4</b><span>Alternativas</span></div><div class="stat"><b>50</b><span>Fases</span></div></div>
-<div class="progress"><i id="visualProgress"></i></div>
-<div class="card"><div class="tagrow"><span class="tag">RACIOCÍNIO VISUAL</span><span class="difficulty">OBSERVE</span></div>
-<p class="instruction" id="visualQuestion"></p>
-<div id="visualImage" class="visual-image"></div>
-<div class="balance-answers" id="visualAnswers"></div>
-<div id="visualFeedback" class="feedback" aria-live="polite"></div>
-<div class="nav"><button class="btn secondary" onclick="showVisualPhases()">FASES</button><button class="btn secondary" onclick="goHome()">MENU</button></div>
-</div>
-</section>
+\n
 <section id="finish" class="screen"><div class="hero"><div class="mark">★</div><h1>DESAFIOS CONCLUÍDOS!</h1><p id="finishText">Você completou os 50 desafios.</p></div><div class="card"><h2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
-</main><script src="game.js"></script><script src="matchsticks.js"></script><script src="balance.js"></script><script src="visualpuzzles.js"></script></body></html>
+</main><script src="game.js"></script><script src="matchsticks.js"></script><script src="balance.js"></script></body></html>
