@@ -3,7 +3,7 @@
  const $=id=>document.getElementById(id);
  const TOTAL=50, STORE="balancas_";
  const animals=[
-  {id:"mouse",name:"Rato",img:"https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=180&h=180&fit=crop&crop=faces"},
+  {id:"mouse",name:"Rato",img:"https://c.pxhere.com/photos/28/d0/animals_close_up_domestic_funny_fur_isolated_mammal_mice-1119557.jpg!d"},
   {id:"cat",name:"Gato",img:"https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=180&h=180&fit=crop&crop=faces"},
   {id:"dog",name:"Cachorro",img:"https://images.unsplash.com/photo-1552053831-71594a27632d?w=180&h=180&fit=crop&crop=faces"},
   {id:"lion",name:"Leão",img:"https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=180&h=180&fit=crop"},
@@ -12,7 +12,7 @@
   {id:"fox",name:"Raposa",img:"https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=180&h=180&fit=crop"},
   {id:"panda",name:"Panda",img:"https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=180&h=180&fit=crop"},
   {id:"tiger",name:"Tigre",img:"https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=180&h=180&fit=crop"},
-  {id:"horse",name:"Cavalo",img:"https://images.unsplash.com/photo-1534307678930-20e8d9e4e5c9?w=180&h=180&fit=crop"}
+  {id:"giraffe",name:"Girafa",img:"https://images.unsplash.com/photo-1574870111867-089730e5a72b?w=180&h=180&fit=crop"}
  ];
  let phase=1,score=0,locked=false;
  let seed=20261120;
