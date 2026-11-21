@@ -36,6 +36,16 @@ function visualIcon(level,odd){const family=Math.floor((level-1)/5),variant=(lev
 // A mesma arte-base aparece em quase todo o quadro; a alteração é pequena e localizada.
 function visualDifficulty(n){return n<=10?"ATENÇÃO":n<=20?"OBSERVAÇÃO":n<=30?"DESAFIADOR":n<=40?"DIFÍCIL":"EXTREMO"}
 function visualCompleted(){try{const a=JSON.parse(localStorage.getItem(visualKey("completed"))||"[]");return Array.isArray(a)?a.filter(x=>Number.isInteger(x)&&x>=1&&x<=TOTAL_VISUAL_PHASES):[]}catch(e){return []}}
+function setupVisualNavigation(){
+ const head=document.querySelector("#phases .phase-head");
+ if(head&&!document.getElementById("openVisualPhases")){
+  const b=document.createElement("button");b.id="openVisualPhases";b.type="button";b.className="btn secondary";b.style.width="auto";b.style.padding="10px 13px";b.textContent="FASES DE DESENHOS";b.addEventListener("click",showVisualPhases);head.appendChild(b);
+ }
+ const section=visual$("visualPhases");
+ if(section&&!section.querySelector(".visual-back")){
+  const b=document.createElement("button");b.type="button";b.className="btn secondary visual-back";b.textContent="← VOLTAR ÀS 100 FASES";b.style.margin="0 0 12px";b.addEventListener("click",()=>window.showPhases&&window.showPhases());section.insertBefore(b,section.firstChild);
+ }
+}
 function showVisualPhases(){
  if(visualTimer)clearTimeout(visualTimer);
  visual$("levelPill").textContent="ACHE O DESENHO DIFERENTE";
@@ -66,5 +76,5 @@ function chooseVisual(i,button){
 function endVisualGame(){show("visualFinish");visual$("visualFinishText").textContent="Você chegou à fase "+visualLevel+" de 50. Seu progresso continua salvo.";visual$("visualFinalScore").textContent=visualScore+" pontos · Recorde: "+visualBest;visual$("levelPill").textContent="FIM DE JOGO"}
 function endVisualCategory(){show("visualFinish");visual$("visualFinishText").textContent="Você completou as 50 fases de Ache o Desenho Diferente!";visual$("visualFinalScore").textContent=visualScore+" pontos · Recorde: "+visualBest;visual$("levelPill").textContent="DESAFIOS CONCLUÍDOS"}
 function restartVisual(){startVisualPhase(visualLevel)}
-window.showVisualPhases=showVisualPhases;window.startVisualPhase=startVisualPhase;window.newVisualBoard=newVisualBoard;window.restartVisual=restartVisual;
+window.showVisualPhases=showVisualPhases;window.startVisualPhase=startVisualPhase;window.newVisualBoard=newVisualBoard;window.restartVisual=restartVisual;setupVisualNavigation();
 })();
