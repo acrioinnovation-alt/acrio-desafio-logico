@@ -58,9 +58,8 @@
   {image:"balancas/desafio-50.jpg",type:"ball",answer:6}
  ];
  const TOTAL=catalog.length, STORE="balancas_imagens_v2_";
- let phase=1,locked=false;
- const shuffle=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b};
- const optionsFor=answer=>shuffle([answer,answer-2,answer-1,answer+2]);
+ let phase=1,locked=false,typedAnswer="";
+ const $=id=>document.getElementById(id);
  const done=()=>{try{const v=JSON.parse(localStorage.getItem(STORE+"done")||"[]");return Array.isArray(v)?v.filter(n=>Number.isInteger(n)&&n>=1&&n<=TOTAL):[]}catch(e){return []}};
  const best=()=>Number(localStorage.getItem(STORE+"best")||0);
  const show=id=>{document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active")};
@@ -92,27 +91,44 @@
   const img=$("balancePuzzleImage");
   img.src=p.image;img.alt="Desafio das balanças, fase "+phase;
   img.onerror=()=>{img.alt="Imagem do desafio "+phase+" indisponível"};
-  const answers=$("balanceAnswers");answers.innerHTML="";
-  optionsFor(p.answer).forEach((v,i)=>{
-   const b=document.createElement("button");b.className="balance-option";
-   b.textContent=String.fromCharCode(65+i)+")  "+v+" kg";
-   b.dataset.value=String(v);b.onclick=()=>choose(v,b);answers.appendChild(b);
-  });
+  typedAnswer="";
+  updateAnswerDisplay();
+  $("balanceKeypad").querySelectorAll("button").forEach(b=>b.disabled=false);
   $("balanceFeedback").className="feedback";$("balanceFeedback").textContent="";
   updateProgress();
  }
- function choose(value,button){
+ function updateAnswerDisplay(){
+  const el=$("balanceAnswerValue");
+  el.textContent=typedAnswer||"Digite sua resposta";
+  el.classList.toggle("empty",!typedAnswer);
+ }
+ function handleKeypad(action,value){
+  if(locked)return;
+  if(action==="key"){
+   if(typedAnswer.length<4)typedAnswer+=value;
+  }else if(action==="clear"){
+   typedAnswer="";
+  }else if(action==="backspace"){
+   typedAnswer=typedAnswer.slice(0,-1);
+  }else if(action==="submit"){
+   if(!typedAnswer)return;
+   choose(Number(typedAnswer));
+   return;
+  }
+  updateAnswerDisplay();
+ }
+ function choose(value){
   if(locked)return;locked=true;
   const p=catalog[phase-1],ok=value===p.answer;
-  document.querySelectorAll("#balanceAnswers .balance-option").forEach(b=>{b.disabled=true});
+  $("balanceKeypad").querySelectorAll("button").forEach(b=>{b.disabled=true});
   const fb=$("balanceFeedback");
   if(ok){
    const finished=done();if(!finished.includes(phase)){finished.push(phase);finished.sort((a,b)=>a-b);localStorage.setItem(STORE+"done",JSON.stringify(finished))}
    if(finished.length>best())localStorage.setItem(STORE+"best",String(finished.length));
    fb.className="feedback show good";fb.textContent="Correto! Muito bem!";
   }else{
-   button.classList.add("wrong");fb.className="feedback show bad";
-   fb.textContent="Não foi dessa vez. Observe as relações entre os pesos e tente novamente em outra rodada.";
+   fb.className="feedback show bad";
+   fb.textContent="Resposta incorreta. Observe novamente as balanças e tente outra vez em uma nova rodada.";
   }
   updateProgress();
   const next=document.createElement("button");next.className="btn primary start";
@@ -120,5 +136,11 @@
   next.onclick=()=>phase===TOTAL?window.showBalancePhases():startBalance(phase+1);
   fb.appendChild(next);
  }
+ $("balanceKeypad").addEventListener("click",event=>{
+  const button=event.target.closest("button");
+  if(!button||button.disabled)return;
+  if(button.dataset.key!==undefined)handleKeypad("key",button.dataset.key);
+  else if(button.dataset.action)handleKeypad(button.dataset.action);
+ });
  window.startBalance=startBalance;
 })();
