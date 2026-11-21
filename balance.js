@@ -59,7 +59,6 @@
  ];
  const TOTAL=catalog.length, STORE="balancas_imagens_v2_";
  let phase=1,locked=false,typedAnswer="";
- const $=id=>document.getElementById(id);
  const done=()=>{try{const v=JSON.parse(localStorage.getItem(STORE+"done")||"[]");return Array.isArray(v)?v.filter(n=>Number.isInteger(n)&&n>=1&&n<=TOTAL):[]}catch(e){return []}};
  const best=()=>Number(localStorage.getItem(STORE+"best")||0);
  const show=id=>{document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active")};
