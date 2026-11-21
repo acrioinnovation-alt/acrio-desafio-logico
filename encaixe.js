@@ -7,7 +7,7 @@
   {name:"MÉDIA",pieces:[["O",[[0,0],[1,0],[0,1],[1,1]]],["O",[[0,0],[1,0],[0,1],[1,1]]],["O",[[0,0],[1,0],[0,1],[1,1]]],["O",[[0,0],[1,0],[0,1],[1,1]]]]},
   {name:"DIFÍCIL",pieces:[["L",[[0,0],[0,1],[0,2],[1,2]]],["L",[[0,0],[0,1],[0,2],[1,2]]],["L",[[0,0],[0,1],[0,2],[1,2]]],["L",[[0,0],[0,1],[0,2],[1,2]]]]},
   {name:"MUITO DIFÍCIL",pieces:[["T",[[0,0],[1,0],[2,0],[1,1]]],["T",[[0,0],[1,0],[2,0],[1,1]]],["T",[[0,0],[1,0],[2,0],[1,1]]],["T",[[0,0],[1,0],[2,0],[1,1]]]]},
-  {name:"EXTREMA",pieces:[["L",[[0,0],[0,1],[0,2],[1,2]]],["T",[[0,0],[1,0],[2,0],[1,1]]],["S",[[1,0],[2,0],[0,1],[1,1]]],["J",[[1,0],[1,1],[0,2],[1,2]]]]}
+  {name:"EXTREMA",pieces:[["I",[[0,0],[1,0],[2,0],[3,0]]],["L",[[0,0],[0,1],[0,2],[1,2]]],["S",[[1,0],[2,0],[0,1],[1,1]]],["J",[[1,0],[1,1],[0,2],[1,2]]]]}
  ];
  let level=1,parts=[],drag=null,solved=false,selectedId=null;
  const done=()=>{try{return JSON.parse(localStorage.getItem(store)||"[]")}catch(e){return []}};
@@ -15,6 +15,7 @@
  const normalize=c=>{let minX=Math.min(...c.map(p=>p[0])),minY=Math.min(...c.map(p=>p[1]));return c.map(([x,y])=>[x-minX,y-minY])};
  function shapeMarkup(c){let w=Math.max(...c.map(p=>p[0]))+1,h=Math.max(...c.map(p=>p[1]))+1;return '<div class="eg-poly" style="--w:'+w+';--h:'+h+'">'+c.map(([x,y])=>'<i style="grid-column:'+(x+1)+';grid-row:'+(y+1)+'"></i>').join("")+'</div>'}
  function pieceEl(p){let b=document.createElement("button");b.type="button";b.className="eg-piece"+(p.placed?" placed":"")+(selectedId===p.id?" selected":"");b.dataset.id=p.id;b.innerHTML=shapeMarkup(p.cells);let w=Math.max(...p.cells.map(c=>c[0]))+1,h=Math.max(...p.cells.map(c=>c[1]))+1;b.style.width=(p.placed?w*CELL:70)+"%";b.style.height=(p.placed?h*CELL:70)+"%";if(!p.placed){b.style.width="70px";b.style.height="70px"}b.style.left=p.placed?(p.x*CELL)+"%":"";b.style.top=p.placed?(p.y*CELL)+"%":"";b.addEventListener("pointerdown",e=>begin(e,p,b));p.el=b;return b}
+ function updateCounter(){let count=parts.filter(p=>p.placed).length;$("egCounter").textContent=count+" / "+parts.length+" PEÇAS NO QUADRADO"}
  function render(){let board=$("egBoard"),tray=$("egTray");board.innerHTML="";tray.innerHTML="";board.style.setProperty("--eg-size",N);parts.forEach(p=>(p.placed?board:tray).appendChild(pieceEl(p)));updateCounter()}
  function start(n){level=n;solved=false;drag=null;parts=layouts[n-1].pieces.map((p,id)=>({id,type:p[0],cells:p[1].map(c=>c.slice()),x:0,y:0,placed:false}));$("egLevelTag").textContent="FASE "+n+" DE 5";$("egDifficulty").textContent=layouts[n-1].name;$("egInstruction").textContent="Preencha o quadrado inteiro com todas as peças. Arraste, gire e encaixe; não pode haver espaços vazios nem peças sobrepostas.";$("egWin").classList.remove("show");$("egNext").disabled=true;$("egNext").textContent="PRÓXIMA FASE →";$("egStatus").textContent="O quadrado está vazio: descubra como combinar as peças."; $("levelPill").textContent="ENCAIXE GEOMÉTRICO · FASE "+n;show("egGame");render()}
  function phases(){$("levelPill").textContent="ENCAIXE GEOMÉTRICO";let list=$("egPhaseList");list.innerHTML="";layouts.forEach((c,i)=>{let b=document.createElement("button");b.className="eg-phase"+(done().includes(i+1)?" done":"");b.innerHTML=(i+1)+"<small>"+c.name+"</small>";b.onclick=()=>start(i+1);list.appendChild(b)});show("egPhases")}
