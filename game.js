@@ -16,18 +16,27 @@ function goHome(){if(advanceTimer)clearTimeout(advanceTimer);show("home");$("lev
 function showPhases(){
  if(advanceTimer)clearTimeout(advanceTimer);
  $("levelPill").textContent="ACHE O DIFERENTE";
- document.querySelector(".phase-head .tag").textContent="50 FASES";
+ document.querySelector(".phase-head .tag").textContent="100 FASES";
  document.querySelector("#phases .card h2").textContent="Escolha uma fase";
- document.querySelector("#phases .card .desc").textContent="50 fases com pares de letras e números visualmente parecidos. O quadro cresce gradualmente de 10×10 até 18×18.";
- const list=$("phaseList");list.innerHTML="";const completed=completedPhases();
- for(let i=1;i<=TOTAL_PHASES;i++){
-  const b=document.createElement("button");b.className="phase-btn"+(completed.includes(i)?" done":"");b.textContent=String(i).padStart(3,"0");
-  b.setAttribute("aria-label","Abrir fase "+i);b.addEventListener("click",()=>startPhase(i));list.appendChild(b);
+ document.querySelector("#phases .card .desc").textContent="Fases 1 a 50: caracteres. Fases 51 a 100: desenhos. As duas modalidades ficam juntas nesta lista.";
+ const list=$("phaseList");list.innerHTML="";
+ const completed=completedPhases();
+ let visualDone=[];try{const v=JSON.parse(localStorage.getItem("ache_desenho_diferente_completed")||"[]");visualDone=Array.isArray(v)?v:[]}catch(e){}
+ for(let i=1;i<=100;i++){
+  const isVisual=i>50,sub=isVisual?i-50:i;
+  const done=isVisual?visualDone.includes(sub):completed.includes(sub);
+  const b=document.createElement("button");b.className="phase-btn"+(done?" done":"")+(isVisual?" visual-phase":"");
+  b.textContent=String(i).padStart(3,"0");
+  b.title=isVisual?"Fase "+i+" · Desenhos":"Fase "+i+" · Caracteres";
+  b.setAttribute("aria-label",b.title);b.addEventListener("click",()=>startPhase(i));list.appendChild(b);
  }
  show("phases");
 }
 function difficultyFor(n){if(n<=20)return "ATENÇÃO";if(n<=40)return "OBSERVAÇÃO";if(n<=60)return "DESAFIADOR";if(n<=80)return "DIFÍCIL";return "EXTREMO"}
-function startPhase(n){level=Math.max(1,Math.min(TOTAL_PHASES,n));score=0;lives=3;best=readNumber(storageKey("best"),0);$("levelPill").textContent="FASE "+level;show("game");newBoard()}
+function startPhase(n){
+ if(n>50){if(typeof window.startVisualPhase==="function"){window.startVisualPhase(n-50);return}console.error("Modalidade de desenhos não carregada.");return}
+ level=Math.max(1,Math.min(TOTAL_PHASES,n));score=0;lives=3;best=readNumber(storageKey("best"),0);$("levelPill").textContent="FASE "+level;show("game");newBoard()
+}
 function updateStats(){
  $("score").textContent=score;$("lives").textContent="❤️".repeat(lives)+"🖤".repeat(3-lives);$("best").textContent=best;
  $("levelPill").textContent="ACHE O DIFERENTE · FASE "+level;$("bar").style.width=(level/TOTAL_PHASES*100)+"%";
