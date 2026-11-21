@@ -66,6 +66,55 @@ jobs:
             balancas-novas/*.jpg
             balancas-novas/*.csv
           retention-days: 14
+      - name: Package 32 validated balance puzzles for offline gameplay
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p balancas android/app/src/main/assets/balancas
+          files=(
+            IMG-20261121-WA1629.jpg
+            IMG-20261121-WA0053.jpg
+            IMG-20261121-WA2151.jpg
+            IMG-20261121-WA6420.jpg
+            IMG-20261121-WA4390.jpg
+            IMG-20261121-WA5807.jpg
+            IMG-20261121-WA8959.jpg
+            IMG-20261121-WA5479.jpg
+            IMG-20261121-WA8817.jpg
+            IMG-20261121-WA1361.jpg
+            IMG-20261121-WA5063.jpg
+            IMG-20261121-WA8137.jpg
+            IMG-20261121-WA4204.jpg
+            IMG-20261121-WA6608.jpg
+            IMG-20261121-WA3671.jpg
+            IMG-20261121-WA3991.jpg
+            IMG-20261121-WA8421.jpg
+            IMG-20261121-WA9428.jpg
+            IMG-20261121-WA6259.jpg
+            IMG-20261121-WA6983.jpg
+            IMG-20261121-WA7734.jpg
+            IMG-20261121-WA1455.jpg
+            IMG-20261121-WA1636.jpg
+            IMG-20261121-WA1698.jpg
+            IMG-20261121-WA2387.jpg
+            IMG-20261121-WA2818.jpg
+            IMG-20261121-WA7085.jpg
+            IMG-20261121-WA7843.jpg
+            IMG-20261121-WA0925.jpg
+            IMG-20261121-WA2049.jpg
+            IMG-20261121-WA4633.jpg
+            IMG-20261121-WA8786.jpg
+          )
+          i=1
+          for file in "${files[@]}"; do
+            test -s "balancas-novas/$file"
+            printf -v target 'desafio-%02d.jpg' "$i"
+            cp "balancas-novas/$file" "balancas/$target"
+            cp "balancas-novas/$file" "android/app/src/main/assets/balancas/$target"
+            i=$((i+1))
+          done
+          test "$(find balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 32
+          test "$(find android/app/src/main/assets/balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 32
       - name: Build debug APK
         working-directory: android
         run: gradle --no-daemon assembleDebug
