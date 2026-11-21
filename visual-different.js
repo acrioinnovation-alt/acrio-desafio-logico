@@ -32,20 +32,20 @@ const drawings=[
  (v)=>svg('<path d="M13 43 Q6 42 7 33 Q8 24 19 24 Q22 10 36 12 Q48 13 49 27 Q58 27 57 37 Q56 44 48 44Z"/>'+(v===0?'<path d="M20 49 Q17 53 20 57"/>':v===1?'<path d="M32 49 Q29 53 32 57"/>':v===2?'<path d="M44 49 Q41 53 44 57"/>':v===3?'<path d="M25 19 Q29 16 33 19"/>':'<path d="M38 20 Q42 18 45 21"/>'))
 ];
 const familyNames=["folha","flor","guarda-chuva","engrenagem","balão","peixe","casinha","xícara","borboleta","nuvem"];
-function visualIcon(level,odd){const family=Math.floor((level-1)/5),variant=(level-1)%5;return drawings[family](odd?variant:-1)}
+function visualIcon(level,odd){const family=Math.floor((level-1)/5),variant=(level-1)%5;return drawings[family](odd?variant:99)}
 // A mesma arte-base aparece em quase todo o quadro; a alteração é pequena e localizada.
 function visualDifficulty(n){return n<=10?"ATENÇÃO":n<=20?"OBSERVAÇÃO":n<=30?"DESAFIADOR":n<=40?"DIFÍCIL":"EXTREMO"}
 function visualCompleted(){try{const a=JSON.parse(localStorage.getItem(visualKey("completed"))||"[]");return Array.isArray(a)?a.filter(x=>Number.isInteger(x)&&x>=1&&x<=TOTAL_VISUAL_PHASES):[]}catch(e){return []}}
 function showVisualPhases(){
  if(visualTimer)clearTimeout(visualTimer);
- visual$("visualLevelPill").textContent="ACHE O DESENHO DIFERENTE";
+ visual$("levelPill").textContent="ACHE O DESENHO DIFERENTE";
  visual$("visualPhaseList").innerHTML="";
  const done=visualCompleted();
  for(let i=1;i<=TOTAL_VISUAL_PHASES;i++){const b=document.createElement("button");b.className="phase-btn"+(done.includes(i)?" done":"");b.textContent=String(i).padStart(3,"0");b.setAttribute("aria-label","Abrir fase "+i);b.addEventListener("click",()=>startVisualPhase(i));visual$("visualPhaseList").appendChild(b)}
  show("visualPhases");
 }
-function startVisualPhase(n){visualLevel=Math.max(1,Math.min(TOTAL_VISUAL_PHASES,n));visualScore=0;visualLives=3;visualBest=Number(localStorage.getItem(visualKey("best"))||0)||0;visual$("visualLevelPill").textContent="FASE "+visualLevel;show("visualGame");newVisualBoard()}
-function updateVisualStats(){visual$("visualScore").textContent=visualScore;visual$("visualLives").textContent="❤️".repeat(visualLives)+"🖤".repeat(3-visualLives);visual$("visualBest").textContent=visualBest;visual$("visualLevelPill").textContent="ACHE O DESENHO · FASE "+visualLevel;visual$("visualBar").style.width=(visualLevel/TOTAL_VISUAL_PHASES*100)+"%"}
+function startVisualPhase(n){visualLevel=Math.max(1,Math.min(TOTAL_VISUAL_PHASES,n));visualScore=0;visualLives=3;visualBest=Number(localStorage.getItem(visualKey("best"))||0)||0;visual$("levelPill").textContent="FASE "+visualLevel;show("visualGame");newVisualBoard()}
+function updateVisualStats(){visual$("visualScore").textContent=visualScore;visual$("visualLives").textContent="❤️".repeat(visualLives)+"🖤".repeat(3-visualLives);visual$("visualBest").textContent=visualBest;visual$("levelPill").textContent="ACHE O DESENHO · FASE "+visualLevel;visual$("visualBar").style.width=(visualLevel/TOTAL_VISUAL_PHASES*100)+"%"}
 function newVisualBoard(){
  if(visualTimer)clearTimeout(visualTimer);if(visualLives<=0)return endVisualGame();visualLocked=false;
  const n=visualSizeForLevel(visualLevel),total=n*n;visualOdd=Math.floor(Math.random()*total);
@@ -63,8 +63,8 @@ function chooseVisual(i,button){
  visualTimer=setTimeout(()=>{if(visualLevel>=TOTAL_VISUAL_PHASES)endVisualCategory();else{visualLevel++;newVisualBoard()}},700);
  }else{visualLives--;button.classList.add("wrong");button.disabled=true;visual$("visualFeedback").className="feedback show bad";visual$("visualFeedback").textContent=visualLives>0?"Não é esse! Observe os pequenos detalhes e tente novamente.":"Suas vidas acabaram.";updateVisualStats();if(visualLives<=0){visualLocked=true;visualTimer=setTimeout(endVisualGame,850)}}
 }
-function endVisualGame(){show("visualFinish");visual$("visualFinishText").textContent="Você chegou à fase "+visualLevel+" de 50. Seu progresso continua salvo.";visual$("visualFinalScore").textContent=visualScore+" pontos · Recorde: "+visualBest;visual$("visualLevelPill").textContent="FIM DE JOGO"}
-function endVisualCategory(){show("visualFinish");visual$("visualFinishText").textContent="Você completou as 50 fases de Ache o Desenho Diferente!";visual$("visualFinalScore").textContent=visualScore+" pontos · Recorde: "+visualBest;visual$("visualLevelPill").textContent="DESAFIOS CONCLUÍDOS"}
+function endVisualGame(){show("visualFinish");visual$("visualFinishText").textContent="Você chegou à fase "+visualLevel+" de 50. Seu progresso continua salvo.";visual$("visualFinalScore").textContent=visualScore+" pontos · Recorde: "+visualBest;visual$("levelPill").textContent="FIM DE JOGO"}
+function endVisualCategory(){show("visualFinish");visual$("visualFinishText").textContent="Você completou as 50 fases de Ache o Desenho Diferente!";visual$("visualFinalScore").textContent=visualScore+" pontos · Recorde: "+visualBest;visual$("levelPill").textContent="DESAFIOS CONCLUÍDOS"}
 function restartVisual(){startVisualPhase(visualLevel)}
 window.showVisualPhases=showVisualPhases;window.startVisualPhase=startVisualPhase;window.newVisualBoard=newVisualBoard;window.restartVisual=restartVisual;
 })();
