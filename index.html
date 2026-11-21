@@ -104,6 +104,7 @@ body{background:radial-gradient(ellipse at 50% -12%,#315b88 0,#122944 38%,#07142
 <div class="category-grid">
 <button class="category" onclick="showPhases()"><div class="symbol">◉</div><strong>ACHE O DIFERENTE</strong><span>50 fases · Encontre o caractere diferente</span></button>
 <button class="category" onclick="showBalancePhases()"><div class="symbol">⚖</div><strong>DESAFIO DAS BALANÇAS</strong><span>32 fases · Descubra o peso correto</span></button>\n<button class="category" onclick="showMatchPhases()"><div class="symbol">〽</div><strong>DESAFIO DOS PALITOS</strong><span>50 fases · Mova um palito e resolva a conta</span></button>
+<button class="category" onclick="showSwitchPhases()"><div class="symbol">💡</div><strong>INTERRUPTORES</strong><span>3 fases de teste · Acenda todas as lâmpadas com tentativas limitadas</span></button>
 
 </div></div>
 <p class="foot">Jogo offline • Progresso salvo neste aparelho</p>
@@ -162,5 +163,23 @@ body{background:radial-gradient(ellipse at 50% -12%,#315b88 0,#122944 38%,#07142
 
 </section>
 \n
+<section id="switchPhases" class="screen">
+<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">3 FASES DE TESTE</span></div>
+<div class="card"><h2>Interruptores</h2><p class="desc">Acione os interruptores e descubra como eles afetam as lâmpadas. Acenda todas antes que suas tentativas acabem.</p><div class="phase-list" id="switchPhaseList"></div></div>
+<p class="foot">Modalidade interativa · Progresso salvo neste aparelho.</p>
+</section>
+<section id="switchGame" class="screen">
+<div class="stats"><div class="stat"><b id="switchMoves">0</b><span>Tentativas usadas</span></div><div class="stat"><b id="switchRemaining">2</b><span>Restantes</span></div><div class="stat"><b id="switchLit">0/2</b><span>Lâmpadas acesas</span></div></div>
+<div class="progress"><i id="switchBar"></i></div>
+<div class="card">
+<div class="tagrow"><span class="tag" id="switchLevelTag">FASE 1 · INTERRUPTORES</span><span class="difficulty" id="switchDifficulty">FÁCIL</span></div>
+<p class="instruction" id="switchInstruction">Acenda todas as lâmpadas usando no máximo 2 tentativas.</p>
+<div class="switch-lamps" id="switchLamps" aria-label="Lâmpadas"></div>
+<div class="switch-controls" id="switchControls" aria-label="Interruptores"></div>
+<div id="switchFeedback" class="feedback" aria-live="polite"></div>
+<div class="match-actions"><button class="btn secondary" onclick="resetSwitchLevel()">RECOMEÇAR ↻</button><button class="btn secondary" onclick="showSwitchPhases()">FASES</button><button class="btn secondary" onclick="goHome()">MENU</button></div>
+</div>
+<p class="foot">Cada toque conta como uma tentativa. Observe quais lâmpadas mudam e encontre a combinação.</p>
+</section>
 <section id="finish" class="screen"><div class="hero"><div class="mark">★</div><h1>DESAFIOS CONCLUÍDOS!</h1><p id="finishText">Você completou os 50 desafios.</p></div><div class="card"><h2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
-</main><script src="game.js"></script><script src="matchsticks.js"></script><script src="balance.js"></script></body></html>
+</main><script src="game.js"></script><script src="matchsticks.js"></script><script src="balance.js"></script><script src="switches.js"></script></body></html>
