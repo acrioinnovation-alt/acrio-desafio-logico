@@ -73,7 +73,7 @@
   tray.style.setProperty("--eg-cell",cell+"px");
   tray.style.gridTemplateColumns="repeat(3,"+cell+"px)";
   tray.style.gridAutoRows=cell+"px";
-  tray.style.width=(cell*3)+"px";
+  tray.style.width=(cell*3+14)+"px";
   parts.forEach(p=>(p.placed?board:tray).appendChild(pieceEl(p)));
   updateCounter();
  }
