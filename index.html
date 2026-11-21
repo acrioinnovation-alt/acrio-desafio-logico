@@ -160,7 +160,7 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 
 
 .square-board{width:100%;max-width:430px;margin:10px auto;padding:8px;border:1px solid #dce5ef;border-radius:17px;background:linear-gradient(145deg,#fbfdff,#edf3fa);touch-action:manipulation}.square-board svg{display:block;width:100%;height:auto}.square-board .square-hit{stroke:transparent;stroke-width:24;stroke-linecap:round;cursor:pointer}.square-board .square-stick{stroke:#c58a50;stroke-width:9;stroke-linecap:round;filter:drop-shadow(0 2px 1px #7d522b55);pointer-events:none}.square-board .square-head{fill:#d94b45;stroke:#a92d2a;stroke-width:1;pointer-events:none}.square-board .square-node{fill:#9bb1c8;opacity:.45;pointer-events:none}.square-board .square-selected{stroke:#e2a12d;stroke-width:13;filter:drop-shadow(0 0 4px #e2a12d99)}
-</style>
+.visual-cell{padding:2px;display:grid;place-items:center}.visual-cell svg{display:block;width:100%;height:100%;max-width:32px;max-height:32px;overflow:visible}.visual-cell.correct svg{filter:drop-shadow(0 0 3px #ffd166)}</style>
 </head>
 <body><main class="app">
 <header class="top"><div class="brand">ACRIO GAMES</div><div class="pill" id="levelPill">MENU PRINCIPAL</div></header>
@@ -169,6 +169,7 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 <div class="card"><h2>Escolha seu desafio</h2>
 <div class="category-grid">
 <button class="category" onclick="showPhases()"><div class="symbol">◉</div><strong>ACHE O DIFERENTE</strong><span>50 fases · Encontre o caractere diferente</span></button>
+<button class="category" onclick="showVisualPhases()"><div class="symbol">✿</div><strong>ACHE O DESENHO DIFERENTE</strong><span>50 fases · Encontre o desenho com um detalhe diferente</span></button>
 <button class="category" onclick="showBalancePhases()"><div class="symbol">⚖</div><strong>DESAFIO DAS BALANÇAS</strong><span>32 fases · Descubra o peso correto</span></button>\n<button class="category" onclick="showMatchModes()"><div class="symbol">〽</div><strong>DESAFIO DOS PALITOS</strong><span>100 fases · Equações e desafios de quadrados</span></button>
 
 
@@ -260,5 +261,22 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 </div>
 </section>
 \n
+<section id="visualPhases" class="screen">
+<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">50 FASES</span></div>
+<div class="card"><h2>Escolha uma fase</h2><p class="desc">50 fases com desenhos muito parecidos e diferenças sutis. O quadro cresce de 10×10 até 18×18, seguindo o mesmo padrão da modalidade de caracteres.</p><div class="phase-list" id="visualPhaseList"></div></div>
+<p class="foot">Seu progresso fica salvo separadamente da modalidade de letras e números.</p>
+</section>
+<section id="visualGame" class="screen">
+<div class="stats"><div class="stat"><b id="visualScore">0</b><span>Pontos</span></div><div class="stat"><b id="visualLives">❤️❤️❤️</b><span>Vidas</span></div><div class="stat"><b id="visualBest">0</b><span>Recorde</span></div></div>
+<div class="progress"><i id="visualBar"></i></div>
+<div class="card"><div class="tagrow"><span class="tag" id="visualLevelTag">FASE 1 · 10×10</span><span class="difficulty" id="visualDifficulty">ATENÇÃO</span></div>
+<p class="instruction">Toque no único desenho que tem um pequeno detalhe diferente</p>
+<div class="grid-wrap"><div class="game-grid" id="visualGrid" aria-label="Quadro de desenhos"></div></div>
+<div class="grid-footer"><span id="visualGridSize">100 imagens</span><span>1 desenho diferente escondido</span></div>
+<div id="visualFeedback" class="feedback" aria-live="polite"></div>
+<div class="nav"><button class="btn secondary" onclick="showVisualPhases()">FASES</button><button class="btn secondary" onclick="newVisualBoard()">NOVO QUADRO ↻</button></div>
+</div><p class="foot">Observe os pequenos detalhes: curvas, linhas, pontas e formatos.</p>
+</section>
+<section id="visualFinish" class="screen"><div class="hero"><div class="mark">✿</div><h1>DESAFIO CONCLUÍDO!</h1><p id="visualFinishText">Você completou as 50 fases.</p></div><div class="card"><h2 id="visualFinalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showVisualPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
 <section id="finish" class="screen"><div class="hero"><div class="mark">★</div><h1>DESAFIOS CONCLUÍDOS!</h1><p id="finishText">Você completou os 50 desafios.</p></div><div class="card"><h2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
-</main><script src="game.js"></script><script src="matchsticks.js"></script><script src="squares.js"></script><script src="balance.js"></script></body></html>
+</main><script src="game.js"></script><script src="visual-different.js"></script><script src="matchsticks.js"></script><script src="squares.js"></script><script src="balance.js"></script></body></html>
