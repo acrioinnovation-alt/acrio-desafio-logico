@@ -207,6 +207,18 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 .eg-tray .eg-piece{position:relative;left:auto!important;top:auto!important;flex:none;filter:none;background:transparent!important;border:0!important;box-shadow:none!important}
 .eg-tray .eg-piece svg{max-width:76px;max-height:76px}.eg-playfield{display:flex;flex-direction:column;gap:10px}.eg-tray{width:100%}
 .square-node{display:none!important}
+
+/* Encaixe Geométrico — tabuleiro e bandeja na mesma escala física */
+.eg-playfield{display:flex!important;flex-direction:column!important;align-items:center;gap:8px;margin:8px 0}
+.eg-playfield .eg-board{width:min(66%,260px)!important;max-width:260px!important;margin:8px auto!important;flex:none;overflow:hidden!important;touch-action:none}
+.eg-playfield .eg-tray{display:grid!important;grid-template-columns:repeat(3,var(--eg-cell))!important;grid-auto-rows:var(--eg-cell)!important;grid-auto-flow:row dense;gap:2px!important;align-content:start;justify-content:center;align-items:stretch;width:auto;max-width:100%;min-height:0;height:auto;max-height:none;overflow:visible!important;overscroll-behavior:auto;padding:4px!important;border:1px solid #d7b88e;border-radius:12px;background:linear-gradient(145deg,#fbf4e9,#eee0ca)}
+.eg-playfield .eg-tray .eg-piece{position:relative!important;left:auto!important;top:auto!important;transform:none!important;flex:none!important;max-width:none!important;max-height:none!important;min-width:0;min-height:0;padding:0!important;margin:0!important;box-sizing:border-box}
+.eg-playfield .eg-board .eg-piece{position:absolute}
+.eg-piece.selected{outline:2px solid #bd873d;outline-offset:2px;filter:none}
+.eg-piece.dragging{z-index:1000!important;opacity:.98;filter:drop-shadow(0 4px 5px #40240d66);pointer-events:none}
+.eg-playfield .eg-status{width:100%;text-align:center}
+@media(max-width:380px){.eg-playfield .eg-board{width:min(66%,260px)!important}.eg-playfield .eg-tray{gap:2px!important}}
+
 </style>
 </head>
 <body><main class="app">
