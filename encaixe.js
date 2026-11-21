@@ -3,6 +3,9 @@
  "use strict";
  const $=id=>document.getElementById(id);
  const STORE="acrio_encaixe_completed";
+ const style=document.createElement("style");
+ style.textContent="#egTray .eg-piece svg{max-width:none!important;max-height:none!important}#egTray .eg-piece{box-sizing:content-box!important;outline:none!important}#egTray .eg-piece.selected,.eg-board .eg-piece.selected{outline:none!important;outline-offset:0!important;border:0!important;border-radius:0!important}";
+ document.head.appendChild(style);
  const levels=[
   {name:"FÁCIL",pieces:[
    [[0,0],[100,0],[100,50],[50,50]],
@@ -61,19 +64,23 @@
    b.style.left=p.x+"%";b.style.top=p.y+"%";b.style.width=d.w+"%";b.style.height=d.h+"%";
   }else{
    b.style.width=(d.w*u)+"px";b.style.height=(d.h*u)+"px";
-   b.style.gridColumn="span "+Math.max(1,Math.round(d.w/50));
-   b.style.gridRow="span "+Math.max(1,Math.round(d.h/50));
+   b.style.flex="0 0 auto";
   }
   b.addEventListener("pointerdown",e=>begin(e,p,b));p.el=b;return b;
  }
  function updateCounter(){const count=parts.filter(p=>p.placed).length;$("egCounter").textContent=count+" / "+parts.length+" PEÇAS NO QUADRADO"}
  function render(){
   const board=$("egBoard"),tray=$("egTray");board.innerHTML="";tray.innerHTML="";
-  const cell=unit()*50;
-  tray.style.setProperty("--eg-cell",cell+"px");
-  tray.style.gridTemplateColumns="repeat(3,"+cell+"px)";
-  tray.style.gridAutoRows=cell+"px";
-  tray.style.width=(cell*3+14)+"px";
+  tray.style.display="flex";
+  tray.style.flexDirection="row";
+  tray.style.flexWrap="wrap";
+  tray.style.alignItems="center";
+  tray.style.justifyContent="center";
+  tray.style.gap="8px";
+  tray.style.width="100%";
+  tray.style.height="auto";
+  tray.style.maxHeight="none";
+  tray.style.minHeight="0";
   parts.forEach(p=>(p.placed?board:tray).appendChild(pieceEl(p)));
   updateCounter();
  }
