@@ -44,6 +44,7 @@
       .switch-lamps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:stretch;justify-items:stretch;padding:10px;margin:0 0 12px;background:#f7faff;border:1px solid #dbe6f1;border-radius:16px;min-height:0}
       .switch-bulb-choice{min-width:0;min-height:78px;border:1px solid #d4e0ec;border-radius:13px;background:#fff;color:#29445f;padding:8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-weight:900;cursor:pointer}
       .switch-bulb-icon{font-size:34px;line-height:1;filter:grayscale(1) opacity(.55)}
+      .switch-bulb-choice.assigned .switch-bulb-icon{filter:none;text-shadow:0 0 12px #f5d66a}
       .switch-bulb-choice.selected{border:2px solid #3985c4;background:#eaf5ff;box-shadow:0 0 0 2px #3985c422}
       .switch-bulb-choice.assigned{background:#e8f7f0;border-color:#9bd6bc;color:#17664d}
       .switch-bulb-choice:disabled{cursor:default;opacity:1}
@@ -108,7 +109,8 @@
       b.type = "button";
       b.className = "switch-bulb-choice" + (selectedBulb === i ? " selected" : "") + (used ? " assigned" : "");
       b.disabled = locked || used;
-      b.innerHTML = '<span class="switch-bulb-icon">' + (used ? "💡" : "💡") + '</span><span>LÂMPADA ' + i + '</span>' + (used ? "<small>ASSOCIADA</small>" : "");
+      const mappedBy = Object.keys(assignments).find(key => assignments[key] === i);
+      b.innerHTML = '<span class="switch-bulb-icon">💡</span><span>LÂMPADA ' + i + '</span>' + (used ? '<small>INTERRUPTOR ' + mappedBy + '</small>' : "");
       b.onclick = () => { selectedBulb = i; render(); };
       lamps.appendChild(b);
     }
@@ -121,7 +123,7 @@
       b.type = "button";
       b.className = "switch-control" + (selectedSwitch === i ? " selected" : "") + (used ? " assigned" : "");
       b.disabled = locked || used;
-      b.innerHTML = '<span class="switch-lever" aria-hidden="true"></span><span><b>INTERRUPTOR ' + i + '</b><small>' + (used ? "LIGAÇÃO DEFINIDA" : "TOQUE PARA SELECIONAR") + '</small></span>';
+      b.innerHTML = '<span class="switch-lever" aria-hidden="true"></span><span><b>INTERRUPTOR ' + i + '</b><small>' + (used ? "LÂMPADA " + assignments[i] : "TOQUE PARA SELECIONAR") + '</small></span>';
       b.onclick = () => { selectedSwitch = i; render(); };
       controls.appendChild(b);
     }
