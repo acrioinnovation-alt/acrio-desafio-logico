@@ -53,6 +53,45 @@ jobs:
           name: Balance-Images
           path: balancas/*.jpg
           retention-days: 14
+      - name: Download today's 40 balance images from Dropbox for inspection
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p balancas-novas
+          curl --retry 3 --retry-all-errors --max-time 180 -fLsS 'https://www.dropbox.com/scl/fo/fcb3dat2zcjiw8rmipfqj/AFFO4GI2JyUDIUuSOPYwPys?rlkey=ug92c9s9xzi4vmvacav1tlyww&dl=1' -o /tmp/balancas-40.zip
+          unzip -t /tmp/balancas-40.zip
+          unzip -jo /tmp/balancas-40.zip '*.jpg' -d balancas-novas
+          test "$(find balancas-novas -maxdepth 1 -type f -iname '*.jpg' | wc -l)" -eq 40
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from PIL import Image, ImageOps, ImageDraw
+          from pathlib import Path
+          import csv
+          files=sorted(Path("balancas-novas").glob("*.jpg"))
+          rows=[]
+          thumbs=[]
+          for p in files:
+              im=Image.open(p)
+              rows.append((p.name, im.width, im.height, im.mode, p.stat().st_size))
+              im.thumbnail((300,210))
+              tile=Image.new("RGB",(320,250),"white")
+              tile.paste(im,((320-im.width)//2,5))
+              ImageDraw.Draw(tile).text((8,222),f"{p.name} | {rows[-1][1]}x{rows[-1][2]}",fill="black")
+              thumbs.append(tile)
+          with open("balancas-novas/relatorio-resolucao.csv","w",newline="",encoding="utf-8") as f:
+              w=csv.writer(f); w.writerow(["arquivo","largura","altura","modo","bytes"]); w.writerows(rows)
+          sheet=Image.new("RGB",(320*5,250*8),"#dddddd")
+          for i,tile in enumerate(thumbs): sheet.paste(tile,((i%5)*320,(i//5)*250))
+          sheet.save("balancas-novas/contato-40.jpg",quality=90)
+          PY
+      - name: Upload today's 40 images and visual contact sheet
+        uses: actions/upload-artifact@v4
+        with:
+          name: Balance-Images-40-Nov-21
+          path: |
+            balancas-novas/*.jpg
+            balancas-novas/*.csv
+          retention-days: 14
       - name: Build debug APK
         working-directory: android
         run: gradle --no-daemon assembleDebug
