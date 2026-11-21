@@ -115,6 +115,36 @@ jobs:
           done
           test "$(find balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 32
           test "$(find android/app/src/main/assets/balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 32
+      - name: Restore the 10 original balance puzzles without replacing the 32 new ones
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p balancas-antigas balancas android/app/src/main/assets/balancas
+          curl --retry 3 --retry-all-errors --max-time 180 -fLsS 'https://www.dropbox.com/scl/fo/xn2lmolz4fbdyle8u67il/AAev7fQWfeI_OTlPysjKTrk?rlkey=bhhk9q0y1qzpm80k4lvzxgd26&st=k6egz5ga&dl=1' -o /tmp/balancas-originais.zip
+          unzip -t /tmp/balancas-originais.zip
+          unzip -jo /tmp/balancas-originais.zip '*.jpg' -d balancas-antigas
+          old_files=(
+            IMG-20261120-WA9535.jpg
+            IMG-20261120-WA4075.jpg
+            IMG-20261120-WA3868.jpg
+            IMG-20261120-WA4794.jpg
+            IMG-20261120-WA7909.jpg
+            IMG-20261120-WA1893.jpg
+            IMG-20261120-WA7674.jpg
+            IMG-20261120-WA2840.jpg
+            IMG-20261120-WA9530.jpg
+            IMG-20261120-WA6148.jpg
+          )
+          i=33
+          for file in "${old_files[@]}"; do
+            test -s "balancas-antigas/$file"
+            printf -v target 'desafio-%02d.jpg' "$i"
+            cp "balancas-antigas/$file" "balancas/$target"
+            cp "balancas-antigas/$file" "android/app/src/main/assets/balancas/$target"
+            i=$((i+1))
+          done
+          test "$(find balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 42
+          test "$(find android/app/src/main/assets/balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 42
       - name: Build debug APK
         working-directory: android
         run: gradle --no-daemon assembleDebug
