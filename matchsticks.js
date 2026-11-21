@@ -44,8 +44,9 @@
  let phase=1,score=0,best=Number(localStorage.getItem("palitos_best")||0),selected=null,board=[],locked=false;
  const completed=()=>{try{return JSON.parse(localStorage.getItem("palitos_completed")||"[]")}catch(e){return []}};
  function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active")}
+ window.showMatchModes=()=>{ $("levelPill").textContent="DESAFIO DOS PALITOS"; showScreen("matchModes"); };
  window.showMatchPhases=()=>{
-  $("levelPill").textContent="DESAFIO DOS PALITOS";
+  $("levelPill").textContent="CORRIJA A EQUAÇÃO";
   const done=completed(),list=$("matchPhaseList");list.innerHTML="";
   for(let i=1;i<=50;i++){const b=document.createElement("button");b.className="phase-btn"+(done.includes(i)?" done":"");b.textContent=String(i).padStart(2,"0");b.onclick=()=>startMatch(i);list.appendChild(b)}
   showScreen("matchPhases");
