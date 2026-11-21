@@ -185,6 +185,30 @@ jobs:
             balancas-adicionais/*.jpg
             balancas-adicionais/*.csv
           retention-days: 14
+      - name: Add the 8 additional balance puzzles without replacing the 42 existing ones
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(
+            IMG-20261121-WA1908.jpg
+            IMG-20261121-WA2983.jpg
+            IMG-20261121-WA3975.jpg
+            IMG-20261121-WA4404.jpg
+            IMG-20261121-WA4877.jpg
+            IMG-20261121-WA7769.jpg
+            IMG-20261121-WA9291.jpg
+            IMG-20261121-WA9898.jpg
+          )
+          i=43
+          for file in "${files[@]}"; do
+            test -s "balancas-adicionais/$file"
+            printf -v target 'desafio-%02d.jpg' "$i"
+            cp "balancas-adicionais/$file" "balancas/$target"
+            cp "balancas-adicionais/$file" "android/app/src/main/assets/balancas/$target"
+            i=$((i+1))
+          done
+          test "$(find balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 50
+          test "$(find android/app/src/main/assets/balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 50
       - name: Build debug APK
         working-directory: android
         run: gradle --no-daemon assembleDebug
