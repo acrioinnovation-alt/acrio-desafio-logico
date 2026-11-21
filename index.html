@@ -58,12 +58,16 @@
 .balance-animal-chip>span{font-size:10px;font-weight:850;color:#dbeaff}
 .balance-animals{display:flex;justify-content:space-evenly;gap:8px;margin:12px 0 4px;padding:10px;background:#10223b;border:1px solid #345477;border-radius:15px}
 .balance-question{margin:13px 0 9px;text-align:center;padding:13px 10px;border-radius:14px;background:linear-gradient(100deg,#ffdc8b,#ffc75e);color:#53350a;font-size:17px;font-weight:1000;box-shadow:0 4px 0 #d49a38}
-.balance-answers{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
-.balance-option{min-height:54px;border:1px solid #54759b;border-radius:13px;background:linear-gradient(145deg,#25496e,#193653);color:#fff;font-size:16px;font-weight:950;box-shadow:0 4px 0 #0b1d31}
-.balance-option:active{transform:translateY(2px);box-shadow:0 2px 0 #0b1d31}
-.balance-option:disabled{opacity:.8}
-.balance-option.correct{background:linear-gradient(145deg,#1a8a69,#12634f);border-color:#65e2b7}
-.balance-option.wrong{background:linear-gradient(145deg,#9d3d58,#69263e);border-color:#ff91a8}
+.balance-answer-display{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px;padding:13px 16px;min-height:58px;border:1px solid #54759b;border-radius:14px;background:#0b1d31;color:#fff}
+.balance-answer-value{font-size:25px;font-weight:1000;letter-spacing:2px;min-width:0;overflow:hidden}
+.balance-answer-value.empty{color:#8fa6c2;font-size:14px;letter-spacing:0}
+.balance-answer-unit{font-size:13px;font-weight:900;color:#9fb8d5}
+.balance-keypad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.balance-key{min-height:52px;border:1px solid #49698e;border-radius:13px;background:linear-gradient(145deg,#294d73,#193653);color:#fff;font-size:20px;font-weight:950;box-shadow:0 4px 0 #0b1d31;touch-action:manipulation}
+.balance-key:active{transform:translateY(2px);box-shadow:0 2px 0 #0b1d31}
+.balance-key.action{font-size:13px;background:linear-gradient(145deg,#344d6d,#203650)}
+.balance-key.confirm{grid-column:1/-1;min-height:53px;background:linear-gradient(100deg,var(--cyan),#8daaff);border:0;color:#091629;font-size:14px}
+.balance-key:disabled{opacity:.45;box-shadow:none;transform:none}
 .balance-tip{font-size:11px;color:var(--muted);line-height:1.5;text-align:center;margin:12px 3px 0}
 @media(max-width:390px){.balance-row{grid-template-columns:22px minmax(0,1fr) 15px 58px;gap:3px;padding:8px 0}.balance-animal{width:56px}.balance-animal img{width:45px;height:45px}.balance-weight{font-size:20px}.balance-answers{gap:7px}.balance-option{font-size:14px}}
 \n@media(max-width:390px){.app{padding-left:9px;padding-right:9px}.grid-wrap{padding:5px}.game-grid{gap:1px}.cell{border-radius:0;background:transparent;border:0}.card{padding:13px}.phase-list{gap:5px}.phase-btn{min-height:39px}.match-board{gap:5px;padding:17px 5px}.match-digit{transform:scale(.9);margin:-4px}}
@@ -149,18 +153,23 @@ body{background:radial-gradient(ellipse at 50% -12%,#315b88 0,#122944 38%,#07142
 <p class="foot">Seu progresso nesta modalidade fica salvo neste aparelho.</p>
 </section>
 <section id="balances" class="screen">
-<div class="stats"><div class="stat"><b id="balanceDone">0/32</b><span>Concluídas</span></div><div class="stat"><b id="balanceBest">0</b><span>Recorde</span></div><div class="stat"><b>4</b><span>Alternativas</span></div></div>
+<div class="stats"><div class="stat"><b id="balanceDone">0/50</b><span>Concluídas</span></div><div class="stat"><b id="balanceBest">0</b><span>Recorde</span></div><div class="stat"><b>0–9</b><span>Teclado próprio</span></div></div>
 <div class="progress"><i id="balanceBar"></i></div>
 <div class="card">
-<div class="tagrow"><span class="tag" id="balanceLevel">FASE 1 DE 32</span><span class="difficulty" id="balanceDifficulty">INICIANTE</span></div>
-
+<div class="tagrow"><span class="tag" id="balanceLevel">FASE 1 DE 50</span><span class="difficulty" id="balanceDifficulty">INICIANTE</span></div>
 <div class="balance-scene"><img id="balancePuzzleImage" class="balance-puzzle-image" src="balancas/desafio-01.jpg" alt="Desafio das balanças"></div>
-<div class="balance-question" id="balanceQuestion">Quanto pesam os três animais juntos?</div>
-<div class="balance-answers" id="balanceAnswers"></div>
+<div class="balance-question" id="balanceQuestion">Qual é a resposta?</div>
+<div class="balance-answer-display" aria-label="Resposta digitada"><span id="balanceAnswerValue" class="balance-answer-value empty">Digite sua resposta</span><span class="balance-answer-unit">kg</span></div>
+<div class="balance-keypad" id="balanceKeypad" aria-label="Teclado numérico">
+<button type="button" class="balance-key" data-key="1">1</button><button type="button" class="balance-key" data-key="2">2</button><button type="button" class="balance-key" data-key="3">3</button>
+<button type="button" class="balance-key" data-key="4">4</button><button type="button" class="balance-key" data-key="5">5</button><button type="button" class="balance-key" data-key="6">6</button>
+<button type="button" class="balance-key" data-key="7">7</button><button type="button" class="balance-key" data-key="8">8</button><button type="button" class="balance-key" data-key="9">9</button>
+<button type="button" class="balance-key action" data-action="clear">LIMPAR</button><button type="button" class="balance-key" data-key="0">0</button><button type="button" class="balance-key action" data-action="backspace">⌫</button>
+<button type="button" class="balance-key confirm" data-action="submit">CONFIRMAR RESPOSTA</button>
+</div>
 <div id="balanceFeedback" class="feedback" aria-live="polite"></div>
 <div class="nav"><button class="btn secondary" onclick="showBalancePhases()">FASES</button><button class="btn secondary" onclick="goHome()">MENU</button></div>
 </div>
-
 </section>
 \n
 <section id="switchPhases" class="screen">
