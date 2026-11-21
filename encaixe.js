@@ -1,32 +1,148 @@
-// Encaixe Geométrico — preencher todo o quadrado usando todas as peças.
+// Encaixe Geométrico — peças poligonais de madeira para preencher uma placa quadrada.
 (()=> {
+ "use strict";
  const $=id=>document.getElementById(id);
- const N=4, CELL=25, store="acrio_encaixe_completed";
- const layouts=[
-  {name:"FÁCIL",pieces:[["I",[[0,0],[1,0],[2,0],[3,0]]],["I",[[0,0],[1,0],[2,0],[3,0]]],["I",[[0,0],[1,0],[2,0],[3,0]]],["I",[[0,0],[1,0],[2,0],[3,0]]]]},
-  {name:"MÉDIA",pieces:[["O",[[0,0],[1,0],[0,1],[1,1]]],["O",[[0,0],[1,0],[0,1],[1,1]]],["O",[[0,0],[1,0],[0,1],[1,1]]],["O",[[0,0],[1,0],[0,1],[1,1]]]]},
-  {name:"DIFÍCIL",pieces:[["L",[[0,0],[0,1],[0,2],[1,2]]],["L",[[0,0],[0,1],[0,2],[1,2]]],["L",[[0,0],[0,1],[0,2],[1,2]]],["L",[[0,0],[0,1],[0,2],[1,2]]]]},
-  {name:"MUITO DIFÍCIL",pieces:[["T",[[0,0],[1,0],[2,0],[1,1]]],["T",[[0,0],[1,0],[2,0],[1,1]]],["T",[[0,0],[1,0],[2,0],[1,1]]],["T",[[0,0],[1,0],[2,0],[1,1]]]]},
-  {name:"EXTREMA",pieces:[["I",[[0,0],[1,0],[2,0],[3,0]]],["L",[[0,0],[0,1],[0,2],[1,2]]],["S",[[1,0],[2,0],[0,1],[1,1]]],["J",[[1,0],[1,1],[0,2],[1,2]]]]}
+ const STORE="acrio_encaixe_completed";
+ const levels=[
+  {name:"FÁCIL",pieces:[
+   [[0,0],[100,0],[100,50],[50,50]],
+   [[50,50],[100,50],[100,100]],
+   [[0,0],[0,50],[50,50]],
+   [[0,50],[0,100],[100,100],[50,50]]
+  ]},
+  {name:"MÉDIA",pieces:[
+   [[0,0],[50,0],[50,100],[0,100]],
+   [[50,0],[100,0],[100,100]],
+   [[50,0],[50,100],[100,100]]
+  ]},
+  {name:"DIFÍCIL",pieces:[
+   [[0,0],[50,0],[50,50],[0,50]],
+   [[0,50],[50,50],[50,100],[0,100]],
+   [[50,0],[100,0],[100,100]],
+   [[50,0],[50,100],[100,100]]
+  ]},
+  {name:"MUITO DIFÍCIL",pieces:[
+   [[0,0],[50,0],[0,50]],
+   [[50,0],[50,50],[0,50]],
+   [[0,50],[50,50],[0,100]],
+   [[50,50],[50,100],[0,100]],
+   [[50,0],[100,0],[100,50],[50,50]],
+   [[50,50],[100,50],[100,100],[50,100]]
+  ]},
+  {name:"EXTREMA",pieces:[
+   [[0,0],[50,0],[0,50]],
+   [[50,0],[50,50],[0,50]],
+   [[50,0],[100,0],[100,50]],
+   [[50,0],[100,50],[50,50]],
+   [[0,50],[50,50],[0,100]],
+   [[50,50],[50,100],[0,100]],
+   [[50,50],[100,50],[100,100]],
+   [[50,50],[100,100],[50,100]]
+  ]}
  ];
  let level=1,parts=[],drag=null,solved=false,selectedId=null;
- const done=()=>{try{return JSON.parse(localStorage.getItem(store)||"[]")}catch(e){return []}};
- const rotate=c=>c.map(([x,y])=>[-y,x]);
- const normalize=c=>{let minX=Math.min(...c.map(p=>p[0])),minY=Math.min(...c.map(p=>p[1]));return c.map(([x,y])=>[x-minX,y-minY])};
- function shapeMarkup(c){let w=Math.max(...c.map(p=>p[0]))+1,h=Math.max(...c.map(p=>p[1]))+1;return '<div class="eg-poly" style="--w:'+w+';--h:'+h+'">'+c.map(([x,y])=>'<i style="grid-column:'+(x+1)+';grid-row:'+(y+1)+'"></i>').join("")+'</div>'}
- function pieceEl(p){let b=document.createElement("button");b.type="button";b.className="eg-piece"+(p.placed?" placed":"")+(selectedId===p.id?" selected":"");b.dataset.id=p.id;b.innerHTML=shapeMarkup(p.cells);let w=Math.max(...p.cells.map(c=>c[0]))+1,h=Math.max(...p.cells.map(c=>c[1]))+1;b.style.width=(p.placed?w*CELL:70)+"%";b.style.height=(p.placed?h*CELL:70)+"%";if(!p.placed){b.style.width="70px";b.style.height="70px"}b.style.left=p.placed?(p.x*CELL)+"%":"";b.style.top=p.placed?(p.y*CELL)+"%":"";b.addEventListener("pointerdown",e=>begin(e,p,b));p.el=b;return b}
- function updateCounter(){let count=parts.filter(p=>p.placed).length;$("egCounter").textContent=count+" / "+parts.length+" PEÇAS NO QUADRADO"}
- function render(){let board=$("egBoard"),tray=$("egTray");board.innerHTML="";tray.innerHTML="";board.style.setProperty("--eg-size",N);parts.forEach(p=>(p.placed?board:tray).appendChild(pieceEl(p)));updateCounter()}
- function start(n){level=n;solved=false;drag=null;selectedId=null;parts=layouts[n-1].pieces.map((p,id)=>({id,type:p[0],cells:p[1].map(c=>c.slice()),x:0,y:0,placed:false}));$("egLevelTag").textContent="FASE "+n+" DE 5";$("egDifficulty").textContent=layouts[n-1].name;$("egInstruction").textContent="Preencha o quadrado inteiro com todas as peças. Arraste, gire e encaixe; não pode haver espaços vazios nem peças sobrepostas.";$("egWin").classList.remove("show");$("egNext").disabled=true;$("egNext").textContent="PRÓXIMA FASE →";$("egStatus").textContent="O quadrado está vazio: descubra como combinar as peças."; $("levelPill").textContent="ENCAIXE GEOMÉTRICO · FASE "+n;show("egGame");render()}
- function phases(){$("levelPill").textContent="ENCAIXE GEOMÉTRICO";let list=$("egPhaseList");list.innerHTML="";layouts.forEach((c,i)=>{let b=document.createElement("button");b.className="eg-phase"+(done().includes(i+1)?" done":"");b.innerHTML=(i+1)+"<small>"+c.name+"</small>";b.onclick=()=>start(i+1);list.appendChild(b)});show("egPhases")}
+ const completed=()=>{try{const v=JSON.parse(localStorage.getItem(STORE)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}};
+ const area=pts=>Math.abs(pts.reduce((s,p,i)=>{const q=pts[(i+1)%pts.length];return s+p[0]*q[1]-q[0]*p[1]},0)/2);
+ const bounds=pts=>({minX:Math.min(...pts.map(p=>p[0])),minY:Math.min(...pts.map(p=>p[1])),maxX:Math.max(...pts.map(p=>p[0])),maxY:Math.max(...pts.map(p=>p[1]))});
+ function normalized(pts){const b=bounds(pts);return pts.map(([x,y])=>[+(x-b.minX).toFixed(3),+(y-b.minY).toFixed(3)])}
+ function dims(p){const b=bounds(p.points);return {w:b.maxX-b.minX,h:b.maxY-b.minY}}
+ function absolute(p){return p.points.map(([x,y])=>[x+p.x,y+p.y])}
+ function polygonMarkup(p){
+  const d=dims(p),points=p.points.map(([x,y])=>x+","+y).join(" ");
+  return '<svg viewBox="0 0 '+d.w+' '+d.h+'" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="wood'+p.id+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0d3a5"/><stop offset=".48" stop-color="#d7aa72"/><stop offset="1" stop-color="#b77d45"/></linearGradient></defs><polygon points="'+points+'" fill="url(#wood'+p.id+')" stroke="#80532e" stroke-width="1.5" stroke-linejoin="round"/></svg>';
+ }
+ function pieceEl(p){
+  const b=document.createElement("button");b.type="button";b.className="eg-piece"+(p.placed?" placed":"")+(selectedId===p.id?" selected":"");b.dataset.id=p.id;b.innerHTML=polygonMarkup(p);
+  const d=dims(p);
+  if(p.placed){b.style.left=p.x+"%";b.style.top=p.y+"%";b.style.width=d.w+"%";b.style.height=d.h+"%"}
+  else {const scale=68/Math.max(d.w,d.h);b.style.width=Math.max(34,d.w*scale)+"px";b.style.height=Math.max(34,d.h*scale)+"px"}
+  b.addEventListener("pointerdown",e=>begin(e,p,b));p.el=b;return b;
+ }
+ function updateCounter(){const count=parts.filter(p=>p.placed).length;$("egCounter").textContent=count+" / "+parts.length+" PEÇAS NO QUADRADO"}
+ function render(){
+  const board=$("egBoard"),tray=$("egTray");board.innerHTML="";tray.innerHTML="";
+  parts.forEach(p=>(p.placed?board:tray).appendChild(pieceEl(p)));
+  updateCounter();
+ }
+ function start(n){
+  level=n;solved=false;drag=null;selectedId=null;
+  parts=levels[n-1].pieces.map((points,id)=>({id,points:normalized(points),x:0,y:0,placed:false,area:area(points)}));
+  // Alterna a ordem para que as peças não apareçam na sequência em que completam o tabuleiro.
+  if(n%2===0)parts.reverse();
+  $("egLevelTag").textContent="FASE "+n+" DE 5";$("egDifficulty").textContent=levels[n-1].name;
+  $("egInstruction").textContent="Arraste as peças de madeira para preencher todo o quadrado. Gire livremente; só não pode soltar uma peça sobre outra.";
+  $("egWin").classList.remove("show");$("egNext").disabled=true;$("egNext").textContent="PRÓXIMA FASE →";
+  $("egStatus").textContent="O tabuleiro está vazio. Encaixe todas as peças sem deixar espaços.";
+  $("levelPill").textContent="ENCAIXE GEOMÉTRICO · FASE "+n;show("egGame");render();
+ }
+ function phases(){
+  $("levelPill").textContent="ENCAIXE GEOMÉTRICO";const list=$("egPhaseList");list.innerHTML="";
+  levels.forEach((v,i)=>{const b=document.createElement("button");b.className="eg-phase"+(completed().includes(i+1)?" done":"");b.innerHTML=(i+1)+"<small>"+v.name+"</small>";b.onclick=()=>start(i+1);list.appendChild(b)});
+  show("egPhases");
+ }
  function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active")}
- function begin(e,p,el){if(solved)return;e.preventDefault();selectedId=p.id;document.querySelectorAll(".eg-piece").forEach(x=>x.classList.toggle("selected",x===el));let r=$("egBoard").getBoundingClientRect();drag={p,el,wasPlaced:p.placed,from:{x:p.x,y:p.y},ox:e.clientX-r.left,oy:e.clientY-r.top};if(!p.placed){p.placed=true;$("egBoard").appendChild(el);el.classList.add("placed")}el.classList.add("dragging");document.addEventListener("pointermove",move);document.addEventListener("pointerup",end,{once:true});move(e)}
- function move(e){if(!drag)return;let r=$("egBoard").getBoundingClientRect(),p=drag.p;let cells=p.cells;let w=Math.max(...cells.map(c=>c[0]))+1,h=Math.max(...cells.map(c=>c[1]))+1;let x=Math.round((e.clientX-r.left)/r.width*N),y=Math.round((e.clientY-r.top)/r.height*N);p.x=Math.max(0,Math.min(N-w,x));p.y=Math.max(0,Math.min(N-h,y));drag.el.style.left=(p.x*CELL)+"%";drag.el.style.top=(p.y*CELL)+"%"}
- function end(){document.removeEventListener("pointermove",move);if(!drag)return;let d=drag,p=d.p,other=occupied(p),hit=p.cells.some(([x,y])=>other.has((p.x+x)+","+(p.y+y)));d.el.classList.remove("dragging");if(hit){p.x=d.from.x;p.y=d.from.y;if(!d.wasPlaced){p.placed=false;d.el.classList.remove("placed");$("egTray").appendChild(d.el)}$("egStatus").textContent="Não é possível sobrepor peças. Escolha um espaço livre.";drag=null;render();return}drag=null;validate()}
- function occupied(except){let cells=new Set();for(let p of parts){if(!p.placed||p===except)continue;for(let [x,y] of p.cells)cells.add((p.x+x)+","+(p.y+y))}return cells}
- function validate(){let used=new Set(),overlap=false,inside=true;for(let p of parts){if(!p.placed){inside=false;continue}for(let [x,y] of p.cells){let xx=p.x+x,yy=p.y+y,k=xx+","+yy;if(xx<0||yy<0||xx>=N||yy>=N)inside=false;if(used.has(k))overlap=true;used.add(k)}}let filled=used.size===N*N&&!overlap&&inside&&parts.every(p=>p.placed);$("egStatus").textContent=overlap?"Há peças sobrepostas. Mova uma delas.":!inside?"Coloque todas as peças dentro do quadrado.":used.size+" de 16 espaços preenchidos. Continue encaixando.";if(filled&&!solved){solved=true;localStorage.setItem(store,JSON.stringify([...new Set([...done(),level])]));$("egWin").classList.add("show");$("egStatus").textContent="Perfeito! Você preencheu todo o quadrado usando todas as peças.";$("egNext").disabled=false;$("egNext").textContent=level===5?"VER FASES":"PRÓXIMA FASE →"}}
- function turn(){if(drag)return;let p=parts.find(p=>p.id===selectedId);if(!p){$("egStatus").textContent="Toque em uma peça para selecioná-la e depois gire.";return}p.cells=normalize(rotate(p.cells));render();validate()}
+ function boardPoint(e){const board=$("egBoard"),r=board.getBoundingClientRect(),w=board.clientWidth,h=board.clientHeight;return {x:(e.clientX-r.left-board.clientLeft)/w*100,y:(e.clientY-r.top-board.clientTop)/h*100}}
+ function begin(e,p,el){
+  if(solved)return;e.preventDefault();selectedId=p.id;
+  const q=boardPoint(e),d=dims(p),wasPlaced=p.placed;
+  const from={x:p.x,y:p.y,points:p.points.map(v=>v.slice())};
+  if(wasPlaced){drag={p,el,wasPlaced,from,offsetX:q.x-p.x,offsetY:q.y-p.y}}
+  else {p.placed=true;$("egBoard").appendChild(el);drag={p,el,wasPlaced,from,offsetX:d.w/2,offsetY:d.h/2}}
+  el.classList.add("placed","dragging");document.addEventListener("pointermove",move);document.addEventListener("pointerup",end,{once:true});document.addEventListener("pointercancel",end,{once:true});move(e);
+ }
+ function move(e){
+  if(!drag)return;const q=boardPoint(e),p=drag.p,d=dims(p);
+  p.x=q.x-drag.offsetX;p.y=q.y-drag.offsetY;
+  drag.el.style.left=p.x+"%";drag.el.style.top=p.y+"%";
+ }
+ function projections(poly,axis){const values=poly.map(([x,y])=>x*axis[0]+y*axis[1]);return [Math.min(...values),Math.max(...values)]}
+ function overlaps(a,b){
+  const pa=absolute(a),pb=absolute(b);
+  for(const poly of [pa,pb])for(let i=0;i<poly.length;i++){
+   const p=poly[i],q=poly[(i+1)%poly.length],axis=[-(q[1]-p[1]),q[0]-p[0]];
+   const A=projections(pa,axis),B=projections(pb,axis);
+   if(A[1]<=B[0]+.02||B[1]<=A[0]+.02)return false;
+  }
+  return true;
+ }
+ function inside(p){const d=dims(p);return p.x>=-.05&&p.y>=-.05&&p.x+d.w<=100.05&&p.y+d.h<=100.05}
+ function end(){
+  document.removeEventListener("pointermove",move);document.removeEventListener("pointercancel",end);
+  if(!drag)return;const d=drag,p=d.p;const size=dims(p);
+  p.x=Math.round(p.x*2)/2;p.y=Math.round(p.y*2)/2;
+  const hit=parts.some(other=>other!==p&&other.placed&&overlaps(p,other));
+  const valid=inside(p)&&!hit;
+  d.el.classList.remove("dragging");
+  if(!valid){
+   if(d.wasPlaced){p.x=d.from.x;p.y=d.from.y;p.points=d.from.points;p.placed=true}
+   else p.placed=false;
+   $("egStatus").textContent=hit?"Essa posição sobrepõe outra peça. Ela voltou para o lugar anterior.":"Coloque a peça inteira dentro do quadrado.";
+  }else $("egStatus").textContent="Peça posicionada! Continue preenchendo o tabuleiro.";
+  drag=null;render();validate();
+ }
+ function rotate(){
+  if(drag)return;const p=parts.find(v=>v.id===selectedId);
+  if(!p){$("egStatus").textContent="Toque em uma peça e use GIRAR PEÇA.";return}
+  const old=dims(p),cx=p.x+old.w/2,cy=p.y+old.h/2;
+  p.points=normalized(p.points.map(([x,y])=>[old.h-y,x]));
+  const now=dims(p);p.x=cx-now.w/2;p.y=cy-now.h/2;
+  render();$("egStatus").textContent="Peça girada. Você pode girar novamente ou arrastá-la.";
+  validate();
+ }
+ function validate(){
+  let used=0,allInside=true,hasOverlap=false;
+  for(const p of parts){if(!p.placed){allInside=false;continue}if(!inside(p))allInside=false;used+=p.area}
+  for(let i=0;i<parts.length;i++)for(let j=i+1;j<parts.length;j++)if(parts[i].placed&&parts[j].placed&&overlaps(parts[i],parts[j]))hasOverlap=true;
+  const allPlaced=parts.every(p=>p.placed),filled=allPlaced&&allInside&&!hasOverlap&&Math.abs(used-10000)<1;
+  if(filled&&!solved){
+   solved=true;localStorage.setItem(STORE,JSON.stringify([...new Set([...completed(),level])]));
+   $("egWin").classList.add("show");$("egStatus").textContent="Perfeito! Você preencheu todo o quadrado usando todas as peças.";
+   $("egNext").disabled=false;$("egNext").textContent=level===5?"VER FASES":"PRÓXIMA FASE →";
+  }else if(hasOverlap)$("egStatus").textContent="Há peças sobrepostas. Arraste uma delas para uma área livre.";
+  else if(allPlaced&&allInside)$("egStatus").textContent="Todas as peças estão dentro do tabuleiro. Ajuste os encaixes para preencher todo o espaço.";
+  else $("egStatus").textContent=Math.round(used/100)+"% da área do tabuleiro coberta. Continue encaixando.";
+ }
  function reset(){if(solved)return;selectedId=null;parts.forEach(p=>{p.placed=false;p.x=0;p.y=0});render();$("egStatus").textContent="Todas as peças voltaram para a bandeja."}
- const style=document.createElement("style");style.textContent=".eg-board{background-image:linear-gradient(#9a754e55 1px,transparent 1px),linear-gradient(90deg,#9a754e55 1px,transparent 1px);background-size:25% 25%}.eg-poly{display:grid;grid-template-columns:repeat(var(--w),1fr);grid-template-rows:repeat(var(--h),1fr);width:100%;height:100%;gap:2px;padding:2px}.eg-poly i{display:block;background:linear-gradient(145deg,#f0d0a0,#c28b50);border:1px solid #98663a;border-radius:3px;box-shadow:inset 0 1px 1px #fff9,0 2px 3px #6b421f55}.eg-piece.selected{outline:3px solid #e2a12d;outline-offset:2px}.eg-tray .eg-piece{position:relative;left:auto!important;top:auto!important;transform:none!important;flex:none;width:70px!important;height:70px!important}";document.head.appendChild(style);
- window.showEgPhases=phases;window.egRotate=turn;window.egReset=reset;window.egNext=()=>level<5?start(level+1):phases();window.addEventListener("resize",()=>{if($("egGame").classList.contains("active")&&!drag)render()});
+ window.showEgPhases=phases;window.egRotate=rotate;window.egReset=reset;window.egNext=()=>level<5?start(level+1):phases();
+ window.addEventListener("resize",()=>{if($("egGame").classList.contains("active")&&!drag)render()});
 })();

@@ -7,7 +7,7 @@ const visualSizeForLevel=n=>Math.min(18,10+Math.floor((n-1)/6));
 const visualKey=suffix=>"ache_desenho_diferente_"+suffix;
 let visualLevel=1,visualScore=0,visualLives=3,visualBest=0,visualLocked=false,visualOdd=-1,visualTimer=null;
 
-const stroke='fill="none" stroke="#80572f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"';
+const stroke='fill="none" stroke="#111111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"';
 function svg(body){return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" '+stroke+' aria-hidden="true">'+body+'</svg>'}
 const drawings=[
  // Folhas: nervuras, ponta e pequeno recorte.

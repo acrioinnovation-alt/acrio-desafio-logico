@@ -191,6 +191,22 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 .eg-playfield .eg-status{grid-column:1/-1}
 @media(max-width:380px){.eg-playfield{grid-template-columns:minmax(0,1fr) 94px;gap:7px}.eg-playfield .eg-tray .eg-piece{width:48px!important;height:48px!important;flex-basis:48px}}
 
+
+/* Ajustes de teste: teclado compacto, desenhos em preto e encaixe de peças poligonais */
+.balance-keypad{gap:5px;margin-top:7px}
+.balance-key{min-height:37px;padding:5px 4px;font-size:17px;border-radius:10px;box-shadow:0 2px 0 #c7d5e3}
+.balance-key.confirm{min-height:41px;font-size:13px}
+.balance-answer-display{min-height:48px;padding:9px 12px;margin-top:8px}
+.balance-question{margin:9px 0 7px;padding:10px;font-size:15px}
+.eg-board{position:relative;width:min(100%,390px);aspect-ratio:1;margin:10px auto;border:10px solid #956334;border-radius:8px;background-color:#c99760;background-image:repeating-linear-gradient(8deg,transparent 0 13px,#8a572b18 13px 15px,transparent 15px 29px),linear-gradient(135deg,#e0b47c,#b9824d 55%,#d2a16a);box-shadow:inset 0 0 0 2px #f1d5ad,inset 0 0 18px #70431f66,0 5px 14px #65401e2b;touch-action:none;overflow:visible}
+.eg-tray{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;min-height:90px;padding:12px;background:#f2e6d5;border:1px solid #d7b88e;border-radius:12px}
+.eg-piece{display:block;position:absolute;padding:0;margin:0;border:0;background:transparent;touch-action:none;user-select:none;cursor:grab;z-index:3;overflow:visible}
+.eg-piece svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 2px 2px #67421d66)}
+.eg-piece.selected{outline:2px solid #bd873d;outline-offset:3px;border-radius:4px}
+.eg-piece.dragging{z-index:1000!important;opacity:.96;filter:drop-shadow(0 8px 9px #40240d88);pointer-events:none}
+.eg-tray .eg-piece{position:relative;left:auto!important;top:auto!important;flex:none;filter:none}
+.eg-tray .eg-piece svg{max-width:76px;max-height:76px}
+.square-node{display:none!important}
 </style>
 </head>
 <body><main class="app">
@@ -241,7 +257,7 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 <div class="progress"><i id="matchBar"></i></div>
 <div class="card">
 <div class="tagrow"><span class="tag" id="matchLevelTag">FASE 1 · PALITOS</span><span class="difficulty" id="matchDifficulty">NÍVEL 1</span></div>
-<p class="instruction">Mova exatamente um palito para formar uma conta correta</p>
+<p class="instruction">Mova um palito para formar algarismos válidos e corrigir a conta</p>
 <div class="match-board" id="matchBoard" aria-label="Equação feita com palitos"></div>
 <div class="match-target"><span id="matchMoveLabel">1 movimento</span><span id="matchStatus">Escolha um palito</span></div>
 <div id="matchFeedback" class="feedback" aria-live="polite"></div>

@@ -87,10 +87,6 @@
    $("matchStatus").textContent="Primeiro toque em um palito aceso";
    return;
   }
-  if(selected.pos===pos){
-   $("matchStatus").textContent="Escolha um espaço vazio em outro número";
-   return;
-  }
   const next=board.map(s=>s);
   next[selected.pos]=next[selected.pos].replace(selected.seg,"");
   next[pos]+=seg;
@@ -98,7 +94,7 @@
   if(digits.some(v=>v===undefined)){selected=null;render();$("matchStatus").textContent="Esse espaço não forma um número";return}
   board=next;selected=null;
   if(eqValid(digits,catalog[phase-1].op)){render();win()}
-  else{locked=true;render();$("matchFeedback").className="feedback show bad";$("matchFeedback").textContent="Essa movimentação não corrigiu a conta. Toque em RECOMEÇAR para tentar novamente.";$("matchStatus").textContent="Tentativa encerrada";}
+  else{render();$("matchFeedback").className="feedback show bad";$("matchFeedback").textContent="Palito colocado! Os algarismos são válidos, mas a conta ainda não está correta. Você pode mover outro palito ou recomeçar.";$("matchStatus").textContent="Movimento aceito. A conta ainda não confere.";}
  }
  function win(){
   locked=true;score=100+(phase*10);best=Math.max(best,score);localStorage.setItem("palitos_best",String(best));
