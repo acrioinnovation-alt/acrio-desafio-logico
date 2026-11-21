@@ -4,7 +4,7 @@
  const $=id=>document.getElementById(id);
  const STORE="acrio_encaixe_completed";
  const style=document.createElement("style");
- style.textContent="#egTray .eg-piece svg{max-width:none!important;max-height:none!important}#egTray .eg-piece{box-sizing:content-box!important;outline:none!important}#egTray .eg-piece.selected,.eg-board .eg-piece.selected{outline:none!important;outline-offset:0!important;border:0!important;border-radius:0!important}";
+ style.textContent="#egTray{display:flex!important;flex-flow:row wrap!important;grid-template-columns:none!important;grid-auto-rows:auto!important;align-items:center!important;justify-content:center!important;gap:8px!important;width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;padding:8px!important}#egTray .eg-piece{position:relative!important;left:auto!important;top:auto!important;transform:none!important;flex:none!important;max-width:none!important;max-height:none!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;box-sizing:border-box!important;border:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;border-radius:0!important}#egTray .eg-piece svg{display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important}#egTray .eg-piece.selected,#egBoard .eg-piece.selected{outline:none!important;outline-offset:0!important;border:0!important;border-radius:0!important}#egBoard .eg-piece{padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-sizing:border-box!important}";
  document.head.appendChild(style);
  const levels=[
   {name:"FÁCIL",pieces:[
@@ -63,7 +63,7 @@
   if(p.placed){
    b.style.left=p.x+"%";b.style.top=p.y+"%";b.style.width=d.w+"%";b.style.height=d.h+"%";
   }else{
-   b.style.width=(d.w*u)+"px";b.style.height=(d.h*u)+"px";
+   b.style.setProperty("width",(d.w*u)+"px","important");b.style.setProperty("height",(d.h*u)+"px","important");
    b.style.flex="0 0 auto";
   }
   b.addEventListener("pointerdown",e=>begin(e,p,b));p.el=b;return b;
@@ -71,16 +71,15 @@
  function updateCounter(){const count=parts.filter(p=>p.placed).length;$("egCounter").textContent=count+" / "+parts.length+" PEÇAS NO QUADRADO"}
  function render(){
   const board=$("egBoard"),tray=$("egTray");board.innerHTML="";tray.innerHTML="";
-  tray.style.display="flex";
-  tray.style.flexDirection="row";
-  tray.style.flexWrap="wrap";
-  tray.style.alignItems="center";
-  tray.style.justifyContent="center";
-  tray.style.gap="8px";
-  tray.style.width="100%";
-  tray.style.height="auto";
-  tray.style.maxHeight="none";
-  tray.style.minHeight="0";
+  tray.style.setProperty("display","flex","important");
+  tray.style.setProperty("flex-flow","row wrap","important");
+  tray.style.setProperty("align-items","center","important");
+  tray.style.setProperty("justify-content","center","important");
+  tray.style.setProperty("gap","8px","important");
+  tray.style.setProperty("width","100%","important");
+  tray.style.setProperty("height","auto","important");
+  tray.style.setProperty("max-height","none","important");
+  tray.style.setProperty("min-height","0","important");
   parts.forEach(p=>(p.placed?board:tray).appendChild(pieceEl(p)));
   updateCounter();
  }
@@ -117,13 +116,14 @@
   el.style.width=d.w+"%";el.style.height=d.h+"%";
   $("egBoard").appendChild(el);
   drag={p,el,wasPlaced,from,offsetX,offsetY};
-  document.addEventListener("pointermove",move,{passive:true});
+  document.addEventListener("pointermove",move,{passive:false});
   document.addEventListener("pointerup",end,{once:true});
   document.addEventListener("pointercancel",cancel,{once:true});
   move(e);
  }
  function move(e){
   if(!drag)return;
+  if(e.cancelable)e.preventDefault();
   const q=boardPoint(e),p=drag.p;
   p.x=q.x-drag.offsetX;p.y=q.y-drag.offsetY;
   if(moveFrame)return;
