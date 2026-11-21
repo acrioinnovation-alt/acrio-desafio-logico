@@ -1,4 +1,4 @@
-// Desafio das Balanças — 32 desafios validados a partir das imagens de 21/11/2026.
+// Desafio das Balanças — 42 desafios (32 novos + 10 originais restaurados) a partir das imagens de 21/11/2026.
 (() => {
  const $=id=>document.getElementById(id);
  const catalog=[
@@ -35,7 +35,18 @@
   {image:"balancas/desafio-29.jpg",type:"ball",answer:12},
   {image:"balancas/desafio-30.jpg",type:"ball",answer:12},
   {image:"balancas/desafio-31.jpg",type:"ball",answer:12},
-  {image:"balancas/desafio-32.jpg",type:"ball",answer:14}
+  {image:"balancas/desafio-32.jpg",type:"ball",answer:14},
+  // Dez desafios originais restaurados; mantidos depois das 32 imagens novas.
+  {image:"balancas/desafio-33.jpg",type:"animal",answer:18},
+  {image:"balancas/desafio-34.jpg",type:"animal",answer:28},
+  {image:"balancas/desafio-35.jpg",type:"animal",answer:18},
+  {image:"balancas/desafio-36.jpg",type:"animal",answer:20},
+  {image:"balancas/desafio-37.jpg",type:"animal",answer:14},
+  {image:"balancas/desafio-38.jpg",type:"animal",answer:23},
+  {image:"balancas/desafio-39.jpg",type:"animal",answer:29},
+  {image:"balancas/desafio-40.jpg",type:"animal",answer:13},
+  {image:"balancas/desafio-41.jpg",type:"animal",answer:16},
+  {image:"balancas/desafio-42.jpg",type:"animal",answer:19}
  ];
  const TOTAL=catalog.length, STORE="balancas_imagens_v2_";
  let phase=1,locked=false;
