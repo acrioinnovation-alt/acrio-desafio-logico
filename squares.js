@@ -8,7 +8,7 @@
   return out;
  };
  const edgeKey=(x,y,o)=>o+x+","+y;
- const parse=e=>{const m=e.match(/^([HV])(\\d+),(\\d+)$/);return {o:m[1],x:+m[2],y:+m[3]}};
+ const parse=e=>{const m=e.match(/^([HV])(\d+),(\d+)$/);return {o:m[1],x:+m[2],y:+m[3]}};
  const add=(set,x,y,o)=>set.add(edgeKey(x,y,o));
  function rectangle(rows,cols,ox,oy){
   const s=new Set();
