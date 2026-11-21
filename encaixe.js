@@ -1,85 +1,30 @@
-// Encaixe Geométrico — placa quadrada de madeira com peças geométricas móveis.
-(()=>{
+// Encaixe Geométrico — preencher todo o quadrado usando todas as peças.
+(()=> {
  const $=id=>document.getElementById(id);
- const shapes={
-  quadrado:"M12 12 H88 V88 H12 Z",
-  triangulo:"M50 7 L94 89 H6 Z",
-  losango:"M50 5 L95 50 L50 95 L5 50 Z",
-  retangulo:"M8 25 H92 V75 H8 Z",
-  trapezio:"M25 12 H75 L94 88 H6 Z",
-  pentagono:"M50 5 L94 39 L77 92 H23 L6 39 Z",
-  hexagono:"M25 8 H75 L95 50 L75 92 H25 L5 50 Z"
- };
+ const N=4, CELL=25, store="acrio_encaixe_completed";
  const layouts=[
-  {name:"FÁCIL",pieces:[["quadrado",27,28,0],["triangulo",73,28,90],["losango",50,73,0]]},
-  {name:"MÉDIA",pieces:[["quadrado",27,26,0],["triangulo",73,26,180],["retangulo",27,73,90],["losango",73,73,45]]},
-  {name:"DIFÍCIL",pieces:[["quadrado",25,25,0],["triangulo",75,25,90],["trapezio",50,50,180],["losango",25,75,45],["pentagono",75,75,0]]},
-  {name:"MUITO DIFÍCIL",pieces:[["quadrado",25,20,0],["triangulo",75,20,270],["retangulo",25,50,90],["losango",75,50,45],["trapezio",25,80,180],["hexagono",75,80,0]]},
-  {name:"EXTREMA",pieces:[["quadrado",25,20,0],["triangulo",75,20,90],["retangulo",25,50,90],["losango",75,50,45],["trapezio",25,80,180],["pentagono",50,80,0],["hexagono",75,80,0]]}
+  {name:"FÁCIL",pieces:[["I",[[0,0],[1,0],[2,0],[3,0]]],["I",[[0,0],[1,0],[2,0],[3,0]]],["I",[[0,0],[1,0],[2,0],[3,0]]],["I",[[0,0],[1,0],[2,0],[3,0]]]]},
+  {name:"MÉDIA",pieces:[["O",[[0,0],[1,0],[0,1],[1,1]]],["O",[[0,0],[1,0],[0,1],[1,1]]],["O",[[0,0],[1,0],[0,1],[1,1]]],["O",[[0,0],[1,0],[0,1],[1,1]]]]},
+  {name:"DIFÍCIL",pieces:[["L",[[0,0],[0,1],[0,2],[1,2]]],["L",[[0,0],[0,1],[0,2],[1,2]]],["L",[[0,0],[0,1],[0,2],[1,2]]],["L",[[0,0],[0,1],[0,2],[1,2]]]]},
+  {name:"MUITO DIFÍCIL",pieces:[["T",[[0,0],[1,0],[2,0],[1,1]]],["T",[[0,0],[1,0],[2,0],[1,1]]],["T",[[0,0],[1,0],[2,0],[1,1]]],["T",[[0,0],[1,0],[2,0],[1,1]]]]},
+  {name:"EXTREMA",pieces:[["L",[[0,0],[0,1],[0,2],[1,2]]],["T",[[0,0],[1,0],[2,0],[1,1]]],["S",[[1,0],[2,0],[0,1],[1,1]]],["J",[[1,0],[1,1],[0,2],[1,2]]]]}
  ];
- let level=1,parts=[],selected=null,drag=null,solved=false;
- const store="acrio_encaixe_completed";
- const done=()=>{try{const v=JSON.parse(localStorage.getItem(store)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}};
- const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
- function svg(type,cls){return '<svg viewBox="0 0 100 100" aria-hidden="true"><path class="shape" d="'+shapes[type]+'"/></svg>'}
- function pieceElement(p){
-  const el=document.createElement("button");el.type="button";el.className="eg-piece";el.dataset.id=p.id;el.setAttribute("aria-label","Peça "+p.type);
-  el.innerHTML=svg(p.type);el.style.transform="rotate("+p.angle+"deg)";
-  if(p.placed){el.style.left=(p.x*100)+"%";el.style.top=(p.y*100)+"%";el.classList.add("placed")}
-  el.addEventListener("pointerdown",e=>begin(e,p,el));p.el=el;return el;
- }
- function render(){
-  const board=$("egBoard"),tray=$("egTray");board.innerHTML="";tray.innerHTML="";
-  parts.forEach(p=>{
-   const slot=document.createElement("div");slot.className="eg-slot";slot.style.left=p.tx+"%";slot.style.top=p.ty+"%";slot.style.transform="translate(-50%,-50%) rotate("+p.targetAngle+"deg)";slot.innerHTML=svg(p.type);board.appendChild(slot);
-   const el=pieceElement(p);(p.placed?board:tray).appendChild(el);
-  });
-  $("egCounter").textContent=parts.filter(p=>p.placed&&correct(p)).length+" / "+parts.length+" PEÇAS CERTAS";
- }
- function start(n){
-  level=n;solved=false;selected=null;drag=null;
-  parts=shuffle(layouts[n-1].pieces.map((a,id)=>({id,type:a[0],tx:a[1],ty:a[2],targetAngle:a[3],x:0,y:0,angle:0,placed:false})));
-  $("egLevelTag").textContent="FASE "+n+" DE 5";$("egDifficulty").textContent=layouts[n-1].name;
-  $("egInstruction").textContent="Arraste as peças de madeira para os espaços geométricos. Você pode testar qualquer posição.";
-  $("egWin").classList.remove("show");$("egNext").disabled=true;$("egNext").textContent="PRÓXIMA FASE →";
-  $("egStatus").textContent="Experimente livremente: nenhuma posição incorreta será bloqueada.";
-  $("levelPill").textContent="ENCAIXE GEOMÉTRICO · FASE "+n;show("egGame");render();
- }
- function phases(){
-  $("levelPill").textContent="ENCAIXE GEOMÉTRICO";const list=$("egPhaseList");list.innerHTML="";
-  layouts.forEach((c,i)=>{const b=document.createElement("button");b.className="eg-phase"+(done().includes(i+1)?" done":"");b.innerHTML=(i+1)+"<small>"+c.name+"</small>";b.onclick=()=>start(i+1);list.appendChild(b)});
-  show("egPhases");
- }
+ let level=1,parts=[],drag=null,solved=false;
+ const done=()=>{try{return JSON.parse(localStorage.getItem(store)||"[]")}catch(e){return []}};
+ const rotate=c=>c.map(([x,y])=>[-y,x]);
+ const normalize=c=>{let minX=Math.min(...c.map(p=>p[0])),minY=Math.min(...c.map(p=>p[1]));return c.map(([x,y])=>[x-minX,y-minY])};
+ function shapeMarkup(c){let w=Math.max(...c.map(p=>p[0]))+1,h=Math.max(...c.map(p=>p[1]))+1;return '<div class="eg-poly" style="--w:'+w+';--h:'+h+'">'+c.map(([x,y])=>'<i style="grid-column:'+(x+1)+';grid-row:'+(y+1)+'"></i>').join("")+'</div>'}
+ function pieceEl(p){let b=document.createElement("button");b.type="button";b.className="eg-piece"+(p.placed?" placed":"");b.dataset.id=p.id;b.innerHTML=shapeMarkup(p.cells);b.style.left=p.placed?(p.x*CELL)+"%":"";b.style.top=p.placed?(p.y*CELL)+"%":"";b.addEventListener("pointerdown",e=>begin(e,p,b));p.el=b;return b}
+ function render(){let board=$("egBoard"),tray=$("egTray");board.innerHTML="";tray.innerHTML="";board.style.setProperty("--eg-size",N);parts.forEach(p=>(p.placed?board:tray).appendChild(pieceEl(p)));updateCounter()}
+ function start(n){level=n;solved=false;drag=null;parts=layouts[n-1].pieces.map((p,id)=>({id,type:p[0],cells:p[1].map(c=>c.slice()),x:0,y:0,placed:false}));$("egLevelTag").textContent="FASE "+n+" DE 5";$("egDifficulty").textContent=layouts[n-1].name;$("egInstruction").textContent="Preencha o quadrado inteiro com todas as peças. Arraste, gire e encaixe; não pode haver espaços vazios nem peças sobrepostas.";$("egWin").classList.remove("show");$("egNext").disabled=true;$("egNext").textContent="PRÓXIMA FASE →";$("egStatus").textContent="O quadrado está vazio: descubra como combinar as peças."; $("levelPill").textContent="ENCAIXE GEOMÉTRICO · FASE "+n;show("egGame");render()}
+ function phases(){$("levelPill").textContent="ENCAIXE GEOMÉTRICO";let list=$("egPhaseList");list.innerHTML="";layouts.forEach((c,i)=>{let b=document.createElement("button");b.className="eg-phase"+(done().includes(i+1)?" done":"");b.innerHTML=(i+1)+"<small>"+c.name+"</small>";b.onclick=()=>start(i+1);list.appendChild(b)});show("egPhases")}
  function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active")}
- function setPosition(p,x,y){p.x=Math.max(0,Math.min(.81,x));p.y=Math.max(0,Math.min(.81,y));p.el.style.left=(p.x*100)+"%";p.el.style.top=(p.y*100)+"%"}
- function begin(e,p,el){
-  if(solved)return;e.preventDefault();selected=p.id;
-  const boardRect=$("egBoard").getBoundingClientRect(),rect=el.getBoundingClientRect();
-  const ox=(e.clientX-rect.left)/Math.max(rect.width,1)*.19,oy=(e.clientY-rect.top)/Math.max(rect.height,1)*.19;
-  if(!p.placed){p.placed=true;$("egBoard").appendChild(el);el.classList.add("placed")}
-  drag={p,el,ox,oy};el.classList.add("dragging");
-  setPosition(p,(e.clientX-boardRect.left)/boardRect.width-ox,(e.clientY-boardRect.top)/boardRect.height-oy);
-  document.addEventListener("pointermove",move);document.addEventListener("pointerup",end,{once:true});
- }
- function move(e){if(!drag)return;const r=$("egBoard").getBoundingClientRect();setPosition(drag.p,(e.clientX-r.left)/r.width-drag.ox,(e.clientY-r.top)/r.height-drag.oy)}
- function end(){document.removeEventListener("pointermove",move);if(!drag)return;drag.el.classList.remove("dragging");drag=null;check()}
- function angleDiff(a,b){return Math.abs(((a-b+540)%360)-180)}
- function correct(p){const cx=p.x+.095,cy=p.y+.095,dx=cx-p.tx/100,dy=cy-p.ty/100;return p.placed&&Math.hypot(dx,dy)<.045&&angleDiff(p.angle,p.targetAngle)<9}
- function check(){
-  const count=parts.filter(correct).length;$("egCounter").textContent=count+" / "+parts.length+" PEÇAS CERTAS";
-  if(count===parts.length&&!solved){
-   solved=true;localStorage.setItem(store,JSON.stringify([...new Set([...done(),level])]));
-   $("egWin").classList.add("show");$("egStatus").textContent="Muito bem! Todas as formas foram encaixadas.";
-   $("egNext").disabled=false;$("egNext").textContent=level===5?"VER FASES":"PRÓXIMA FASE →";
-  }else{
-   $("egStatus").textContent=count+" de "+parts.length+" peças no lugar correto. Continue experimentando; você pode mover qualquer peça.";
-  }
- }
- function turn(){
-  if(selected===null){$("egStatus").textContent="Escolha uma peça para girar.";return}
-  const p=parts.find(q=>q.id===selected);if(!p)return;p.angle=(p.angle+45)%360;p.el.style.transform="rotate("+p.angle+"deg)";check();
- }
- function reset(){if(solved)return;parts.forEach(p=>{p.placed=false;p.x=0;p.y=0;p.angle=0});selected=null;render();$("egStatus").textContent="Todas as peças voltaram para a área de peças."}
- window.showEgPhases=phases;window.egRotate=turn;window.egReset=reset;window.egNext=()=>level<5?start(level+1):phases();
- window.addEventListener("resize",()=>{if($("egGame").classList.contains("active")&&!drag)render()});
+ function begin(e,p,el){if(solved)return;e.preventDefault();let r=$("egBoard").getBoundingClientRect();drag={p,el,ox:e.clientX-r.left,oy:e.clientY-r.top};if(!p.placed){p.placed=true;$("egBoard").appendChild(el);el.classList.add("placed")}el.classList.add("dragging");document.addEventListener("pointermove",move);document.addEventListener("pointerup",end,{once:true});move(e)}
+ function move(e){if(!drag)return;let r=$("egBoard").getBoundingClientRect(),p=drag.p;let cells=p.cells;let w=Math.max(...cells.map(c=>c[0]))+1,h=Math.max(...cells.map(c=>c[1]))+1;let x=Math.round((e.clientX-r.left)/r.width*N),y=Math.round((e.clientY-r.top)/r.height*N);p.x=Math.max(0,Math.min(N-w,x));p.y=Math.max(0,Math.min(N-h,y));drag.el.style.left=(p.x*CELL)+"%";drag.el.style.top=(p.y*CELL)+"%"}
+ function end(){document.removeEventListener("pointermove",move);if(!drag)return;drag.el.classList.remove("dragging");drag=null;validate()}
+ function occupied(except){let cells=new Set();for(let p of parts){if(!p.placed||p===except)continue;for(let [x,y] of p.cells)cells.add((p.x+x)+","+(p.y+y))}return cells}
+ function validate(){let used=new Set(),overlap=false,inside=true;for(let p of parts){if(!p.placed){inside=false;continue}for(let [x,y] of p.cells){let xx=p.x+x,yy=p.y+y,k=xx+","+yy;if(xx<0||yy<0||xx>=N||yy>=N)inside=false;if(used.has(k))overlap=true;used.add(k)}}let filled=used.size===N*N&&!overlap&&inside&&parts.every(p=>p.placed);$("egStatus").textContent=overlap?"Há peças sobrepostas. Mova uma delas.":!inside?"Coloque todas as peças dentro do quadrado.":used.size+" de 16 espaços preenchidos. Continue encaixando.";if(filled&&!solved){solved=true;localStorage.setItem(store,JSON.stringify([...new Set([...done(),level])]));$("egWin").classList.add("show");$("egStatus").textContent="Perfeito! Você preencheu todo o quadrado usando todas as peças.";$("egNext").disabled=false;$("egNext").textContent=level===5?"VER FASES":"PRÓXIMA FASE →"}}
+ function turn(){if(drag)return;let p=parts.find(p=>p.el&&p.el.classList.contains("selected"));if(!p)p=parts.find(p=>p.placed);if(!p){$("egStatus").textContent="Arraste uma peça para o quadrado antes de girá-la.";return}p.cells=normalize(rotate(p.cells));render();validate()}
+ function reset(){if(solved)return;parts.forEach(p=>{p.placed=false;p.x=0;p.y=0});render();$("egStatus").textContent="Todas as peças voltaram para a bandeja."}
+ window.showEgPhases=phases;window.egRotate=turn;window.egReset=reset;window.egNext=()=>level<5?start(level+1):phases();window.addEventListener("resize",()=>{if($("egGame").classList.contains("active")&&!drag)render()});
 })();
