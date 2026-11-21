@@ -87,7 +87,7 @@
   const q=boardPoint(e),d=dims(p),wasPlaced=p.placed;
   const from={x:p.x,y:p.y,points:p.points.map(v=>v.slice())};
   if(wasPlaced){drag={p,el,wasPlaced,from,offsetX:q.x-p.x,offsetY:q.y-p.y}}
-  else {p.placed=true;$("egBoard").appendChild(el);drag={p,el,wasPlaced,from,offsetX:d.w/2,offsetY:d.h/2}}
+  else {p.placed=true;el.style.width=d.w+"%";el.style.height=d.h+"%";$("egBoard").appendChild(el);drag={p,el,wasPlaced,from,offsetX:d.w/2,offsetY:d.h/2}}
   el.classList.add("placed","dragging");document.addEventListener("pointermove",move);document.addEventListener("pointerup",end,{once:true});document.addEventListener("pointercancel",end,{once:true});move(e);
  }
  function move(e){
