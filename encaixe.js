@@ -4,7 +4,7 @@
  const $=id=>document.getElementById(id);
  const STORE="acrio_encaixe_completed";
  const style=document.createElement("style");
- style.textContent="#egTray{display:flex!important;flex-flow:row wrap!important;grid-template-columns:none!important;grid-auto-rows:auto!important;align-items:center!important;justify-content:center!important;gap:8px!important;width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;padding:8px!important}#egTray .eg-piece{position:relative!important;left:auto!important;top:auto!important;transform:none!important;flex:none!important;max-width:none!important;max-height:none!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;box-sizing:border-box!important;border:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;border-radius:0!important}#egTray .eg-piece svg{display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important}#egTray .eg-piece.selected,#egBoard .eg-piece.selected{outline:none!important;outline-offset:0!important;border:0!important;border-radius:0!important}#egBoard .eg-piece{padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-sizing:border-box!important}";
+ style.textContent="#egBoard{overflow:visible!important}#egTray{display:flex!important;flex-flow:row wrap!important;grid-template-columns:none!important;grid-auto-rows:auto!important;align-items:center!important;justify-content:center!important;gap:8px!important;width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;padding:8px!important}#egTray .eg-piece{position:relative!important;left:auto!important;top:auto!important;transform:none!important;flex:none!important;max-width:none!important;max-height:none!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;box-sizing:border-box!important;border:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;border-radius:0!important}#egTray .eg-piece svg{display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important}#egTray .eg-piece.selected,#egBoard .eg-piece.selected{outline:none!important;outline-offset:0!important;border:0!important;border-radius:0!important}#egBoard .eg-piece{padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-sizing:border-box!important}";
  document.head.appendChild(style);
  const levels=[
   {name:"FÁCIL",pieces:[
@@ -157,10 +157,15 @@
   const valid=!cancelled&&inside(p)&&!hit;
   d.el.classList.remove("dragging");
   if(!valid){
-   if(d.wasPlaced){p.x=d.from.x;p.y=d.from.y;p.points=d.from.points;p.placed=true}
-   else p.placed=false;
-   $("egStatus").textContent=hit?"Esse espaço já está ocupado. A peça voltou ao lugar anterior.": "Solte a peça dentro do quadrado para posicioná-la.";
-  }else $("egStatus").textContent="Peça posicionada! Você pode pegá-la novamente e mudar de lugar.";
+   if(hit){
+    if(d.wasPlaced){p.x=d.from.x;p.y=d.from.y;p.points=d.from.points;p.placed=true}
+    else p.placed=false;
+    $("egStatus").textContent="Esse espaço já está ocupado. A peça voltou ao local de onde saiu.";
+   }else{
+    p.placed=false;
+    $("egStatus").textContent="Peça retirada do tabuleiro e devolvida à bandeja.";
+   }
+  }else $("egStatus").textContent="Peça posicionada! Você pode pegá-la novamente, mover para qualquer espaço vazio ou devolvê-la à bandeja.";
   drag=null;render();validate();
  }
  function rotate(){
