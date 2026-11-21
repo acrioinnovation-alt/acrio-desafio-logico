@@ -145,6 +145,45 @@ jobs:
           done
           test "$(find balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 42
           test "$(find android/app/src/main/assets/balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 42
+      - name: Download and inspect the 8 additional balance images from Dropbox
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p balancas-adicionais
+          curl --retry 3 --retry-all-errors --max-time 180 -fLsS 'https://www.dropbox.com/scl/fo/mz6c0esiy03bl5l3urdtl/AIeQ-7XZPHR3cFdr5Q96NNg?rlkey=4s1yuj3de8fo686wi1mu79sud&st=v90i159y&dl=1' -o /tmp/balancas-adicionais.zip
+          unzip -t /tmp/balancas-adicionais.zip
+          unzip -jo /tmp/balancas-adicionais.zip '*.jpg' -d balancas-adicionais
+          test "$(find balancas-adicionais -maxdepth 1 -type f -iname '*.jpg' | wc -l)" -eq 8
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from PIL import Image, ImageDraw
+          from pathlib import Path
+          import csv
+          files=sorted(Path("balancas-adicionais").glob("*.jpg"))
+          rows=[]
+          tiles=[]
+          for p in files:
+              im=Image.open(p).convert("RGB")
+              rows.append((p.name,im.width,im.height,p.stat().st_size))
+              im.thumbnail((480,330))
+              tile=Image.new("RGB",(500,375),"white")
+              tile.paste(im,((500-im.width)//2,5))
+              ImageDraw.Draw(tile).text((10,345),p.name,fill="black")
+              tiles.append(tile)
+          with open("balancas-adicionais/relatorio.csv","w",newline="",encoding="utf-8") as f:
+              w=csv.writer(f);w.writerow(["arquivo","largura","altura","bytes"]);w.writerows(rows)
+          sheet=Image.new("RGB",(1000,1500),"#dddddd")
+          for i,tile in enumerate(tiles):sheet.paste(tile,((i%2)*500,(i//2)*375))
+          sheet.save("balancas-adicionais/contato-8.jpg",quality=92)
+          PY
+      - name: Upload the 8 additional balance images for validation
+        uses: actions/upload-artifact@v4
+        with:
+          name: Balance-Images-8-Nov-21
+          path: |
+            balancas-adicionais/*.jpg
+            balancas-adicionais/*.csv
+          retention-days: 14
       - name: Build debug APK
         working-directory: android
         run: gradle --no-daemon assembleDebug
