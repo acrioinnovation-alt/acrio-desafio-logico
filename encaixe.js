@@ -50,7 +50,7 @@
  function normalized(pts){const b=bounds(pts);return pts.map(([x,y])=>[+(x-b.minX).toFixed(3),+(y-b.minY).toFixed(3)])}
  function dims(p){const b=bounds(p.points);return {w:b.maxX-b.minX,h:b.maxY-b.minY}}
  function absolute(p){return p.points.map(([x,y])=>[x+p.x,y+p.y])}
- function unit(){return $("egBoard").clientWidth/100}
+ function scale(){const b=$("egBoard");return {x:b.clientWidth/100,y:b.clientHeight/100}}
  function polygonMarkup(p){
   const d=dims(p),points=p.points.map(([x,y])=>x+","+y).join(" ");
   return '<svg viewBox="0 0 '+d.w+' '+d.h+'" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="wood'+p.id+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0d3a5"/><stop offset=".48" stop-color="#d7aa72"/><stop offset="1" stop-color="#b77d45"/></linearGradient></defs><polygon points="'+points+'" fill="url(#wood'+p.id+')" stroke="#80532e" stroke-width="1.5" stroke-linejoin="round"/></svg>';
@@ -59,11 +59,11 @@
   const b=document.createElement("button");b.type="button";
   b.className="eg-piece"+(p.placed?" placed":"")+(selectedId===p.id?" selected":"");
   b.dataset.id=p.id;b.setAttribute("aria-label","Peça "+(p.id+1));b.innerHTML=polygonMarkup(p);
-  const d=dims(p),u=unit();
+  const d=dims(p),s=scale();
   if(p.placed){
-   b.style.left=p.x+"%";b.style.top=p.y+"%";b.style.width=d.w+"%";b.style.height=d.h+"%";
+   const s=scale();b.style.left=(p.x*s.x)+"px";b.style.top=(p.y*s.y)+"px";b.style.width=(d.w*s.x)+"px";b.style.height=(d.h*s.y)+"px";
   }else{
-   b.style.setProperty("width",(d.w*u)+"px","important");b.style.setProperty("height",(d.h*u)+"px","important");
+   b.style.setProperty("width",(d.w*s.x)+"px","important");b.style.setProperty("height",(d.h*s.y)+"px","important");
    b.style.flex="0 0 auto";
   }
   b.addEventListener("pointerdown",e=>begin(e,p,b));p.el=b;return b;
@@ -100,20 +100,20 @@
  }
  function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active")}
  function boardPoint(e){
-  const board=$("egBoard"),r=board.getBoundingClientRect(),u=unit();
-  return {x:(e.clientX-r.left-board.clientLeft)/u,y:(e.clientY-r.top-board.clientTop)/u};
+  const board=$("egBoard"),r=board.getBoundingClientRect(),s=scale();
+  return {x:(e.clientX-r.left-board.clientLeft)/s.x,y:(e.clientY-r.top-board.clientTop)/s.y};
  }
  function begin(e,p,el){
   if(solved||drag)return;
   e.preventDefault();selectedId=p.id;
-  const q=boardPoint(e),d=dims(p),wasPlaced=p.placed,rect=el.getBoundingClientRect(),u=unit();
+  const q=boardPoint(e),d=dims(p),wasPlaced=p.placed,rect=el.getBoundingClientRect(),s=scale();
   const from={x:p.x,y:p.y,points:p.points.map(v=>v.slice())};
-  const offsetX=wasPlaced?q.x-p.x:(e.clientX-rect.left)/u;
-  const offsetY=wasPlaced?q.y-p.y:(e.clientY-rect.top)/u;
+  const offsetX=wasPlaced?q.x-p.x:(e.clientX-rect.left)/s.x;
+  const offsetY=wasPlaced?q.y-p.y:(e.clientY-rect.top)/s.y;
   p.placed=true;
   el.classList.add("placed","dragging","selected");
   el.style.gridColumn="";el.style.gridRow="";
-  el.style.setProperty("width",d.w+"%","important");el.style.setProperty("height",d.h+"%","important");
+  el.style.setProperty("width",(d.w*s.x)+"px","important");el.style.setProperty("height",(d.h*s.y)+"px","important");
   $("egBoard").appendChild(el);
   drag={p,el,wasPlaced,from,offsetX,offsetY};
   document.addEventListener("pointermove",move,{passive:false});
@@ -129,7 +129,7 @@
   if(moveFrame)return;
   moveFrame=requestAnimationFrame(()=>{
    moveFrame=0;if(!drag)return;
-   drag.el.style.left=drag.p.x+"%";drag.el.style.top=drag.p.y+"%";
+   const s=scale();drag.el.style.left=(drag.p.x*s.x)+"px";drag.el.style.top=(drag.p.y*s.y)+"px";
   });
  }
  function projections(poly,axis){const values=poly.map(([x,y])=>x*axis[0]+y*axis[1]);return [Math.min(...values),Math.max(...values)]}
