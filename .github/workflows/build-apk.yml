@@ -27,32 +27,6 @@ jobs:
           mkdir -p android/app/src/main/assets
           cp index.html game.js fases.js matchsticks.js balance.js android/app/src/main/assets/
           mkdir -p android/app/src/main/assets/balancas
-      - name: Download the original balance image folder from Dropbox
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p balancas android/app/src/main/assets/balancas
-          curl --retry 3 --retry-all-errors --max-time 180 -fLsS 'https://www.dropbox.com/scl/fo/xn2lmolz4fbdyle8u67il/AAev7fQWfeI_OTlPysjKTrk?rlkey=bhhk9q0y1qzpm80k4lvzxgd26&st=k6egz5ga&dl=1' -o /tmp/balancas-dropbox.zip
-          unzip -t /tmp/balancas-dropbox.zip
-          unzip -jo /tmp/balancas-dropbox.zip '*.jpg' -d balancas
-          mv balancas/IMG-20261120-WA9535.jpg balancas/desafio-01.jpg
-          mv balancas/IMG-20261120-WA4075.jpg balancas/desafio-02.jpg
-          mv balancas/IMG-20261120-WA3868.jpg balancas/desafio-03.jpg
-          mv balancas/IMG-20261120-WA4794.jpg balancas/desafio-04.jpg
-          mv balancas/IMG-20261120-WA7909.jpg balancas/desafio-05.jpg
-          mv balancas/IMG-20261120-WA1893.jpg balancas/desafio-06.jpg
-          mv balancas/IMG-20261120-WA7674.jpg balancas/desafio-07.jpg
-          mv balancas/IMG-20261120-WA2840.jpg balancas/desafio-08.jpg
-          mv balancas/IMG-20261120-WA9530.jpg balancas/desafio-09.jpg
-          mv balancas/IMG-20261120-WA6148.jpg balancas/desafio-10.jpg
-          test "$(find balancas -maxdepth 1 -type f -name '*.jpg' | wc -l)" -eq 10
-          cp balancas/*.jpg android/app/src/main/assets/balancas/
-      - name: Upload balance images for verification
-        uses: actions/upload-artifact@v4
-        with:
-          name: Balance-Images
-          path: balancas/*.jpg
-          retention-days: 14
       - name: Download today's 40 balance images from Dropbox for inspection
         shell: bash
         run: |
