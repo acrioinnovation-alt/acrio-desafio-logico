@@ -113,7 +113,7 @@
   p.placed=true;
   el.classList.add("placed","dragging","selected");
   el.style.gridColumn="";el.style.gridRow="";
-  el.style.width=d.w+"%";el.style.height=d.h+"%";
+  el.style.setProperty("width",d.w+"%","important");el.style.setProperty("height",d.h+"%","important");
   $("egBoard").appendChild(el);
   drag={p,el,wasPlaced,from,offsetX,offsetY};
   document.addEventListener("pointermove",move,{passive:false});
