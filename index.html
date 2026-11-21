@@ -156,8 +156,6 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 .balance-key.action{background:linear-gradient(145deg,#edf2f8,#e1eaf3);color:#425c78}
 .balance-key.confirm{background:linear-gradient(100deg,#bcecf1,#cbd9ff);color:#173c5c}
 .balance-tip{color:#718198}
-.switch-lamps,.switch-controls{color:#29415e}
-.switch-lamps>*,.switch-controls>*{box-shadow:0 3px 12px #29476512}
 @media(max-width:390px){.card{background:#fff}}
 
 </style>
@@ -170,7 +168,7 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 <div class="category-grid">
 <button class="category" onclick="showPhases()"><div class="symbol">◉</div><strong>ACHE O DIFERENTE</strong><span>50 fases · Encontre o caractere diferente</span></button>
 <button class="category" onclick="showBalancePhases()"><div class="symbol">⚖</div><strong>DESAFIO DAS BALANÇAS</strong><span>32 fases · Descubra o peso correto</span></button>\n<button class="category" onclick="showMatchPhases()"><div class="symbol">〽</div><strong>DESAFIO DOS PALITOS</strong><span>50 fases · Mova um palito e resolva a conta</span></button>
-<button class="category" onclick="showSwitchPhases()"><div class="symbol">💡</div><strong>INTERRUPTORES</strong><span>3 fases · Descubra as ligações usando pistas e dedução</span></button>
+
 
 </div></div>
 <p class="foot">Jogo offline • Progresso salvo neste aparelho</p>
@@ -235,22 +233,5 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 </section>
 \n
 <section id="switchPhases" class="screen">
-<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">3 FASES DE TESTE</span></div>
-<div class="card"><h2>Interruptores</h2><p class="desc">Leia as pistas e descubra qual interruptor controla cada lâmpada. Cada ligação deve ser deduzida logicamente.</p><div class="phase-list" id="switchPhaseList"></div></div>
-<p class="foot">Associe interruptores e lâmpadas com base nas pistas. Progresso salvo neste aparelho.</p>
-</section>
-<section id="switchGame" class="screen">
-<div class="stats"><div class="stat"><b id="switchMoves">0</b><span>Erros</span></div><div class="stat"><b id="switchRemaining">2</b><span>Erros restantes</span></div><div class="stat"><b id="switchLit">0/2</b><span>Pares certos</span></div></div>
-<div class="progress"><i id="switchBar"></i></div>
-<div class="card">
-<div class="tagrow"><span class="tag" id="switchLevelTag">FASE 1 · INTERRUPTORES</span><span class="difficulty" id="switchDifficulty">FÁCIL</span></div>
-<p class="instruction" id="switchInstruction">Acenda todas as lâmpadas usando no máximo 2 tentativas.</p>
-<div class="switch-lamps" id="switchLamps" aria-label="Lâmpadas"></div>
-<div class="switch-controls" id="switchControls" aria-label="Interruptores"></div>
-<div id="switchFeedback" class="feedback" aria-live="polite"></div>
-<div class="match-actions"><button class="btn secondary" onclick="resetSwitchLevel()">RECOMEÇAR ↻</button><button class="btn secondary" onclick="showSwitchPhases()">FASES</button><button class="btn secondary" onclick="goHome()">MENU</button></div>
-</div>
-<p class="foot">Selecione um interruptor e uma lâmpada, depois confirme a associação. Use as pistas para deduzir cada ligação.</p>
-</section>
-<section id="finish" class="screen"><div class="hero"><div class="mark">★</div><h1>DESAFIOS CONCLUÍDOS!</h1><p id="finishText">Você completou os 50 desafios.</p></div><div class="card"><h2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
-</main><script src="game.js"></script><script src="matchsticks.js"></script><script src="balance.js"></script><script src="switches.js"></script></body></html>
+<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">3 2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
+</main><script src="game.js"></script><script src="matchsticks.js"></script><script src="balance.js"></script></body></html>
