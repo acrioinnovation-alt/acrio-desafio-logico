@@ -158,6 +158,8 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 .balance-tip{color:#718198}
 @media(max-width:390px){.card{background:#fff}}
 
+
+.square-board{width:100%;max-width:430px;margin:10px auto;padding:8px;border:1px solid #dce5ef;border-radius:17px;background:linear-gradient(145deg,#fbfdff,#edf3fa);touch-action:manipulation}.square-board svg{display:block;width:100%;height:auto}.square-board .square-hit{stroke:transparent;stroke-width:24;stroke-linecap:round;cursor:pointer}.square-board .square-stick{stroke:#c58a50;stroke-width:9;stroke-linecap:round;filter:drop-shadow(0 2px 1px #7d522b55);pointer-events:none}.square-board .square-head{fill:#d94b45;stroke:#a92d2a;stroke-width:1;pointer-events:none}.square-board .square-node{fill:#9bb1c8;opacity:.45;pointer-events:none}.square-board .square-selected{stroke:#e2a12d;stroke-width:13;filter:drop-shadow(0 0 4px #e2a12d99)}
 </style>
 </head>
 <body><main class="app">
@@ -167,7 +169,7 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 <div class="card"><h2>Escolha seu desafio</h2>
 <div class="category-grid">
 <button class="category" onclick="showPhases()"><div class="symbol">◉</div><strong>ACHE O DIFERENTE</strong><span>50 fases · Encontre o caractere diferente</span></button>
-<button class="category" onclick="showBalancePhases()"><div class="symbol">⚖</div><strong>DESAFIO DAS BALANÇAS</strong><span>32 fases · Descubra o peso correto</span></button>\n<button class="category" onclick="showMatchPhases()"><div class="symbol">〽</div><strong>DESAFIO DOS PALITOS</strong><span>50 fases · Mova um palito e resolva a conta</span></button>
+<button class="category" onclick="showBalancePhases()"><div class="symbol">⚖</div><strong>DESAFIO DAS BALANÇAS</strong><span>32 fases · Descubra o peso correto</span></button>\n<button class="category" onclick="showMatchModes()"><div class="symbol">〽</div><strong>DESAFIO DOS PALITOS</strong><span>100 fases · Equações e desafios de quadrados</span></button>
 
 
 </div></div>
@@ -189,10 +191,18 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 <div class="nav"><button class="btn secondary" onclick="showPhases()">FASES</button><button class="btn secondary" onclick="newBoard()">NOVO QUADRO ↻</button></div>
 </div><p class="foot">O diferente pode aparecer em qualquer posição, inclusive no centro.</p>
 </section>
+<section id="matchModes" class="screen">
+<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">100 FASES</span></div>
+<div class="card"><h2>Desafio dos Palitos</h2><p class="desc">Escolha o tipo de desafio.</p>
+<div class="category-grid">
+<button class="category" onclick="showMatchPhases()"><div class="symbol">＝</div><strong>CORRIJA A EQUAÇÃO</strong><span>50 fases · Mova um palito para corrigir a conta</span></button>
+<button class="category" onclick="showSquarePhases()"><div class="symbol">□</div><strong>FORME A QUANTIDADE</strong><span>50 fases · Mova um palito para obter a quantidade exata de quadrados</span></button>
+</div></div>
+</section>
 <section id="matchPhases" class="screen">
-<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">50 DESAFIOS</span></div>
-<div class="card"><h2>Desafio dos Palitos</h2><p class="desc">Escolha uma fase. Mova exatamente um palito: toque no palito que deseja mover e depois no espaço vazio onde ele ficará.</p><div class="phase-list" id="matchPhaseList"></div></div>
-<p class="foot">Seu progresso nesta modalidade é separado e fica salvo neste aparelho.</p>
+<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="showMatchModes()">← VOLTAR</button><span class="tag">50 FASES</span></div>
+<div class="card"><h2>Corrija a Equação</h2><p class="desc">Mova exatamente um palito: toque no palito que deseja mover e depois no espaço vazio onde ele ficará.</p><div class="phase-list" id="matchPhaseList"></div></div>
+<p class="foot">Progresso separado nesta categoria.</p>
 </section>
 <section id="matches" class="screen">
 <div class="stats"><div class="stat"><b id="matchScore">0</b><span>Pontos</span></div><div class="stat"><b id="matchDone">0/50</b><span>Concluídas</span></div><div class="stat"><b id="matchRecord">0</b><span>Recorde</span></div></div>
@@ -205,6 +215,24 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 <div id="matchFeedback" class="feedback" aria-live="polite"></div>
 <div class="match-actions"><button class="btn secondary" onclick="showMatchPhases()">FASES</button><button class="btn secondary" onclick="resetMatchMove()">RECOMEÇAR ↻</button></div>
 </div><p class="foot">Segure um palito e arraste até um espaço vazio. Nenhum palito pode ser criado ou descartado.</p>
+</section>
+<section id="squarePhases" class="screen">
+<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="showMatchModes()">← VOLTAR</button><span class="tag">50 FASES</span></div>
+<div class="card"><h2>Forme a Quantidade</h2><p class="desc">Escolha uma fase e mova um palito para deixar exatamente a quantidade de quadrados solicitada.</p><div class="phase-list" id="squarePhaseList"></div></div>
+<p class="foot">Os quadrados pequenos e grandes também entram na contagem.</p>
+</section>
+<section id="squares" class="screen">
+<div class="stats"><div class="stat"><b id="squareDone">0/50</b><span>Concluídas</span></div><div class="stat"><b id="squareBest">0</b><span>Recorde</span></div><div class="stat"><b id="squareTarget">0</b><span>Quadrados pedidos</span></div></div>
+<div class="progress"><i id="squareBar"></i></div>
+<div class="card">
+<div class="tagrow"><span class="tag" id="squareLevelTag">FASE 1 · QUADRADOS</span><span class="difficulty" id="squareDifficulty">INICIANTE</span></div>
+<p class="instruction" id="squareInstruction">Mova um palito para formar exatamente a quantidade solicitada</p>
+<div class="square-board" id="squareBoard" aria-label="Figura de palitos formando quadrados"></div>
+<div class="match-target"><span>Objetivo: <b id="squareTargetLabel">0 quadrados</b></span><span id="squareStatus">Escolha um palito</span></div>
+<div id="squareFeedback" class="feedback" aria-live="polite"></div>
+<div class="match-actions"><button class="btn secondary" onclick="showSquarePhases()">FASES</button><button class="btn secondary" onclick="resetSquareMove()">RECOMEÇAR ↻</button></div>
+</div>
+<p class="foot">Toque em um palito e depois no espaço vazio onde deseja colocá-lo. Todos os quadrados, inclusive os maiores, são contados.</p>
 </section>
 
 <section id="balancePhases" class="screen">
@@ -233,4 +261,4 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 </section>
 \n
 <section id="finish" class="screen"><div class="hero"><div class="mark">★</div><h1>DESAFIOS CONCLUÍDOS!</h1><p id="finishText">Você completou os 50 desafios.</p></div><div class="card"><h2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
-</main><script src="game.js"></script><script src="matchsticks.js"></script><script src="balance.js"></script></body></html>
+</main><script src="game.js"></script><script src="matchsticks.js"></script><script src="squares.js"></script><script src="balance.js"></script></body></html>
