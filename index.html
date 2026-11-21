@@ -186,7 +186,7 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 <div class="grid-wrap"><div class="game-grid" id="grid" aria-label="Quadro de caracteres"></div></div>
 <div class="grid-footer"><span id="gridSize">100 caracteres</span><span>1 diferente escondido</span></div>
 <div id="feedback" class="feedback" aria-live="polite"></div>
-<div class="nav"><button class="btn secondary" onclick="showPhases()">FASES</button><button class="btn secondary" onclick="newBoard()">NOVO QUADRO ↻</button><button class="btn secondary" onclick="goHome()">MENU</button></div>
+<div class="nav"><button class="btn secondary" onclick="showPhases()">FASES</button><button class="btn secondary" onclick="newBoard()">NOVO QUADRO ↻</button></div>
 </div><p class="foot">O diferente pode aparecer em qualquer posição, inclusive no centro.</p>
 </section>
 <section id="matchPhases" class="screen">
@@ -203,7 +203,7 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 <div class="match-board" id="matchBoard" aria-label="Equação feita com palitos"></div>
 <div class="match-target"><span id="matchMoveLabel">1 movimento</span><span id="matchStatus">Escolha um palito</span></div>
 <div id="matchFeedback" class="feedback" aria-live="polite"></div>
-<div class="match-actions"><button class="btn secondary" onclick="showMatchPhases()">FASES</button><button class="btn secondary" onclick="resetMatchMove()">RECOMEÇAR ↻</button><button class="btn secondary" onclick="goHome()">MENU</button></div>
+<div class="match-actions"><button class="btn secondary" onclick="showMatchPhases()">FASES</button><button class="btn secondary" onclick="resetMatchMove()">RECOMEÇAR ↻</button></div>
 </div><p class="foot">Segure um palito e arraste até um espaço vazio. Nenhum palito pode ser criado ou descartado.</p>
 </section>
 
@@ -232,6 +232,5 @@ body{background:linear-gradient(180deg,#eaf2fb 0%,#f5f7fb 38%,#eef3f8 100%);colo
 </div>
 </section>
 \n
-<section id="switchPhases" class="screen">
-<div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="goHome()">← MENU</button><span class="tag">3 2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
+<section id="finish" class="screen"><div class="hero"><div class="mark">★</div><h1>DESAFIOS CONCLUÍDOS!</h1><p id="finishText">Você completou os 50 desafios.</p></div><div class="card"><h2 id="finalScore">0 pontos</h2><p class="desc">Parabéns! Você pode jogar novamente ou escolher outra fase.</p><button class="btn primary start" onclick="showPhases()">ESCOLHER OUTRA FASE</button><button class="btn secondary start" onclick="goHome()">MENU PRINCIPAL</button></div></section>
 </main><script src="game.js"></script><script src="matchsticks.js"></script><script src="balance.js"></script></body></html>
