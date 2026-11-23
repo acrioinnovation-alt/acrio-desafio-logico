@@ -53,9 +53,10 @@
  }
  // 41–50: losangos numa malha de losangos; contar apenas os losangos com lados iguais.
  for(let i=0;i<10;i++){
-  const w=2+(i%4),h=2+Math.floor(i/3),cx=160,cy=125,dx=205/w,dy=160/h,sk=35;let b="";
-  for(let c=0;c<=w;c++)b+=line(cx-100+c*dx,cy-80,cx-100+c*dx+sk,cy+80);
-  for(let r=0;r<=h;r++)b+=line(cx-100,cy-80+r*dy,cx+105,cy-80+r*dy);
+  const w=2+(i%4),h=2+Math.floor(i/3),dx=18,dy=18,originX=160-(w-h)*dx/2,originY=35;let b="";
+  const pt=(c,r)=>[originX+(c-r)*dx,originY+(c+r)*dy];
+  for(let c=0;c<=w;c++){const a=pt(c,0),z=pt(c,h);b+=line(a[0],a[1],z[0],z[1])}
+  for(let r=0;r<=h;r++){const a=pt(0,r),z=pt(w,r);b+=line(a[0],a[1],z[0],z[1])}
   const answer=Array.from({length:Math.min(w,h)},(_,k)=>(w-k)*(h-k)).reduce((a,v)=>a+v,0);
   add("LOSANGOS","Quantos losangos existem?","Observe os quadriláteros inclinados e conte também os maiores.",base(b),answer,"A malha tem "+answer+" paralelogramos em tamanhos correspondentes. Considere os losangos formados pelas divisões iguais.",i<4?"DIFÍCIL":"ESPECIALISTA");
  }
