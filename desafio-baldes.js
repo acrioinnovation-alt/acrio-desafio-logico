@@ -1,6 +1,6 @@
 (()=>{"use strict";
 const $=id=>document.getElementById(id);
-const pairs=[[3,5],[4,7],[5,8],[6,9],[7,11],[5,9],[4,9],[6,11],[7,10],[8,13]];
+const pairs=[[3,5],[4,7],[5,8],[6,11],[7,11],[5,9],[4,9],[6,11],[7,10],[8,13]];
 const levels=Array.from({length:50},(_,i)=>{const pair=pairs[Math.floor(i/5)],target=(i%5)+1;return {a:pair[0],b:pair[1],target,difficulty:i<10?"FÁCIL":i<20?"FÁCIL":i<30?"MÉDIO":i<40?"DIFÍCIL":"DESAFIADOR"}});
 let current=1,amount=[0,0],done=[],moves=0;
 function readDone(){try{return JSON.parse(localStorage.getItem("jugs_done")||"[]")}catch(e){return[]}}
