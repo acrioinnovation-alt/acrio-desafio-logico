@@ -203,8 +203,26 @@
   p.x=ox;p.y=oy;return ok;
  }
  function smartSnap(p){
-  // Tolerância curta: corrige pequenas sobreposições/folgas sem mover a peça à força.
-  const limit=2.4,step=.4,candidates=[];
+  // Tolerância curta: corrige pequenas sobreposições e aproxima bordas quase encaixadas.
+  const limit=2.4,step=.4,candidates=[],current=bounds(absolute(p));
+  for(const other of parts){
+   if(other===p||!other.placed)continue;
+   const b=bounds(absolute(other));
+   const vertical=Math.min(current.maxY,b.maxY)-Math.max(current.minY,b.minY);
+   const horizontal=Math.min(current.maxX,b.maxX)-Math.max(current.minX,b.minX);
+   if(vertical>0){
+    const right=b.minX-current.maxX,left=b.maxX-current.minX;
+    if(Math.abs(right)<=limit)candidates.push({dx:right,dy:0,dist:Math.abs(right)});
+    if(Math.abs(left)<=limit)candidates.push({dx:left,dy:0,dist:Math.abs(left)});
+   }
+   if(horizontal>0){
+    const down=b.minY-current.maxY,up=b.maxY-current.minY;
+    if(Math.abs(down)<=limit)candidates.push({dx:0,dy:down,dist:Math.abs(down)});
+    if(Math.abs(up)<=limit)candidates.push({dx:0,dy:up,dist:Math.abs(up)});
+   }
+  }
+  candidates.sort((a,b)=>a.dist-b.dist);
+  for(const q of candidates){const x=p.x+q.dx,y=p.y+q.dy;if(freeAt(p,x,y))return {x,y,moved:q.dist>0.01};}
   for(let dx=-limit;dx<=limit+1e-6;dx+=step)for(let dy=-limit;dy<=limit+1e-6;dy+=step){
    const dist=Math.hypot(dx,dy);if(dist<=limit+1e-6)candidates.push({dx,dy,dist});
   }
