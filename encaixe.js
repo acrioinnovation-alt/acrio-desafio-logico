@@ -43,6 +43,39 @@
    [[50,50],[100,100],[50,100]]
   ]}
  ];
+ // Expansão do catálogo: fases 6 a 50, com soluções geométricas garantidas.
+ // Cada tabuleiro é particionado em células; algumas células viram dois triângulos.
+ // A soma das áreas permanece exatamente 10.000 unidades e a montagem original
+ // recompõe o quadrado sem lacunas ou sobreposições.
+ function buildExtraLevels(){
+  const patterns=[
+   [2,3],[3,2],[3,3],[2,4],[4,2],[3,4],[4,3],[4,4],[3,5],
+   [5,3],[4,5],[5,4],[5,5],[4,6],[6,4],[5,6],[6,5],[6,6],
+   [5,7],[7,5],[6,7],[7,6],[7,7],[6,8],[8,6],[7,8],[8,7],
+   [8,8],[7,9],[9,7],[8,9],[9,8],[9,9],[8,10],[10,8],
+   [9,10],[10,9],[10,10],[8,12],[12,8],[10,12],[12,10],
+   [11,11],[10,14],[14,10]
+  ];
+  patterns.forEach(([cols,rows],idx)=>{
+   const phase=idx+6, pieces=[];
+   for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const x0=c*100/cols,x1=(c+1)*100/cols;
+    const y0=r*100/rows,y1=(r+1)*100/rows;
+    const split=((r*7+c*11+phase)%5)<(phase<16?1:phase<26?2:3);
+    if(!split) pieces.push([[x0,y0],[x1,y0],[x1,y1],[x0,y1]]);
+    else if((r+c+phase)%2===0){
+     pieces.push([[x0,y0],[x1,y0],[x1,y1]]);
+     pieces.push([[x0,y0],[x1,y1],[x0,y1]]);
+    }else{
+     pieces.push([[x0,y0],[x1,y0],[x0,y1]]);
+     pieces.push([[x1,y0],[x1,y1],[x0,y1]]);
+    }
+   }
+   const names=phase<=15?"MÉDIA":phase<=25?"DIFÍCIL":phase<=40?"MUITO DIFÍCIL":"EXTREMA";
+   levels.push({name:names,pieces});
+  });
+ }
+ buildExtraLevels();
  let level=1,parts=[],drag=null,solved=false,selectedId=null,moveFrame=0;
  const completed=()=>{try{const v=JSON.parse(localStorage.getItem(STORE)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}};
  const area=pts=>Math.abs(pts.reduce((s,p,i)=>{const q=pts[(i+1)%pts.length];return s+p[0]*q[1]-q[0]*p[1]},0)/2);
@@ -87,7 +120,7 @@
   level=n;solved=false;drag=null;selectedId=null;
   parts=levels[n-1].pieces.map((points,id)=>({id,points:normalized(points),x:0,y:0,placed:false,area:area(points)}));
   if(n%2===0)parts.reverse();
-  $("egLevelTag").textContent="FASE "+n+" DE 5";$("egDifficulty").textContent=levels[n-1].name;
+  $("egLevelTag").textContent="FASE "+n+" DE "+levels.length;$("egDifficulty").textContent=levels[n-1].name;
   $("egInstruction").textContent="Pegue uma peça e coloque onde houver espaço. As peças mantêm o mesmo tamanho; não podem se sobrepor.";
   $("egWin").classList.remove("show");$("egNext").disabled=true;$("egNext").textContent="PRÓXIMA FASE →";
   $("egStatus").textContent="O tabuleiro está vazio. Todas as peças estão visíveis ao lado.";
@@ -185,12 +218,12 @@
   if(filled&&!solved){
    solved=true;localStorage.setItem(STORE,JSON.stringify([...new Set([...completed(),level])]));
    $("egWin").classList.add("show");$("egStatus").textContent="Perfeito! Você preencheu todo o quadrado usando todas as peças.";
-   $("egNext").disabled=false;$("egNext").textContent=level===5?"VER FASES":"PRÓXIMA FASE →";
+   $("egNext").disabled=false;$("egNext").textContent=level===levels.length?"VER FASES":"PRÓXIMA FASE →";
   }else if(hasOverlap)$("egStatus").textContent="Há peças sobrepostas. Pegue uma delas e coloque em outro espaço.";
   else if(allPlaced&&allInside)$("egStatus").textContent="Todas as peças estão no tabuleiro. Ajuste a montagem para preencher o espaço inteiro.";
   else $("egStatus").textContent=Math.round(used/100)+"% da área do tabuleiro coberta. Continue encaixando.";
  }
  function reset(){if(solved)return;selectedId=null;parts.forEach(p=>{p.placed=false;p.x=0;p.y=0});render();$("egStatus").textContent="Todas as peças voltaram para a bandeja."}
- window.showEgPhases=phases;window.egRotate=rotate;window.egReset=reset;window.egNext=()=>level<5?start(level+1):phases();
+ window.showEgPhases=phases;window.egRotate=rotate;window.egReset=reset;window.egNext=()=>level<levels.length?start(level+1):phases();
  window.addEventListener("resize",()=>{if($("egGame").classList.contains("active")&&!drag)render()});
 })();
