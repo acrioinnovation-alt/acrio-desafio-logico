@@ -97,7 +97,7 @@
   const N=20,m=[];
   const poly=(x,y,p)=>{let z=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])z=!z}return z};
   for(let r=0;r<N;r++){const row=[];for(let col=0;col<N;col++){
-   const x=(col+.5)/10-1,y=(r+.5)/10-1;let v=false;
+   let x=(col+.5)/10-1,y=(r+.5)/10-1;if(variant%4===1)x=-x;else if(variant%4===2){const t=x;x=-y;y=t}else if(variant%4===3){const t=x;x=y;y=-t}let v=false;
    if(kind==="CASA")v=(y>-.12&&y<.9&&Math.abs(x)<.72)||(y<=-.12&&y>-.9&&Math.abs(x)<.72*(y+.9)/.78);
    if(kind==="BARCO")v=(y>.02&&y<.58&&Math.abs(x)<.9-(y-.02)*.42)||poly(x,y,[[-.12,.05],[.12,.05],[.12,.9],[-.12,.9]]);
    if(kind==="ÁRVORE")v=(y>-.9&&y<.88&&Math.abs(x)<.82*(y+.9)/1.78)||(y>.48&&Math.abs(x)<.15);
