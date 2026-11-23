@@ -1,0 +1,16 @@
+(()=>{"use strict";
+const $=id=>document.getElementById(id);
+const pairs=[[3,5],[4,7],[5,8],[6,9],[7,11],[5,9],[4,9],[6,11],[7,10],[8,13]];
+const levels=Array.from({length:50},(_,i)=>{const pair=pairs[Math.floor(i/5)],target=(i%5)+1;return {a:pair[0],b:pair[1],target,difficulty:i<10?"FÁCIL":i<20?"FÁCIL":i<30?"MÉDIO":i<40?"DIFÍCIL":"DESAFIADOR"}});
+let current=1,amount=[0,0],done=[],moves=0;
+function readDone(){try{return JSON.parse(localStorage.getItem("jugs_done")||"[]")}catch(e){return[]}}
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active")}
+function showJugPhases(){done=readDone();const list=$("jugPhaseList");list.innerHTML="";for(let i=1;i<=50;i++){const b=document.createElement("button");b.className="phase-btn"+(done.includes(i)?" done":"");b.textContent=String(i).padStart(2,"0");b.onclick=()=>startJug(i);list.appendChild(b)}$("levelPill").textContent="DESAFIO DOS BALDES";show("jugPhases")}
+function startJug(n){current=Math.max(1,Math.min(50,n));amount=[0,0];moves=0;const l=levels[current-1];$("jugLevel").textContent="FASE "+current+" · DESAFIO DOS BALDES";$("jugDifficulty").textContent=l.difficulty;$("jugGoal").textContent="Obtenha exatamente "+l.target+" litro(s) em um dos baldes.";$("jugMoves").textContent="0";$("jugDone").textContent=readDone().length+"/50";$("jugFeedback").className="feedback";$("jugFeedback").textContent="";$("jugProgress").style.width=current*2+"%";draw();$("levelPill").textContent="FASE "+current;show("jugGame")}
+function draw(){const l=levels[current-1];[0,1].forEach(i=>{const cap=i?l.b:l.a;$("jugAmount"+i).textContent=amount[i]+" / "+cap+" L";$("jugFill"+i).style.height=(amount[i]/cap*100)+"%";$("jugFill"+i).textContent=amount[i]?amount[i]+" L":""})}
+function msg(type,t){$("jugFeedback").className="feedback show "+type;$("jugFeedback").textContent=t}
+function act(i,op){const l=levels[current-1],cap=i?l.b:l.a,other=1-i,otherCap=other?l.b:l.a;let changed=false;if(op==="fill"&&amount[i]<cap){amount[i]=cap;changed=true}else if(op==="empty"&&amount[i]>0){amount[i]=0;changed=true}else if(op==="pour"&&amount[i]>0&&amount[other]<otherCap){const q=Math.min(amount[i],otherCap-amount[other]);amount[i]-=q;amount[other]+=q;changed=q>0}if(!changed){msg("bad","Essa ação não altera a quantidade de água. Tente outra.");return}moves++;$("jugMoves").textContent=moves;draw();const t=l.target;if(amount[0]===t||amount[1]===t){finish()}else msg("good","Continue! Você está com "+amount[0]+" L no balde A e "+amount[1]+" L no balde B.")}
+function finish(){done=readDone();if(!done.includes(current)){done.push(current);localStorage.setItem("jugs_done",JSON.stringify(done))}$("jugDone").textContent=done.length+"/50";msg("good","Muito bem! Você conseguiu exatamente "+levels[current-1].target+" litro(s) em "+moves+" ações.");if(current<50){const b=document.createElement("button");b.className="btn primary start";b.textContent="PRÓXIMA FASE →";b.onclick=()=>startJug(current+1);$("jugFeedback").appendChild(b)}}
+function resetJug(){startJug(current)}
+window.showJugPhases=showJugPhases;window.startJug=startJug;window.resetJug=resetJug;window.jugAction=act;
+})();
