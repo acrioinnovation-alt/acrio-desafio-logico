@@ -56,14 +56,31 @@
    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
     const x0=c*100/cols,x1=(c+1)*100/cols;
     const y0=r*100/rows,y1=(r+1)*100/rows;
-    const split=((r*7+c*11+phase+variant)%5)<(phase<11?3:phase<21?3:phase<31?4:4);
-    if(!split) pieces.push([[x0,y0],[x1,y0],[x1,y1],[x0,y1]]);
-    else if((r+c+phase+variant+g)%2===0){
+    const mode=(r*3+c*5+phase+variant+g)%6;
+    const w=x1-x0,h=y1-y0,dx=w*.34,dy=h*.34;
+    if(mode===0) pieces.push([[x0,y0],[x1,y0],[x1,y1],[x0,y1]]);
+    else if(mode===1){
      pieces.push([[x0,y0],[x1,y0],[x1,y1]]);
      pieces.push([[x0,y0],[x1,y1],[x0,y1]]);
+    }else if(mode===2){
+     // Pentágono + triângulo: corte diagonal de um canto, sem lacunas.
+     pieces.push([[x0+dx,y0],[x1,y0],[x1,y1],[x0,y1],[x0,y0+dy]]);
+     pieces.push([[x0,y0],[x0+dx,y0],[x0,y0+dy]]);
+    }else if(mode===3){
+     // Dois trapézios complementares.
+     const top=x0+w*.38,bottom=x0+w*.62;
+     pieces.push([[x0,y0],[top,y0],[bottom,y1],[x0,y1]]);
+     pieces.push([[top,y0],[x1,y0],[x1,y1],[bottom,y1]]);
+    }else if(mode===4){
+     // Hexágono + dois triângulos de canto.
+     pieces.push([[x0+dx,y0],[x1,y0],[x1,y1-dy],[x1-dx,y1],[x0,y1],[x0,y0+dy]]);
+     pieces.push([[x0,y0],[x0+dx,y0],[x0,y0+dy]]);
+     pieces.push([[x1,y1],[x1-dx,y1],[x1,y1-dy]]);
     }else{
-     pieces.push([[x0,y0],[x1,y0],[x0,y1]]);
-     pieces.push([[x1,y0],[x1,y1],[x0,y1]]);
+     // Dois quadriláteros inclinados, incluindo formas de aparência paralelogramo.
+     const top=x0+w*.5,bottom=x0+w*.5;
+     pieces.push([[x0,y0],[top,y0],[bottom,y1],[x0,y1]]);
+     pieces.push([[top,y0],[x1,y0],[x1,y1],[bottom,y1]]);
     }
    }
    const names=phase<=15?"MÉDIA":phase<=25?"DIFÍCIL":phase<=40?"MUITO DIFÍCIL":"EXTREMA";
@@ -179,32 +196,54 @@
  }
  function cancel(){finish(true)}
  function end(){finish(false)}
+ function freeAt(p,x,y){
+  const ox=p.x,oy=p.y;p.x=x;p.y=y;
+  const ok=inside(p)&&!parts.some(other=>other!==p&&other.placed&&overlaps(p,other));
+  p.x=ox;p.y=oy;return ok;
+ }
+ function smartSnap(p){
+  // Tolerância curta: corrige pequenas sobreposições/folgas sem mover a peça à força.
+  const limit=2.4,step=.4,candidates=[];
+  for(let dx=-limit;dx<=limit+1e-6;dx+=step)for(let dy=-limit;dy<=limit+1e-6;dy+=step){
+   const dist=Math.hypot(dx,dy);if(dist<=limit+1e-6)candidates.push({dx,dy,dist});
+  }
+  candidates.sort((a,b)=>a.dist-b.dist);
+  for(const q of candidates){const x=p.x+q.dx,y=p.y+q.dy;if(freeAt(p,x,y))return {x,y,moved:q.dist>0.01};}
+  return null;
+ }
  function finish(cancelled){
   cleanupDrag();if(!drag)return;
   const d=drag,p=d.p;
-  const hit=!cancelled&&inside(p)&&parts.some(other=>other!==p&&other.placed&&overlaps(p,other));
-  const valid=!cancelled&&inside(p)&&!hit;
+  let snapped=null;
+  if(!cancelled)snapped=smartSnap(p);
+  const valid=!cancelled&&!!snapped;
   d.el.classList.remove("dragging");
-  if(!valid){
-   if(hit){
-    if(d.wasPlaced){p.x=d.from.x;p.y=d.from.y;p.points=d.from.points;p.placed=true}
-    else p.placed=false;
-    $("egStatus").textContent="Esse espaço já está ocupado. A peça voltou ao local de onde saiu.";
-   }else{
-    p.placed=false;
-    $("egStatus").textContent="Peça retirada do tabuleiro e devolvida à bandeja.";
-   }
-  }else $("egStatus").textContent="Peça posicionada! Você pode pegá-la novamente, mover para qualquer espaço vazio ou devolvê-la à bandeja.";
+  if(valid){
+   p.x=snapped.x;p.y=snapped.y;p.placed=true;
+   $("egStatus").textContent=snapped.moved
+    ?"Encaixe ajustado automaticamente. A peça ficou alinhada sem sobreposição."
+    :"Peça posicionada! Você pode movê-la livremente ou devolvê-la à bandeja.";
+  }else{
+   if(d.wasPlaced){p.x=d.from.x;p.y=d.from.y;p.points=d.from.points;p.placed=true;}
+   else p.placed=false;
+   $("egStatus").textContent=cancelled
+    ?"Movimento cancelado. A peça voltou ao local anterior."
+    :"Não há espaço livre tão próximo. A peça voltou ao local anterior; tente outro espaço.";
+  }
   drag=null;render();validate();
  }
  function rotate(){
   if(drag)return;const p=parts.find(v=>v.id===selectedId);
   if(!p){$("egStatus").textContent="Selecione uma peça para girá-la.";return}
+  const oldPoints=p.points.map(v=>v.slice()),oldX=p.x,oldY=p.y;
   const old=dims(p),cx=p.x+old.w/2,cy=p.y+old.h/2;
   p.points=normalized(p.points.map(([x,y])=>[old.h-y,x]));
   const now=dims(p);p.x=cx-now.w/2;p.y=cy-now.h/2;
-  render();$("egStatus").textContent="Peça girada. O tamanho foi mantido.";
-  validate();
+  if(p.placed&&!freeAt(p,p.x,p.y)){
+   p.points=oldPoints;p.x=oldX;p.y=oldY;
+   $("egStatus").textContent="Não é possível girar aqui: a nova posição ultrapassaria o tabuleiro ou sobreporia outra peça.";
+  }else $("egStatus").textContent="Peça girada sem alterar seu tamanho e sem sobreposição.";
+  render();validate();
  }
  function validate(){
   let used=0,allInside=true,hasOverlap=false;
