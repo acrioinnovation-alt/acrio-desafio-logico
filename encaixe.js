@@ -56,7 +56,7 @@
    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
     const x0=c*100/cols,x1=(c+1)*100/cols;
     const y0=r*100/rows,y1=(r+1)*100/rows;
-    const split=((r*7+c*11+phase+variant)%5)<(phase<16?1:phase<31?2:3);
+    const split=((r*7+c*11+phase+variant)%5)<(phase<11?3:phase<21?3:phase<31?4:4);
     if(!split) pieces.push([[x0,y0],[x1,y0],[x1,y1],[x0,y1]]);
     else if((r+c+phase+variant+g)%2===0){
      pieces.push([[x0,y0],[x1,y0],[x1,y1]]);
