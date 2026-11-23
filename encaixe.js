@@ -6,6 +6,7 @@
  let activeMask=null,activeArea=10000;
  const style=document.createElement("style");
  style.textContent="#egBoard{position:relative!important;isolation:isolate;overflow:hidden!important;box-sizing:border-box!important;border:12px solid transparent!important;border-radius:11px!important;background:linear-gradient(145deg,#f3e1c2,#e7cda2) padding-box,linear-gradient(145deg,#e0b77f,#86552e 52%,#c08a50) border-box!important;box-shadow:0 0 0 1px #56351e,0 7px 14px #65401e55!important}#egBoard:before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;border:2px solid #986538;box-shadow:inset 0 0 0 4px #f6e6c9,inset 0 0 0 6px #b17a45;border-radius:1px}#egBoard .eg-piece{z-index:3!important}#egBoard .eg-piece svg,#egTray .eg-piece svg{overflow:hidden!important}#egTray{display:flex!important;flex-flow:row wrap!important;grid-template-columns:none!important;grid-auto-rows:auto!important;align-items:center!important;justify-content:center!important;gap:8px!important;width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;padding:8px!important}#egTray .eg-piece{position:relative!important;left:auto!important;top:auto!important;transform:none!important;flex:none!important;max-width:none!important;max-height:none!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;box-sizing:border-box!important;border:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;border-radius:0!important}#egTray .eg-piece svg{display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important}#egTray .eg-piece.selected,#egBoard .eg-piece.selected{outline:none!important;outline-offset:0!important;border:0!important;border-radius:0!important}#egBoard .eg-piece{padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-sizing:border-box!important}";
+ style.textContent += "#egBoard.eg-irregular{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important}#egBoard.eg-irregular:before{display:none!important}";
  document.head.appendChild(style);
  const levels=[
   {name:"FÁCIL",pieces:[
@@ -128,7 +129,7 @@
  const silhouetteNames=["CASA","BARCO","ÁRVORE","PEIXE","FOGUETE","CORAÇÃO","ESTRELA","BORBOLETA","FLOR","GATO","AVIÃO"];
  for(let i=0;i<50;i++){const kind=silhouetteNames[i%silhouetteNames.length],mask=makeMask(kind,Math.floor(i/silhouetteNames.length)),pieces=tileMask(mask,i+1),boardArea=mask.flat().filter(Boolean).length*25;levels.push({name:i<12?"MÉDIA":i<26?"DIFÍCIL":i<40?"MUITO DIFÍCIL":"EXTREMA",pieces,mask,boardArea,shapeName:kind});}
 
- levels.forEach((v,i)=>{v.name=i<10?"FÁCIL":i<20?"MÉDIA":i<30?"DIFÍCIL":i<40?"MUITO DIFÍCIL":"EXTREMA"});
+ levels.forEach((v,i)=>{if(i<50)v.name=i<10?"FÁCIL":i<20?"MÉDIA":i<30?"DIFÍCIL":i<40?"MUITO DIFÍCIL":"EXTREMA"});
  let level=1,parts=[],drag=null,solved=false,selectedId=null,moveFrame=0;
  const completed=()=>{try{const v=JSON.parse(localStorage.getItem(STORE)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}};
  const area=pts=>Math.abs(pts.reduce((s,p,i)=>{const q=pts[(i+1)%pts.length];return s+p[0]*q[1]-q[0]*p[1]},0)/2);
