@@ -48,22 +48,17 @@
  // A soma das áreas permanece exatamente 10.000 unidades e a montagem original
  // recompõe o quadrado sem lacunas ou sobreposições.
  function buildExtraLevels(){
-  const patterns=[
-   [2,3],[3,2],[3,3],[2,4],[4,2],[3,4],[4,3],[4,4],[3,5],
-   [5,3],[4,5],[5,4],[5,5],[4,6],[6,4],[5,6],[6,5],[6,6],
-   [5,7],[7,5],[6,7],[7,6],[7,7],[6,8],[8,6],[7,8],[8,7],
-   [8,8],[7,9],[9,7],[8,9],[9,8],[9,9],[8,10],[10,8],
-   [9,10],[10,9],[10,10],[8,12],[12,8],[10,12],[12,10],
-   [11,11],[10,14],[14,10]
-  ];
-  patterns.forEach(([cols,rows],idx)=>{
+  const patterns=[];
+  const grids=[[2,3],[3,2],[3,3],[2,4],[4,2],[3,4],[4,3],[4,4],[3,5],[5,3],[4,5],[5,4],[5,5],[2,5],[5,2]];
+  grids.forEach(([cols,rows],g)=>{for(let variant=0;variant<3;variant++)patterns.push({cols,rows,variant,g})});
+  patterns.forEach(({cols,rows,variant,g},idx)=>{
    const phase=idx+6, pieces=[];
    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
     const x0=c*100/cols,x1=(c+1)*100/cols;
     const y0=r*100/rows,y1=(r+1)*100/rows;
-    const split=((r*7+c*11+phase)%5)<(phase<16?1:phase<26?2:3);
+    const split=((r*7+c*11+phase+variant)%5)<(phase<16?1:phase<31?2:3);
     if(!split) pieces.push([[x0,y0],[x1,y0],[x1,y1],[x0,y1]]);
-    else if((r+c+phase)%2===0){
+    else if((r+c+phase+variant+g)%2===0){
      pieces.push([[x0,y0],[x1,y0],[x1,y1]]);
      pieces.push([[x0,y0],[x1,y1],[x0,y1]]);
     }else{
