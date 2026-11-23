@@ -17,7 +17,7 @@ const levels=[];
 layouts.forEach((l,k)=>{for(let v=0;v<5;v++){const cycles=l.c.slice(0,Math.min(l.c.length,Math.max(2,2+v)));levels.push({name:l.n,points:l.p,cycles,difficulty:v===0?"FÁCIL":v===1?"FÁCIL":v===2?"MÉDIO":v===3?"DIFÍCIL":"DESAFIADOR"});}});
 let current=1,points=[],edges=[],visited=new Set(),active=false,activeNode=-1,pointerId=null,moves=0;
 const key=(a,b)=>a<b?a+"-"+b:b+"-"+a;
-function build(level){points=level.points.map(([x,y],id)=>({id,x,y}));edges=[];const seen=new Set();level.cycles.forEach(c=>{for(let i=0;i<c.length;i++){const a=c[i],b=c[(i+1)%c.length],k=key(a,b);if(a!==b&&!seen.has(k)){seen.add(k);edges.push({a,b,key:k});}}});}
+function build(level){points=level.points.map(([x,y],id)=>({id,x,y}));edges=[];const seen=new Set();const cycles=[points.map((_,i)=>i),...level.cycles];cycles.forEach(c=>{for(let i=0;i<c.length;i++){const a=c[i],b=c[(i+1)%c.length],k=key(a,b);if(a!==b&&!seen.has(k)){seen.add(k);edges.push({a,b,key:k});}}});}
 function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active");}
 function completed(){try{return JSON.parse(localStorage.getItem("dots_no_repeat_done")||"[]")}catch(e){return[]}}
 function showDotsPhases(){const list=$("dotsPhaseList");list.innerHTML="";const done=completed();for(let i=1;i<=50;i++){const b=document.createElement("button");b.className="phase-btn"+(done.includes(i)?" done":"");b.textContent=String(i).padStart(2,"0");b.addEventListener("click",()=>startDots(i));list.appendChild(b);} $("dotsDone").textContent=done.length+"/50";$("levelPill").textContent="LIGAR OS PONTOS";show("dotsPhases");}
