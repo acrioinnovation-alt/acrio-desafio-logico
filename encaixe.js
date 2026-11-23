@@ -3,6 +3,7 @@
  "use strict";
  const $=id=>document.getElementById(id);
  const STORE="acrio_encaixe_completed";
+ let activeMask=null,activeArea=10000;
  const style=document.createElement("style");
  style.textContent="#egBoard{position:relative!important;isolation:isolate;overflow:hidden!important;box-sizing:border-box!important;border:12px solid transparent!important;border-radius:11px!important;background:linear-gradient(145deg,#f3e1c2,#e7cda2) padding-box,linear-gradient(145deg,#e0b77f,#86552e 52%,#c08a50) border-box!important;box-shadow:0 0 0 1px #56351e,0 7px 14px #65401e55!important}#egBoard:before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;border:2px solid #986538;box-shadow:inset 0 0 0 4px #f6e6c9,inset 0 0 0 6px #b17a45;border-radius:1px}#egBoard .eg-piece{z-index:3!important}#egBoard .eg-piece svg,#egTray .eg-piece svg{overflow:hidden!important}#egTray{display:flex!important;flex-flow:row wrap!important;grid-template-columns:none!important;grid-auto-rows:auto!important;align-items:center!important;justify-content:center!important;gap:8px!important;width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;padding:8px!important}#egTray .eg-piece{position:relative!important;left:auto!important;top:auto!important;transform:none!important;flex:none!important;max-width:none!important;max-height:none!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;box-sizing:border-box!important;border:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;border-radius:0!important}#egTray .eg-piece svg{display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important}#egTray .eg-piece.selected,#egBoard .eg-piece.selected{outline:none!important;outline-offset:0!important;border:0!important;border-radius:0!important}#egBoard .eg-piece{padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-sizing:border-box!important}";
  document.head.appendChild(style);
@@ -89,6 +90,44 @@
   });
  }
  buildExtraLevels();
+
+ // 50 fases adicionais com tabuleiros em silhuetas irregulares.
+ function makeMask(kind,variant){
+  const N=20,m=[];
+  const poly=(x,y,p)=>{let z=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])z=!z}return z};
+  for(let r=0;r<N;r++){const row=[];for(let col=0;col<N;col++){
+   const x=(col+.5)/10-1,y=(r+.5)/10-1;let v=false;
+   if(kind==="CASA")v=(y>-.12&&y<.9&&Math.abs(x)<.72)||(y<=-.12&&y>-.9&&Math.abs(x)<.72*(y+.9)/.78);
+   if(kind==="BARCO")v=(y>.02&&y<.58&&Math.abs(x)<.9-(y-.02)*.42)||poly(x,y,[[-.12,.05],[.12,.05],[.12,.9],[-.12,.9]]);
+   if(kind==="ÁRVORE")v=(y>-.9&&y<.88&&Math.abs(x)<.82*(y+.9)/1.78)||(y>.48&&Math.abs(x)<.15);
+   if(kind==="PEIXE")v=x*x/.67+y*y/.38<1||poly(x,y,[[-.7,0],[-1,-.48],[-1,.48]]);
+   if(kind==="FOGUETE")v=x*x/.23+y*y/.78<1||poly(x,y,[[-.28,-.58],[0,-1],[.28,-.58]])||poly(x,y,[[-.35,.35],[-.82,.82],[-.2,.68]])||poly(x,y,[[.35,.35],[.82,.82],[.2,.68]]);
+   if(kind==="CORAÇÃO"){const X=x,Y=-y;v=(X*X+Y*Y-1)**3-X*X*Y*Y*Y<=0;}
+   if(kind==="ESTRELA"){const p=[];for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5,d=k%2?.43:.96;p.push([Math.cos(a)*d,Math.sin(a)*d])}v=poly(x,y,p);}
+   if(kind==="BORBOLETA")v=((x+.38)**2/.3+(y+.22)**2/.43<1)||((x-.38)**2/.3+(y+.22)**2/.43<1)||((x+.32)**2/.19+(y-.48)**2/.19<1)||((x-.32)**2/.19+(y-.48)**2/.19<1)||Math.abs(x)<.075&&Math.abs(y)<.8;
+   if(kind==="FLOR")v=x*x+y*y<.032||Array.from({length:8},(_,k)=>{const a=k*Math.PI/4;return (x-Math.cos(a)*.48)**2/.24+(y-Math.sin(a)*.48)**2/.13<1}).some(Boolean)||Math.abs(x)<.09&&y>.35&&y<.98;
+   if(kind==="GATO")v=x*x/.52+y*y/.55<1||(x+.34)**2/.22+(y+.48)**2/.24<1||(x-.34)**2/.22+(y+.48)**2/.24<1||poly(x,y,[[-.72,-.48],[-.58,-1],[-.25,-.62]])||poly(x,y,[[.72,-.48],[.58,-1],[.25,-.62]]);
+   if(kind==="AVIÃO")v=poly(x,y,[[-.12,-1],[.12,-1],[.2,-.12],[.92,.48],[.92,.68],[.2,.38],[.14,.94],[-.14,.94],[-.2,.38],[-.92,.68],[-.92,.48],[-.2,-.12]]);
+   if(variant%4===3&&r>4&&r<16&&col>4&&col<16&&((r+col)%9===0))v=false;
+   row.push(v);
+  }m.push(row)}
+  return m;
+ }
+ function tileMask(mask,phase){
+  const N=20,used=mask.map(r=>r.map(()=>false)),out=[];
+  for(let r=0;r<N;r++)for(let x=0;x<N;x++)if(mask[r][x]&&!used[r][x]){
+   let w=0;while(x+w<N&&mask[r][x+w]&&!used[r][x+w])w++;
+   let h=1,ok=true;while(r+h<N&&ok){for(let k=0;k<w;k++)if(!mask[r+h][x+k]||used[r+h][x+k]){ok=false;break}if(ok)h++}
+   for(let yy=r;yy<r+h;yy++)for(let xx=x;xx<x+w;xx++)used[yy][xx]=true;
+   const x0=x*5,x1=(x+w)*5,y0=r*5,y1=(r+h)*5;
+   if(w*h>1&&(out.length+phase)%5===0){out.push([[x0,y0],[x1,y0],[x1,y1]]);out.push([[x0,y0],[x1,y1],[x0,y1]])}
+   else out.push([[x0,y0],[x1,y0],[x1,y1],[x0,y1]]);
+  }
+  return out;
+ }
+ const silhouetteNames=["CASA","BARCO","ÁRVORE","PEIXE","FOGUETE","CORAÇÃO","ESTRELA","BORBOLETA","FLOR","GATO","AVIÃO"];
+ for(let i=0;i<50;i++){const kind=silhouetteNames[i%silhouetteNames.length],mask=makeMask(kind,Math.floor(i/silhouetteNames.length)),pieces=tileMask(mask,i+1),boardArea=mask.flat().filter(Boolean).length*25;levels.push({name:i<12?"MÉDIA":i<26?"DIFÍCIL":i<40?"MUITO DIFÍCIL":"EXTREMA",pieces,mask,boardArea,shapeName:kind});}
+
  levels.forEach((v,i)=>{v.name=i<10?"FÁCIL":i<20?"MÉDIA":i<30?"DIFÍCIL":i<40?"MUITO DIFÍCIL":"EXTREMA"});
  let level=1,parts=[],drag=null,solved=false,selectedId=null,moveFrame=0;
  const completed=()=>{try{const v=JSON.parse(localStorage.getItem(STORE)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}};
@@ -97,7 +136,7 @@
  function normalized(pts){const b=bounds(pts);return pts.map(([x,y])=>[+(x-b.minX).toFixed(3),+(y-b.minY).toFixed(3)])}
  function dims(p){const b=bounds(p.points);return {w:b.maxX-b.minX,h:b.maxY-b.minY}}
  function absolute(p){return p.points.map(([x,y])=>[x+p.x,y+p.y])}
- function metrics(){const b=$("egBoard"),safeInset=24,usableW=Math.max(1,b.clientWidth-safeInset),usableH=Math.max(1,b.clientHeight-safeInset),unit=Math.min(usableW,usableH)/100;return {unit,offsetX:(b.clientWidth-100*unit)/2,offsetY:(b.clientHeight-100*unit)/2}}
+ function metrics(){const b=$("egBoard"),safeInset=activeMask?0:24,usableW=Math.max(1,b.clientWidth-safeInset),usableH=Math.max(1,b.clientHeight-safeInset),unit=Math.min(usableW,usableH)/100;return {unit,offsetX:(b.clientWidth-100*unit)/2,offsetY:(b.clientHeight-100*unit)/2}}
  function polygonMarkup(p){
   const d=dims(p),points=p.points.map(([x,y])=>x+","+y).join(" ");
   return '<svg viewBox="0 0 '+d.w+' '+d.h+'" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="wood'+p.id+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0d3a5"/><stop offset=".48" stop-color="#d7aa72"/><stop offset="1" stop-color="#b77d45"/></linearGradient></defs><polygon points="'+points+'" fill="url(#wood'+p.id+')" stroke="#80532e" stroke-width="1.5" stroke-linejoin="round"/></svg>';
@@ -115,9 +154,16 @@
   }
   b.addEventListener("pointerdown",e=>begin(e,p,b));p.el=b;return b;
  }
- function updateCounter(){const count=parts.filter(p=>p.placed).length;$("egCounter").textContent=count+" / "+parts.length+" PEÇAS NO QUADRADO"}
+ function updateCounter(){const count=parts.filter(p=>p.placed).length;$("egCounter").textContent=count+" / "+parts.length+" PEÇAS NO TABULEIRO"}
  function render(){
   const board=$("egBoard"),tray=$("egTray");board.innerHTML="";tray.innerHTML="";
+  board.classList.toggle("eg-irregular",!!activeMask);
+  if(activeMask){
+   const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.setAttribute("viewBox","0 0 100 100");svg.style.cssText="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0";
+   let fill="",edge="";
+   for(let r=0;r<20;r++)for(let x=0;x<20;x++)if(activeMask[r][x]){const px=x*5,py=r*5;fill+=`<rect x="${px}" y="${py}" width="5" height="5"/>`;if(!activeMask[r-1]?.[x])edge+=`M${px} ${py}h5`;if(!activeMask[r+1]?.[x])edge+=`M${px} ${py+5}h5`;if(!activeMask[r][x-1])edge+=`M${px} ${py}v5`;if(!activeMask[r][x+1])edge+=`M${px+5} ${py}v5`;}
+   svg.innerHTML=`<g fill="#d5a36d">${fill}</g><path d="${edge}" fill="none" stroke="#80532e" stroke-width="1.5"/>`;board.appendChild(svg);
+  }
   tray.style.setProperty("display","flex","important");
   tray.style.setProperty("flex-flow","row wrap","important");
   tray.style.setProperty("align-items","center","important");
@@ -131,11 +177,12 @@
   updateCounter();
  }
  function start(n){
-  level=n;solved=false;drag=null;selectedId=null;
+  level=n;solved=false;drag=null;selectedId=null;activeMask=levels[n-1].mask||null;activeArea=levels[n-1].boardArea||10000;
+  $("egBoard").style.border=activeMask?"0":"12px solid transparent";
   parts=levels[n-1].pieces.map((points,id)=>({id,points:normalized(points),x:0,y:0,placed:false,area:area(points)}));
   if(n%2===0)parts.reverse();
   $("egLevelTag").textContent="FASE "+n+" DE "+levels.length;$("egDifficulty").textContent=levels[n-1].name;
-  $("egInstruction").textContent="Pegue uma peça e coloque onde houver espaço. As peças mantêm o mesmo tamanho; não podem se sobrepor.";
+  $("egInstruction").textContent=activeMask?"Preencha o formato de "+levels[n-1].shapeName+" com todas as peças. Não deixe espaços vazios nem sobreponha peças.":"Pegue uma peça e coloque onde houver espaço. As peças mantêm o mesmo tamanho; não podem se sobrepor.";
   $("egWin").classList.remove("show");$("egNext").disabled=true;$("egNext").textContent="PRÓXIMA FASE →";
   $("egStatus").textContent="O tabuleiro está vazio. Todas as peças estão visíveis ao lado.";
   $("levelPill").textContent="ENCAIXE GEOMÉTRICO · FASE "+n;show("egGame");render();
@@ -189,7 +236,13 @@
   }
   return true;
  }
- function inside(p){const eps=.01;return absolute(p).every(([x,y])=>x>=-eps&&y>=-eps&&x<=100+eps&&y<=100+eps)}
+ function inside(p){
+  const pts=absolute(p),eps=.01;if(!activeMask)return pts.every(([x,y])=>x>=-eps&&y>=-eps&&x<=100+eps&&y<=100+eps);
+  const center=pts.reduce((a,v)=>[a[0]+v[0]/pts.length,a[1]+v[1]/pts.length],[0,0]);
+  const valid=(x,y)=>{if(x<0||y<0||x>100||y>100)return false;const col=Math.min(19,Math.max(0,Math.floor(x/5))),row=Math.min(19,Math.max(0,Math.floor(y/5)));return !!activeMask[row]?.[col]};
+  for(let i=0;i<pts.length;i++){const a=pts[i],b=pts[(i+1)%pts.length],steps=Math.max(2,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])*2));for(let k=0;k<=steps;k++){const t=k/steps,x=a[0]+(b[0]-a[0])*t,y=a[1]+(b[1]-a[1])*t,ix=x+(center[0]-x)*.002,iy=y+(center[1]-y)*.002;if(!valid(ix,iy))return false;}}
+  return valid(center[0],center[1]);
+ }
  function cleanupDrag(){
   document.removeEventListener("pointermove",move);
   document.removeEventListener("pointercancel",cancel);
@@ -268,14 +321,14 @@
   let used=0,allInside=true,hasOverlap=false;
   for(const p of parts){if(!p.placed){allInside=false;continue}if(!inside(p))allInside=false;used+=p.area}
   for(let i=0;i<parts.length;i++)for(let j=i+1;j<parts.length;j++)if(parts[i].placed&&parts[j].placed&&overlaps(parts[i],parts[j]))hasOverlap=true;
-  const allPlaced=parts.every(p=>p.placed),filled=allPlaced&&allInside&&!hasOverlap&&Math.abs(used-10000)<1;
+  const allPlaced=parts.every(p=>p.placed),filled=allPlaced&&allInside&&!hasOverlap&&Math.abs(used-activeArea)<1;
   if(filled&&!solved){
    solved=true;localStorage.setItem(STORE,JSON.stringify([...new Set([...completed(),level])]));
-   $("egWin").classList.add("show");$("egStatus").textContent="Perfeito! Você preencheu todo o quadrado usando todas as peças.";
+   $("egWin").classList.add("show");$("egStatus").textContent="Perfeito! Você preencheu todo o formato usando todas as peças.";
    $("egNext").disabled=false;$("egNext").textContent=level===levels.length?"VER FASES":"PRÓXIMA FASE →";
   }else if(hasOverlap)$("egStatus").textContent="Há peças sobrepostas. Pegue uma delas e coloque em outro espaço.";
-  else if(allPlaced&&allInside)$("egStatus").textContent="Todas as peças estão no tabuleiro. Ajuste a montagem para preencher o espaço inteiro.";
-  else $("egStatus").textContent=Math.round(used/100)+"% da área do tabuleiro coberta. Continue encaixando.";
+  else if(allPlaced&&allInside)$("egStatus").textContent="Todas as peças estão no tabuleiro. Ajuste a montagem para preencher o formato inteiro.";
+  else $("egStatus").textContent=Math.round(used/activeArea*100)+"% da área do tabuleiro coberta. Continue encaixando.";
  }
  function reset(){if(solved)return;selectedId=null;parts.forEach(p=>{p.placed=false;p.x=0;p.y=0});render();$("egStatus").textContent="Todas as peças voltaram para a bandeja."}
  window.showEgPhases=phases;window.egRotate=rotate;window.egReset=reset;window.egNext=()=>level<levels.length?start(level+1):phases();
