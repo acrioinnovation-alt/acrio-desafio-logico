@@ -26,7 +26,7 @@ const coinLevels=Array.from({length:50},(_,i)=>{
  const candidates=allCells.filter(p=>!targetKeys.has(p[0]+","+p[1]));
  const missing=target.slice(-stage),present=target.slice(0,target.length-stage);
  const offset=(i*11+7)%candidates.length;
- const decoys=Array.from({length:stage},(_,k)=>candidates[(offset+k*7)%candidates.length].slice());
+ const decoys=Array.from({length:stage},(_,k)=>candidates[(offset+k)%candidates.length].slice());
  return {name:shape.name,target,start:present.concat(decoys),moves:stage,difficulty:difficulty(i+1)};
 });
 let cupCurrent=1,cupSelected=-1,cupDone=[];
