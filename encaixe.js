@@ -50,7 +50,7 @@
  function normalized(pts){const b=bounds(pts);return pts.map(([x,y])=>[+(x-b.minX).toFixed(3),+(y-b.minY).toFixed(3)])}
  function dims(p){const b=bounds(p.points);return {w:b.maxX-b.minX,h:b.maxY-b.minY}}
  function absolute(p){return p.points.map(([x,y])=>[x+p.x,y+p.y])}
- function metrics(){const b=$("egBoard"),unit=Math.min(b.clientWidth,b.clientHeight)/100;return {unit,offsetX:(b.clientWidth-100*unit)/2,offsetY:(b.clientHeight-100*unit)/2}}
+ function metrics(){const b=$("egBoard"),safeInset=24,usableW=Math.max(1,b.clientWidth-safeInset),usableH=Math.max(1,b.clientHeight-safeInset),unit=Math.min(usableW,usableH)/100;return {unit,offsetX:(b.clientWidth-100*unit)/2,offsetY:(b.clientHeight-100*unit)/2}}
  function polygonMarkup(p){
   const d=dims(p),points=p.points.map(([x,y])=>x+","+y).join(" ");
   return '<svg viewBox="0 0 '+d.w+' '+d.h+'" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="wood'+p.id+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0d3a5"/><stop offset=".48" stop-color="#d7aa72"/><stop offset="1" stop-color="#b77d45"/></linearGradient></defs><polygon points="'+points+'" fill="url(#wood'+p.id+')" stroke="#80532e" stroke-width="1.5" stroke-linejoin="round"/></svg>';
