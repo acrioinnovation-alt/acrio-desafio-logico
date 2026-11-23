@@ -77,10 +77,11 @@
      pieces.push([[x0,y0],[x0+dx,y0],[x0,y0+dy]]);
      pieces.push([[x1,y1],[x1-dx,y1],[x1,y1-dy]]);
     }else{
-     // Dois quadriláteros inclinados, incluindo formas de aparência paralelogramo.
-     const top=x0+w*.5,bottom=x0+w*.5;
-     pieces.push([[x0,y0],[top,y0],[bottom,y1],[x0,y1]]);
-     pieces.push([[top,y0],[x1,y0],[x1,y1],[bottom,y1]]);
+     // Um paralelogramo e dois triângulos que completam exatamente a célula.
+     const dx=w*.26;
+     pieces.push([[x0+dx,y0],[x1,y0],[x1-dx,y1],[x0,y1]]);
+     pieces.push([[x0,y0],[x0+dx,y0],[x0,y1]]);
+     pieces.push([[x1,y0],[x1,y1],[x1-dx,y1]]);
     }
    }
    const names=phase<=15?"MÉDIA":phase<=25?"DIFÍCIL":phase<=40?"MUITO DIFÍCIL":"EXTREMA";
