@@ -51,7 +51,12 @@ function drawCoins(){const l=coinLevels[coinCurrent-1],target=$("coinTarget"),bo
 function coinMsg(type,t){$("coinFeedback").className="feedback show "+type;$("coinFeedback").textContent=t}
 function coinTap(x,y){const idx=coinPositions.findIndex(p=>p[0]===x&&p[1]===y);if(idx>=0){coinSelected=coinSelected===idx?-1:idx;drawCoins();return}if(coinSelected<0)return;if(coinMoves>=coinLevels[coinCurrent-1].moves){coinMsg("bad","Você já usou todos os movimentos. Reinicie a fase.");return}coinPositions[coinSelected]=[x,y];coinSelected=-1;coinMoves++;$("coinMovesLabel").textContent=coinMoves+" / "+coinLevels[coinCurrent-1].moves+" movimentos";drawCoins();const target=coinLevels[coinCurrent-1].target;const key=p=>p[0]+","+p[1];const solved=coinPositions.map(key).sort().join("|")===target.map(key).sort().join("|");if(solved&&coinMoves===coinLevels[coinCurrent-1].moves){coinDone=read("coins_done");if(!coinDone.includes(coinCurrent)){coinDone.push(coinCurrent);localStorage.setItem("coins_done",JSON.stringify(coinDone))}$("coinDone").textContent=coinDone.length+"/50";coinMsg("good","Muito bem! Você reproduziu o modelo com exatamente "+coinMoves+" movimento(s).");if(coinCurrent<50)addNext("coinFeedback",()=>startCoin(coinCurrent+1))}else if(coinMoves>=coinLevels[coinCurrent-1].moves){coinMsg("bad","Os movimentos acabaram, mas a figura ainda não corresponde ao modelo. Reinicie e tente novamente.")}else coinMsg("good","Movimento registrado. Faltam "+(coinLevels[coinCurrent-1].moves-coinMoves)+" movimento(s).")}
 function resetCoin(){startCoin(coinCurrent)}
+function showFamily(id,label){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active");$("levelPill").textContent=label;}
+function showTowerJugFamily(){showFamily("towerJugFamily","TORRES E BALDES")}
+function showTraceFamily(){showFamily("traceFamily","DESAFIOS DE TRAÇADO")}
+function showCupCoinFamily(){showFamily("cupCoinFamily","COPOS E MOEDAS")}
 function addNext(id,fn){const box=$(id),b=document.createElement("button");b.className="btn primary start";b.textContent="PRÓXIMA FASE →";b.onclick=fn;box.appendChild(b)}
+window.showTowerJugFamily=showTowerJugFamily;window.showTraceFamily=showTraceFamily;window.showCupCoinFamily=showCupCoinFamily;
 window.showCupPhases=showCupPhases;window.startCup=startCup;window.checkCup=checkCup;window.resetCup=resetCup;
 window.showCoinPhases=showCoinPhases;window.startCoin=startCoin;window.coinTap=coinTap;window.resetCoin=resetCoin;
 })();
