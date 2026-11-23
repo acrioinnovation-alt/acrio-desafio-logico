@@ -71,12 +71,18 @@ function startOneStroke(n){
  draw();$("levelPill").textContent="FASE "+current+" · UM SÓ TRAÇO";show("oneStrokeGame");
 }
 function doneCount(){try{return JSON.parse(localStorage.getItem("one_stroke_done")||"[]").length}catch(e){return 0}}
+let svgElement=null,lineElements=[],nodeElements=[];
 function draw(){
  const box=$("oneStrokeBoard");box.innerHTML="";
- const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.setAttribute("viewBox","0 0 100 100");svg.setAttribute("role","img");svg.setAttribute("aria-label","Figura formada por linhas conectadas");
- edges.forEach(e=>{const l=document.createElementNS(svg.namespaceURI,"line");l.setAttribute("x1",nodes[e.a].x);l.setAttribute("y1",nodes[e.a].y);l.setAttribute("x2",nodes[e.b].x);l.setAttribute("y2",nodes[e.b].y);l.setAttribute("class","one-stroke-edge"+(visited.has(e.key)?" used":""));svg.appendChild(l)});
- nodes.forEach(n=>{const c=document.createElementNS(svg.namespaceURI,"circle");c.setAttribute("cx",n.x);c.setAttribute("cy",n.y);c.setAttribute("r",active&&n.id===activeNode?4.5:2.8);c.setAttribute("class","one-stroke-node"+(active&&n.id===activeNode?" current":""));svg.appendChild(c)});
- box.appendChild(svg);svg.addEventListener("pointerdown",onDown);svg.addEventListener("pointermove",onMove);svg.addEventListener("pointerup",onUp);svg.addEventListener("pointercancel",onUp);
+ svgElement=document.createElementNS("http://www.w3.org/2000/svg","svg");svgElement.setAttribute("viewBox","0 0 100 100");svgElement.setAttribute("role","img");svgElement.setAttribute("aria-label","Figura formada por linhas conectadas");
+ lineElements=[];nodeElements=[];
+ edges.forEach(e=>{const l=document.createElementNS(svgElement.namespaceURI,"line");l.setAttribute("x1",nodes[e.a].x);l.setAttribute("y1",nodes[e.a].y);l.setAttribute("x2",nodes[e.b].x);l.setAttribute("y2",nodes[e.b].y);l.setAttribute("class","one-stroke-edge");svgElement.appendChild(l);lineElements.push(l)});
+ nodes.forEach(n=>{const dot=document.createElementNS(svgElement.namespaceURI,"circle");dot.setAttribute("cx",n.x);dot.setAttribute("cy",n.y);dot.setAttribute("r","2.8");dot.setAttribute("class","one-stroke-node");svgElement.appendChild(dot);nodeElements.push(dot)});
+ box.appendChild(svgElement);svgElement.addEventListener("pointerdown",onDown);svgElement.addEventListener("pointermove",onMove);svgElement.addEventListener("pointerup",onUp);svgElement.addEventListener("pointercancel",onUp);updateDrawing();
+}
+function updateDrawing(){
+ lineElements.forEach((el,i)=>el.setAttribute("class","one-stroke-edge"+(visited.has(edges[i].key)?" used":"")));
+ nodeElements.forEach((el,i)=>{el.setAttribute("r",active&&i===activeNode?"4.5":"2.8");el.setAttribute("class","one-stroke-node"+(active&&i===activeNode?" current":""))});
 }
 let activeNode=null,pointerId=null;
 function nearestNode(evt){
@@ -86,7 +92,7 @@ function nearestNode(evt){
 }
 function onDown(e){
  const n=nearestNode(e);if(n<0)return;
- e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);pointerId=e.pointerId;active=true;activeNode=n;draw();
+ e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);pointerId=e.pointerId;active=true;activeNode=n;updateDrawing();
 }
 function onMove(e){
  if(!active||e.pointerId!==pointerId)return;
@@ -95,7 +101,7 @@ function onMove(e){
  if(!edge){feedback("bad","Esse ponto não está ligado ao atual. Continue por uma linha conectada.");return}
  if(visited.has(edge.key)){feedback("bad","Você já passou por esse trecho. Não pode repetir linhas.");return}
  visited.add(edge.key);activeNode=n;moves++;$("oneStrokeMoves").textContent=String(moves);
- draw();
+ updateDrawing();
  if(visited.size===edges.length){active=false;pointerId=null;finishOneStroke()}
 }
 function onUp(e){if(pointerId!==null&&e.pointerId===pointerId){active=false;pointerId=null;draw()}}
