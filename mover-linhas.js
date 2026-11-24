@@ -37,15 +37,16 @@
  const phases=Array.from({length:50},(_,i)=>buildPhase(i));
  let current=0,lines=[],movesUsed=0,locked=false,drag=null;
  function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active")}
- function phaseList(){
+ function populateList(){
   const list=$("moveLinesPhaseList");list.innerHTML="";const done=readDone();
   phases.forEach((p,i)=>{const b=document.createElement("button");b.className="phase-btn"+(done.includes(p.number)?" done":"");b.textContent=String(p.number);b.title="Fase "+p.number+" · "+p.name;b.onclick=()=>start(i);list.appendChild(b)});
-  $("moveLinesDone").textContent=done.length+"/50 concluídas";show("countShapesPhases");
+  $("moveLinesDone").textContent=done.length+"/50 concluídas";
  }
+ function phaseList(){populateList();show("countShapesPhases")}
  function setFeedback(kind,msg){const el=$("moveLinesFeedback");el.className="feedback show "+kind;el.textContent=msg}
  function updateLabels(){
   const p=phases[current];$("moveLinesTag").textContent="FASE "+p.number+" DE 100";$("moveLinesType").textContent=p.name.toUpperCase();$("moveLinesDifficulty").textContent=p.difficulty;
-  $("moveLinesCounter").textContent=movesUsed+" / "+p.moves;$("moveLinesInstruction").textContent="Arraste as linhas azuis até coincidirem com o desenho tracejado. Você tem "+p.moves+" "+(p.moves===1?"movimento":"movimentos")+".";
+  $("moveLinesCounter").textContent=movesUsed+" / "+p.moves;$("moveLinesGameDone").textContent=readDone().length+"/50";$("moveLinesInstruction").textContent="Arraste as linhas azuis até coincidirem com o desenho tracejado. Você tem "+p.moves+" "+(p.moves===1?"movimento":"movimentos")+".";
  }
  function svgPoint(svg,e){const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;return pt.matrixTransform(svg.getScreenCTM().inverse())}
  function renderBoard(){
@@ -79,12 +80,12 @@
  function isSolved(){const a=lines.map(segKey).sort(),b=phases[current].target.map(segKey).sort();return a.length===b.length&&a.every((v,i)=>v===b[i])}
  function win(){
   locked=true;const p=phases[current],done=readDone();if(!done.includes(p.number)){done.push(p.number);done.sort((a,b)=>a-b);localStorage.setItem(STORE,JSON.stringify(done))}
-  $("moveLinesDone").textContent=done.length+"/50";setFeedback("good","Muito bem! Você transformou a figura em "+p.name+" usando "+movesUsed+" "+(movesUsed===1?"movimento":"movimentos")+".");
+  $("moveLinesDone").textContent=done.length+"/50 concluídas";$("moveLinesGameDone").textContent=done.length+"/50";setFeedback("good","Muito bem! Você transformou a figura em "+p.name+" usando "+movesUsed+" "+(movesUsed===1?"movimento":"movimentos")+".");
   if(current<49){const b=document.createElement("button");b.className="btn primary start";b.textContent="PRÓXIMA FASE →";b.onclick=()=>start(current+1);$("moveLinesFeedback").appendChild(b)}
   else{const b=document.createElement("button");b.className="btn primary start";b.textContent="VOLTAR ÀS FASES";b.onclick=phaseList;$("moveLinesFeedback").appendChild(b)}
  }
- function start(i){current=Math.max(0,Math.min(49,i));const p=phases[current];lines=p.start.map(s=>s.map(q=>q.slice()));movesUsed=0;locked=false;drag=null;updateLabels();$("moveLinesDone").textContent=readDone().length+"/50";$("moveLinesProgress").style.width=(readDone().length/50*100)+"%";$("moveLinesFeedback").className="feedback";$("moveLinesFeedback").textContent="";renderBoard();show("moveLinesGame")}
+ function start(i){current=Math.max(0,Math.min(49,i));const p=phases[current];lines=p.start.map(s=>s.map(q=>q.slice()));movesUsed=0;locked=false;drag=null;updateLabels();$("moveLinesDone").textContent=readDone().length+"/50 concluídas";$("moveLinesGameDone").textContent=readDone().length+"/50";$("moveLinesProgress").style.width=(readDone().length/50*100)+"%";$("moveLinesFeedback").className="feedback";$("moveLinesFeedback").textContent="";renderBoard();show("moveLinesGame")}
  function reset(){start(current)}
- window.showMoveLinesPhases=phaseList;window.resetMoveLines=reset;
+ window.showMoveLinesPhases=phaseList;window.populateMoveLinesPhases=populateList;window.resetMoveLines=reset;
  document.addEventListener("DOMContentLoaded",()=>{});
 })();
