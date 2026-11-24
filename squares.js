@@ -3,7 +3,7 @@
  const GRID=5;
  const $=id=>document.getElementById(id);
  const edgeKey=(x,y,o)=>o+x+","+y;
- const parse=e=>{const m=e.match(/^([HV])(\\d+),(\\d+)$/);return {o:m[1],x:+m[2],y:+m[3]}};
+ const parse=e=>{const m=e.match(/^([HV])(\d+),(\d+)$/);return {o:m[1],x:+m[2],y:+m[3]}};
  const ends=e=>{const p=parse(e);return p.o==="H"?[{x:p.x,y:p.y},{x:p.x+1,y:p.y}]:[{x:p.x,y:p.y},{x:p.x,y:p.y+1}]};
  const add=(s,x,y,o)=>s.add(edgeKey(x,y,o));
  const allEdges=()=>{const out=[];for(let y=0;y<=GRID;y++)for(let x=0;x<GRID;x++)out.push(edgeKey(x,y,"H"));for(let y=0;y<GRID;y++)for(let x=0;x<=GRID;x++)out.push(edgeKey(x,y,"V"));return out};
