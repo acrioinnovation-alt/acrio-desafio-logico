@@ -14,23 +14,9 @@ const base=[
 {name:"Foguete",icon:"🚀",p:[[50,8],[70,34],[70,68],[86,82],[66,78],[50,92],[34,78],[14,82],[30,68],[30,34],[50,8],[50,34],[30,50],[50,66],[70,50],[50,34],[50,66],[50,92]]}
 ];
 function makePath(src,variant){
- const p=src.map(([x,y])=>[x,y]);
- // Each successive tier adds a small, unique zig-zag detour to selected long segments.
- const extra=Math.floor(variant/1);
- if(extra){
-  const out=[p[0]];
-  for(let i=1;i<p.length;i++){
-   const a=p[i-1],b=p[i];out.push(b);
-   if(i%Math.max(3,6-variant)===0 && i<p.length-1){
-    const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2;
-    const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy)||1;
-    const off=5+variant*1.3;
-    out.splice(out.length-1,0,[mx-dy/len*off,my+dx/len*off],[mx+dy/len*off,my-dx/len*off]);
-   }
-  }
-  return out;
- }
- return p;
+ // Mantém os desenhos-base limpos e reconhecíveis em todas as dificuldades.
+ // A progressão ocorre pela escolha/ordem das figuras, não por rabiscos aleatórios.
+ return src.map(([x,y])=>[x,y]);
 }
 const levels=[];
 for(let i=0;i<50;i++){
