@@ -223,10 +223,11 @@
   const q=boardPoint(e),p=drag.p,boardRect=$("egBoard").getBoundingClientRect();
   const d=dims(p);p.x=Math.max(0,Math.min(100-d.w,q.x-drag.offsetX));p.y=Math.max(0,Math.min(100-d.h,q.y-drag.offsetY));
   drag.insideBoard=e.clientX>=boardRect.left&&e.clientX<=boardRect.right&&e.clientY>=boardRect.top&&e.clientY<=boardRect.bottom;
+  drag.clientX=e.clientX;drag.clientY=e.clientY;
   if(moveFrame)return;
   moveFrame=requestAnimationFrame(()=>{
    moveFrame=0;if(!drag)return;
-   drag.el.style.left=(e.clientX-drag.grabX)+"px";drag.el.style.top=(e.clientY-drag.grabY)+"px";
+   drag.el.style.left=(drag.clientX-drag.grabX)+"px";drag.el.style.top=(drag.clientY-drag.grabY)+"px";
   });
  }
  function projections(poly,axis){const values=poly.map(([x,y])=>x*axis[0]+y*axis[1]);return [Math.min(...values),Math.max(...values)]}
@@ -252,7 +253,7 @@
   if(moveFrame){cancelAnimationFrame(moveFrame);moveFrame=0}
  }
  function cancel(){finish(true)}
- function end(){finish(false)}
+ function end(e){if(e)move(e);finish(false)}
  function freeAt(p,x,y){
   const ox=p.x,oy=p.y;p.x=x;p.y=y;
   const ok=inside(p)&&!parts.some(other=>other!==p&&other.placed&&overlaps(p,other));
