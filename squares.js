@@ -36,7 +36,7 @@
   const candidates=shuffle(Array.from({length:GRID*GRID},(_,i)=>[i%GRID,Math.floor(i/GRID)]));
   const chosen=[];
   for(const cell of candidates){
-   if(chosen.every(([x,y])=>Math.abs(x-cell[0])+Math.abs(y-cell[1])>1))chosen.push(cell);
+   if((!chosen.length||chosen.some(([x,y])=>Math.abs(x-cell[0])===1&&Math.abs(y-cell[1])===1))&&chosen.every(([x,y])=>Math.abs(x-cell[0])+Math.abs(y-cell[1])>1))chosen.push(cell);
    if(chosen.length===amount)return chosen;
   }
   return null;
