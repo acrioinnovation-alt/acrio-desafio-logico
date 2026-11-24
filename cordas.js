@@ -88,7 +88,7 @@ function laneX(lane,count){
 }
 function pathFor(route,count,rows){
   const topY = 63, bottomY = 326;
-  const step = (bottomY-topY)/(rows+1);
+  const step = (bottomY-topY)/rows;
   let points = [{x:laneX(route[0],count),y:topY}];
   for(let i=1;i<route.length;i++) points.push({x:laneX(route[i],count),y:topY+step*i});
   let d = "M " + points[0].x.toFixed(1) + " " + points[0].y.toFixed(1);
@@ -163,6 +163,7 @@ function start(level){
   const done=readDone();
   $("ropeLevel").textContent="FASE " + current + " · CORDAS ENTRELAÇADAS";
   $("ropeDifficulty").textContent=difficulty(current);
+  $("ropeDifficultyTag").textContent="OBSERVE";
   $("ropeDone").textContent=done.length + "/50";
   $("ropeProgress").style.width=(current*2)+"%";
   $("ropeQuestion").textContent="Qual corda está ligada ao copo " + (puzzle.targetCup+1) + "? Acompanhe o trajeto desde as letras até os copos.";
