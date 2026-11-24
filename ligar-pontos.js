@@ -17,7 +17,46 @@ const levels=[];
 layouts.forEach((l,k)=>{for(let v=0;v<5;v++){const cycles=l.c.slice(0,Math.min(l.c.length,Math.max(2,2+v)));levels.push({name:l.n,points:l.p,cycles,difficulty:v===0?"FÁCIL":v===1?"FÁCIL":v===2?"MÉDIO":v===3?"DIFÍCIL":"DESAFIADOR"});}});
 let current=1,points=[],edges=[],visited=new Set(),active=false,activeNode=-1,pointerId=null,moves=0;
 const key=(a,b)=>a<b?a+"-"+b:b+"-"+a;
-function build(level){points=level.points.map(([x,y],id)=>({id,x,y}));edges=[];const seen=new Set();const cycles=[points.map((_,i)=>i),...level.cycles];cycles.forEach(c=>{for(let i=0;i<c.length;i++){const a=c[i],b=c[(i+1)%c.length],k=key(a,b);if(a!==b&&!seen.has(k)){seen.add(k);edges.push({a,b,key:k});}}});}
+function build(level){
+ const original=level.points.map(([x,y],id)=>({id,x,y}));
+ const cycles=[original.map((_,i)=>i),...level.cycles];
+ const raw=[],rawSeen=new Set();
+ cycles.forEach(c=>{for(let i=0;i<c.length;i++){const a=c[i],b=c[(i+1)%c.length],k=key(a,b);if(a!==b&&!rawSeen.has(k)){rawSeen.add(k);raw.push({a,b});}}});
+ // Todo cruzamento visual entre dois segmentos vira um ponto real do grafo.
+ // Assim, o que parece conectado também pode ser percorrido pelo jogador.
+ const nodes=original.slice();
+ const nodeAt=(x,y)=>{
+  let found=nodes.find(p=>Math.hypot(p.x-x,p.y-y)<0.001);
+  if(!found){found={id:nodes.length,x,y};nodes.push(found);}
+  return found.id;
+ };
+ const split=raw.map(e=>[{id:e.a,t:0},{id:e.b,t:1}]);
+ for(let i=0;i<raw.length;i++){
+  const A=original[raw[i].a],B=original[raw[i].b];
+  const rx=B.x-A.x,ry=B.y-A.y;
+  for(let j=i+1;j<raw.length;j++){
+   const C=original[raw[j].a],D=original[raw[j].b];
+   const sx=D.x-C.x,sy=D.y-C.y;
+   const den=rx*sy-ry*sx;
+   if(Math.abs(den)<1e-8)continue;
+   const qx=C.x-A.x,qy=C.y-A.y;
+   const t=(qx*sy-qy*sx)/den,u=(qx*ry-qy*rx)/den;
+   if(t>1e-5&&t<1-1e-5&&u>1e-5&&u<1-1e-5){
+    const id=nodeAt(A.x+t*rx,A.y+t*ry);
+    split[i].push({id,t});split[j].push({id,t:u});
+   }
+  }
+ }
+ points=nodes.map(p=>({id:p.id,x:p.x,y:p.y}));
+ edges=[];const seen=new Set();
+ split.forEach((parts,index)=>{
+  parts.sort((a,b)=>a.t-b.t);
+  for(let k=0;k<parts.length-1;k++){
+   const a=parts[k].id,b=parts[k+1].id,keyEdge=key(a,b);
+   if(a!==b&&!seen.has(keyEdge)){seen.add(keyEdge);edges.push({a,b,key:keyEdge});}
+  }
+ });
+}
 function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active");}
 function completed(){try{return JSON.parse(localStorage.getItem("dots_no_repeat_done")||"[]")}catch(e){return[]}}
 function showDotsPhases(){const list=$("dotsPhaseList");list.innerHTML="";const done=completed();for(let i=1;i<=50;i++){const b=document.createElement("button");b.className="phase-btn"+(done.includes(i)?" done":"");b.textContent=String(i).padStart(2,"0");b.addEventListener("click",()=>startDots(i));list.appendChild(b);} $("dotsDone").textContent=done.length+"/50";$("levelPill").textContent="LIGAR OS PONTOS";show("dotsPhases");}
