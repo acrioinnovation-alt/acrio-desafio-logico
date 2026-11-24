@@ -198,6 +198,10 @@ function reset(){start(current);}
 function install(){
   const familyCard=document.querySelector("#cupCoinFamily .card");
   if(familyCard){
+    const familyTag=familyCard.parentElement.querySelector(".phase-head .tag");
+    if(familyTag) familyTag.textContent="2 MODALIDADES · 100 FASES";
+    const familyDesc=familyCard.querySelector(".desc");
+    if(familyDesc) familyDesc.textContent="Escolha uma modalidade: descubra por onde a água chega primeiro ou siga as cordas entrelaçadas até o copo indicado.";
     const oldButton=familyCard.querySelector('button[onclick="showCupPhases()"]');
     if(oldButton){
       oldButton.outerHTML =
