@@ -19,8 +19,8 @@
  const segKey=s=>{const a=key(s[0]),b=key(s[1]);return a<b?a+"|"+b:b+"|"+a};
  const readDone=()=>{try{const v=JSON.parse(localStorage.getItem(STORE)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}};
  function buildPhase(i){
-  const tier=Math.floor(i/10),shape=templates[i%10],target=shape.lines.map(s=>s.map(p=>p.slice()));
-  const moves=[1,1,2,3,4][tier],order=target.map((_,n)=>n).sort((a,b)=>((a*7+i*3)%17)-((b*7+i*3)%17));
+  const tier=Math.floor(i/10),moves=[1,1,2,3,4][tier],pool=templates.filter(t=>t.lines.length>=moves),shape=pool[i%pool.length],target=shape.lines.map(s=>s.map(p=>p.slice()));
+  const order=target.map((_,n)=>n).sort((a,b)=>((a*7+i*3)%17)-((b*7+i*3)%17));
   const moving=order.slice(0,moves),start=target.map(s=>s.map(p=>p.slice())),used=new Set();
   start.forEach((s,n)=>{if(!moving.includes(n))used.add(segKey(s))});
   moving.forEach((idx,k)=>{
