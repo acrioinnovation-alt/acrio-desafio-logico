@@ -6,7 +6,7 @@
  let activeMask=null,activeArea=10000;
  const style=document.createElement("style");
  style.textContent="#egBoard{position:relative!important;isolation:isolate;overflow:hidden!important;box-sizing:border-box!important;border:12px solid transparent!important;border-radius:11px!important;background:linear-gradient(145deg,#f3e1c2,#e7cda2) padding-box,linear-gradient(145deg,#e0b77f,#86552e 52%,#c08a50) border-box!important;box-shadow:0 0 0 1px #56351e,0 7px 14px #65401e55!important}#egBoard:before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;border:2px solid #986538;box-shadow:inset 0 0 0 4px #f6e6c9,inset 0 0 0 6px #b17a45;border-radius:1px}#egBoard .eg-piece{z-index:3!important}#egBoard .eg-piece svg,#egTray .eg-piece svg{overflow:hidden!important}#egTray{display:flex!important;flex-flow:row wrap!important;grid-template-columns:none!important;grid-auto-rows:auto!important;align-items:center!important;justify-content:center!important;gap:8px!important;width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;padding:8px!important}#egTray .eg-piece{position:relative!important;left:auto!important;top:auto!important;transform:none!important;flex:none!important;max-width:none!important;max-height:none!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;box-sizing:border-box!important;border:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;border-radius:0!important}#egTray .eg-piece svg{display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important}#egTray .eg-piece.selected,#egBoard .eg-piece.selected{outline:none!important;outline-offset:0!important;border:0!important;border-radius:0!important}#egBoard .eg-piece{padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-sizing:border-box!important}";
- style.textContent += "#egBoard.eg-irregular{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important}#egBoard.eg-irregular:before{display:none!important}";
+ style.textContent += "#egBoard.eg-irregular{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important}#egBoard.eg-irregular:before{display:none!important}#egBoard .eg-piece.dragging{position:fixed!important;z-index:9999!important;pointer-events:none!important}";
  document.head.appendChild(style);
  const levels=[
   {name:"FÁCIL",pieces:[
@@ -109,7 +109,6 @@
    if(kind==="FLOR")v=x*x+y*y<.032||Array.from({length:8},(_,k)=>{const a=k*Math.PI/4;return (x-Math.cos(a)*.48)**2/.24+(y-Math.sin(a)*.48)**2/.13<1}).some(Boolean)||Math.abs(x)<.09&&y>.35&&y<.98;
    if(kind==="GATO")v=x*x/.52+y*y/.55<1||(x+.34)**2/.22+(y+.48)**2/.24<1||(x-.34)**2/.22+(y+.48)**2/.24<1||poly(x,y,[[-.72,-.48],[-.58,-1],[-.25,-.62]])||poly(x,y,[[.72,-.48],[.58,-1],[.25,-.62]]);
    if(kind==="AVIÃO")v=poly(x,y,[[-.12,-1],[.12,-1],[.2,-.12],[.92,.48],[.92,.68],[.2,.38],[.14,.94],[-.14,.94],[-.2,.38],[-.92,.68],[-.92,.48],[-.2,-.12]]);
-   if(variant%4===3&&r>4&&r<16&&col>4&&col<16&&((r+col)%9===0))v=false;
    row.push(v);
   }m.push(row)}
   return m;
@@ -209,8 +208,10 @@
   el.classList.add("placed","dragging","selected");
   el.style.gridColumn="";el.style.gridRow="";
   el.style.setProperty("width",(d.w*m.unit)+"px","important");el.style.setProperty("height",(d.h*m.unit)+"px","important");
+  el.style.left=rect.left+"px";el.style.top=rect.top+"px";
   $("egBoard").appendChild(el);
-  drag={p,el,wasPlaced,from,offsetX,offsetY};
+  const boardRect=$("egBoard").getBoundingClientRect();
+  drag={p,el,wasPlaced,from,offsetX,offsetY,grabX:e.clientX-rect.left,grabY:e.clientY-rect.top,insideBoard:e.clientX>=boardRect.left&&e.clientX<=boardRect.right&&e.clientY>=boardRect.top&&e.clientY<=boardRect.bottom};
   document.addEventListener("pointermove",move,{passive:false});
   document.addEventListener("pointerup",end,{once:true});
   document.addEventListener("pointercancel",cancel,{once:true});
@@ -219,12 +220,14 @@
  function move(e){
   if(!drag)return;
   if(e.cancelable)e.preventDefault();
-  const q=boardPoint(e),p=drag.p;
+  const q=boardPoint(e),p=drag.p,boardRect=$("egBoard").getBoundingClientRect();
   const d=dims(p);p.x=Math.max(0,Math.min(100-d.w,q.x-drag.offsetX));p.y=Math.max(0,Math.min(100-d.h,q.y-drag.offsetY));
+  drag.insideBoard=e.clientX>=boardRect.left&&e.clientX<=boardRect.right&&e.clientY>=boardRect.top&&e.clientY<=boardRect.bottom;
+  drag.clientX=e.clientX;drag.clientY=e.clientY;
   if(moveFrame)return;
   moveFrame=requestAnimationFrame(()=>{
    moveFrame=0;if(!drag)return;
-   const m=metrics();drag.el.style.left=(m.offsetX+drag.p.x*m.unit)+"px";drag.el.style.top=(m.offsetY+drag.p.y*m.unit)+"px";
+   drag.el.style.left=(drag.clientX-drag.grabX)+"px";drag.el.style.top=(drag.clientY-drag.grabY)+"px";
   });
  }
  function projections(poly,axis){const values=poly.map(([x,y])=>x*axis[0]+y*axis[1]);return [Math.min(...values),Math.max(...values)]}
@@ -250,7 +253,7 @@
   if(moveFrame){cancelAnimationFrame(moveFrame);moveFrame=0}
  }
  function cancel(){finish(true)}
- function end(){finish(false)}
+ function end(e){if(e)move(e);finish(false)}
  function freeAt(p,x,y){
   const ox=p.x,oy=p.y;p.x=x;p.y=y;
   const ok=inside(p)&&!parts.some(other=>other!==p&&other.placed&&overlaps(p,other));
@@ -288,8 +291,11 @@
   cleanupDrag();if(!drag)return;
   const d=drag,p=d.p;
   let snapped=null;
-  if(!cancelled)snapped=smartSnap(p);
-  const valid=!cancelled&&!!snapped;
+  if(!cancelled&&d.insideBoard){
+   if(freeAt(p,p.x,p.y))snapped={x:p.x,y:p.y,moved:false};
+   else snapped=smartSnap(p);
+  }
+  const valid=!cancelled&&d.insideBoard&&!!snapped;
   d.el.classList.remove("dragging");
   if(valid){
    p.x=snapped.x;p.y=snapped.y;p.placed=true;
@@ -297,11 +303,15 @@
     ?"Encaixe ajustado automaticamente. A peça ficou alinhada sem sobreposição."
     :"Peça posicionada! Você pode movê-la livremente ou devolvê-la à bandeja.";
   }else{
-   if(d.wasPlaced){p.x=d.from.x;p.y=d.from.y;p.points=d.from.points;p.placed=true;}
+   if(cancelled&&d.wasPlaced){p.x=d.from.x;p.y=d.from.y;p.points=d.from.points;p.placed=true;}
+   else if(!cancelled&&!d.insideBoard){p.placed=false;p.x=0;p.y=0;}
+   else if(d.wasPlaced){p.x=d.from.x;p.y=d.from.y;p.points=d.from.points;p.placed=true;}
    else p.placed=false;
    $("egStatus").textContent=cancelled
     ?"Movimento cancelado. A peça voltou ao local anterior."
-    :"Não há espaço livre tão próximo. A peça voltou ao local anterior; tente outro espaço.";
+    :!d.insideBoard
+     ?"Peça devolvida à bandeja. Você pode retirá-la novamente quando quiser."
+     :"Esse espaço não comporta a peça sem ultrapassar o formato ou sobrepor outra. Tente outro local.";
   }
   drag=null;render();validate();
  }
