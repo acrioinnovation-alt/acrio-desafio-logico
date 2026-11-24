@@ -41,9 +41,12 @@ function build(level){
    if(Math.abs(den)<1e-8)continue;
    const qx=C.x-A.x,qy=C.y-A.y;
    const t=(qx*sy-qy*sx)/den,u=(qx*ry-qy*rx)/den;
-   if(t>1e-5&&t<1-1e-5&&u>1e-5&&u<1-1e-5){
-    const id=nodeAt(A.x+t*rx,A.y+t*ry);
-    split[i].push({id,t});split[j].push({id,t:u});
+   const insideT=t>=-1e-5&&t<=1+1e-5,insideU=u>=-1e-5&&u<=1+1e-5;
+   const interiorT=t>1e-5&&t<1-1e-5,interiorU=u>1e-5&&u<1-1e-5;
+   if(insideT&&insideU&&(interiorT||interiorU)){
+    const tc=Math.max(0,Math.min(1,t)),uc=Math.max(0,Math.min(1,u));
+    const id=nodeAt(A.x+tc*rx,A.y+tc*ry);
+    split[i].push({id,t:tc});split[j].push({id,t:uc});
    }
   }
  }
