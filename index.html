@@ -338,7 +338,7 @@ button.coin-cell.selected{outline:3px solid #2f83b7;outline-offset:1px;z-index:1
 <div class="card"><h2>Desafio dos Palitos</h2><p class="desc">Escolha o tipo de desafio.</p>
 <div class="category-grid">
 <button class="category" onclick="showMatchPhases()"><div class="symbol">＝</div><strong>CORRIJA A EQUAÇÃO</strong><span>50 fases · Mova um palito para corrigir a conta</span></button>
-<button class="category" onclick="showSquarePhases()"><div class="symbol">□</div><strong>FORME A QUANTIDADE</strong><span>50 fases · Mova um palito para obter a quantidade exata de quadrados</span></button>
+<button class="category" onclick="showSquarePhases()"><div class="symbol">□</div><strong>PALITOS EM FORMAS</strong><span>50 fases · Forme a quantidade pedida de quadrados</span></button>
 </div></div>
 </section>
 <section id="matchPhases" class="screen">
@@ -360,21 +360,18 @@ button.coin-cell.selected{outline:3px solid #2f83b7;outline-offset:1px;z-index:1
 </section>
 <section id="squarePhases" class="screen">
 <div class="phase-head"><button class="btn secondary" style="width:auto;padding:10px 13px" onclick="showMatchModes()">← VOLTAR</button><span class="tag">50 FASES</span></div>
-<div class="card"><h2>Forme a Quantidade</h2><p class="desc">Escolha uma fase e mova um palito para deixar exatamente a quantidade de quadrados solicitada.</p><div class="phase-list" id="squarePhaseList"></div></div>
-<p class="foot">Os quadrados pequenos e grandes também entram na contagem.</p>
+<div class="card"><h2>Palitos em Formas</h2><p class="desc">Forme a quantidade indicada de quadrados. Cada fase aceita diferentes disposições corretas.</p><div class="phase-list" id="squarePhaseList"></div></div>
 </section>
 <section id="squares" class="screen">
 <div class="stats" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="stat"><b id="squareDone">0/50</b><span>Concluídas</span></div><div class="stat"><b id="squareBest">0</b><span>Recorde</span></div></div>
 <div class="progress"><i id="squareBar"></i></div>
 <div class="card">
 <div class="tagrow"><span class="tag" id="squareLevelTag">FASE 1 · QUADRADOS</span><span class="difficulty" id="squareDifficulty">INICIANTE</span></div>
-<p class="instruction" id="squareInstruction">Mova um palito para formar exatamente a quantidade solicitada</p>
+<p class="instruction" id="squareInstruction">Forme a quantidade indicada de quadrados movendo um palito.</p>
 <div class="square-board" id="squareBoard" aria-label="Figura de palitos formando quadrados"></div>
-<div class="match-target"><span id="squareStatus">Escolha um palito</span></div>
 <div id="squareFeedback" class="feedback" aria-live="polite"></div>
 <div class="match-actions"><button class="btn secondary" onclick="showSquarePhases()">FASES</button><button class="btn secondary" onclick="resetSquareMove()">RECOMEÇAR ↻</button></div>
 </div>
-<p class="foot">Toque em um palito e depois no espaço vazio onde deseja colocá-lo. Todos os quadrados, inclusive os maiores, são contados.</p>
 </section>
 
 <section id="balancePhases" class="screen">
