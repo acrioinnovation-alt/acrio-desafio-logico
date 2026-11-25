@@ -126,7 +126,7 @@
   return out;
  }
  const silhouetteNames=["CASA","BARCO","ÁRVORE","PEIXE","FOGUETE","CORAÇÃO","ESTRELA","BORBOLETA","FLOR","GATO","AVIÃO"];
- for(let i=0;i<50;i++){const kind=silhouetteNames[i%silhouetteNames.length],mask=makeMask(kind,Math.floor(i/silhouetteNames.length)),pieces=tileMask(mask,i+1),boardArea=mask.flat().filter(Boolean).length*25;levels.push({name:i<12?"MÉDIA":i<26?"DIFÍCIL":i<40?"MUITO DIFÍCIL":"EXTREMA",pieces,mask,boardArea,shapeName:kind});}
+ for(let i=0;i<50;i++){const kind=silhouetteNames[i%silhouetteNames.length],mask=makeMask(kind,Math.floor(i/silhouetteNames.length)),pieces=tileMask(mask,i+1),boardArea=mask.flat().filter(Boolean).length*100;levels.push({name:i<12?"MÉDIA":i<26?"DIFÍCIL":i<40?"MUITO DIFÍCIL":"EXTREMA",pieces,mask,boardArea,shapeName:kind});}
 
  levels.forEach((v,i)=>{if(i<50)v.name=i<10?"FÁCIL":i<20?"MÉDIA":i<30?"DIFÍCIL":i<40?"MUITO DIFÍCIL":"EXTREMA"});
  let level=1,parts=[],drag=null,solved=false,selectedId=null,moveFrame=0;
