@@ -14,7 +14,7 @@
   {name:"Seta",lines:[[[65,125],[245,125]],[[175,55],[245,125]],[[245,125],[175,195]]]},
   {name:"Duas divisões",lines:[[[70,55],[250,55]],[[250,55],[250,195]],[[250,195],[70,195]],[[70,195],[70,55]],[[160,55],[160,195]],[[70,125],[250,125]]]}
  ];
- const offsets=[[40,0],[-40,0],[0,40],[0,-40],[40,30],[-40,30],[40,-30],[-40,-30],[60,0],[-60,0],[0,60],[0,-60]];
+ const offsets=[[12,0],[-12,0],[0,12],[0,-12],[18,8],[-18,8],[18,-8],[-18,-8],[24,0],[-24,0],[0,24],[0,-24]];
  const key=p=>p[0]+","+p[1];
  const segKey=s=>{const a=key(s[0]),b=key(s[1]);return a<b?a+"|"+b:b+"|"+a};
  const readDone=()=>{try{const v=JSON.parse(localStorage.getItem(STORE)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}};
@@ -46,7 +46,7 @@
  function setFeedback(kind,msg){const el=$("moveLinesFeedback");el.className="feedback show "+kind;el.textContent=msg}
  function updateLabels(){
   const p=phases[current];$("moveLinesTag").textContent="FASE "+p.number+" DE 100";$("moveLinesType").textContent=p.name.toUpperCase();$("moveLinesDifficulty").textContent=p.difficulty;
-  $("moveLinesCounter").textContent=movesUsed+" / "+p.moves;$("moveLinesGameDone").textContent=readDone().length+"/50";$("moveLinesInstruction").textContent="Arraste as linhas azuis até coincidirem com o desenho tracejado. Você tem "+p.moves+" "+(p.moves===1?"movimento":"movimentos")+".";
+  $("moveLinesCounter").textContent=movesUsed+" / "+p.moves;$("moveLinesGameDone").textContent=readDone().length+"/50";$("moveLinesInstruction").textContent="Arraste os palitos azuis que fazem parte da figura e reposicione-os para transformá-la. Você tem "+p.moves+" "+(p.moves===1?"movimento":"movimentos")+".";
  }
  function svgPoint(svg,e){const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;return pt.matrixTransform(svg.getScreenCTM().inverse())}
  function renderBoard(){

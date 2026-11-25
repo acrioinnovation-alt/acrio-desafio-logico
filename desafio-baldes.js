@@ -1,5 +1,20 @@
 (()=>{"use strict";
 const $=id=>document.getElementById(id);
+const jugSceneStyle=document.createElement("style");jugSceneStyle.id="jug-prehistoric-scene";jugSceneStyle.textContent=`
+.jug-scene{position:relative!important;isolation:isolate;padding:16px 12px 18px!important;min-height:360px;border:2px solid #79502f!important;border-radius:22px!important;background:radial-gradient(ellipse at 50% 0%,#6b9a70 0%,#426c4b 35%,#294b38 100%)!important;box-shadow:inset 0 2px 0 #ffffff30,inset 0 -18px 24px #152b20aa,0 8px 18px #0005!important;overflow:hidden}
+.jug-scene:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.34;background:radial-gradient(ellipse at 12% 80%,#c5a36b 0 10%,transparent 11%),radial-gradient(ellipse at 86% 72%,#d0b27b 0 12%,transparent 13%),repeating-linear-gradient(165deg,transparent 0 28px,#d4c08b18 29px 31px,transparent 32px 52px)}
+.jug-scene:after{content:"";position:absolute;left:0;right:0;bottom:0;height:24px;z-index:-1;background:repeating-linear-gradient(90deg,#6f8c4c 0 12px,#496d3e 12px 24px)}
+.jug-row{display:flex!important;align-items:flex-end!important;justify-content:space-evenly!important;gap:16px!important;margin:16px 0 8px!important;padding:8px 0 12px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}.jug-row:before{display:none!important}
+.jug-card{flex:1 1 0!important;max-width:155px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;text-align:center!important;cursor:pointer}.jug-card:before{display:none!important}
+.jug-card.selected{outline:0!important;transform:translateY(-6px)!important;filter:drop-shadow(0 0 9px #ffe08a)!important}.jug-card.dragging{opacity:.75!important;transform:none!important}
+.jug-vessel{width:116px!important;height:170px!important;margin:0 auto 7px!important;filter:drop-shadow(0 9px 5px #152a1b99)}.jug-bucket-art{filter:drop-shadow(0 4px 3px #1e2d1c99)!important}
+.jug-amount{color:#fff2ce!important;font-size:14px!important;text-shadow:0 2px 3px #1e2b1d!important}.jug-name{color:#f6d99b!important;font-size:11px!important;letter-spacing:1.2px!important;text-shadow:0 2px 3px #17291d!important}
+.jug-station{position:relative!important;z-index:2;display:flex!important;flex-direction:column!important;gap:3px!important;min-width:105px;min-height:64px;justify-content:center!important;align-items:center!important;margin:0 auto!important;padding:5px 12px!important;border:0!important;border-radius:12px!important;background:transparent!important;box-shadow:none!important;color:#fff0c7!important;font-size:30px!important;text-shadow:0 3px 5px #15291c!important;cursor:pointer;touch-action:manipulation}.jug-station span{font-size:10px!important;font-weight:1000;letter-spacing:1px;color:#fff0c7!important;text-shadow:0 2px 3px #17291d!important}
+.jug-station.drop-ready,.jug-card.drop-ready{outline:3px dashed #ffe18a!important;outline-offset:4px!important}.jug-drain{margin:5px auto 0!important}.jug-water{background:linear-gradient(180deg,#a4f0ff 0%,#42c5e9 30%,#087bb7 100%)!important}
+@media(max-width:360px){.jug-vessel{width:94px!important;height:152px!important}.jug-row{gap:7px!important}}
+`;
+if(!document.getElementById(jugSceneStyle.id))document.head.appendChild(jugSceneStyle);
+
 const pairs=[[3,5],[4,7],[5,8],[6,11],[7,11],[5,9],[4,9],[6,11],[7,10],[8,13]];
 const levels=Array.from({length:50},(_,i)=>{const pair=pairs[Math.floor(i/5)],target=(i%5)+1;return {a:pair[0],b:pair[1],target,difficulty:i<10?"FÁCIL":i<20?"FÁCIL":i<30?"MÉDIO":i<40?"DIFÍCIL":"DESAFIADOR"}});
 let current=1,amount=[0,0],done=[],moves=0,selectedJug=null,draggingJug=null,draggingSource=null;

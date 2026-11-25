@@ -1,6 +1,9 @@
 (()=>{
 "use strict";
 const $=id=>document.getElementById(id);
+const oneStrokeStyle=document.createElement("style");oneStrokeStyle.id="one-stroke-clean-drawing";oneStrokeStyle.textContent=`.one-stroke-board{padding:12px!important;border:1px solid #315a79!important;border-radius:20px!important;background:radial-gradient(ellipse at 50% 35%,#f7fbff,#dceaf5 78%,#c8dce9)!important;box-shadow:inset 0 2px 0 #fff,0 8px 18px #102d4722!important}.one-stroke-board svg{overflow:visible}.one-stroke-edge{stroke:#244c70!important;stroke-width:2.7!important;stroke-linecap:round!important;filter:drop-shadow(0 1px 1px #17334a55)}.one-stroke-edge.used{stroke:#13a9bd!important;stroke-width:3.5!important;filter:drop-shadow(0 0 2px #18c9dc88)}.one-stroke-node{display:none!important}`;
+if(!document.getElementById(oneStrokeStyle.id))document.head.appendChild(oneStrokeStyle);
+
 const base=[
 {name:"Barquinho",icon:"⛵",p:[[12,58],[25,76],[75,76],[88,58],[50,58],[50,18]]},
 {name:"Casinha",icon:"⌂",p:[[18,84],[18,48],[50,18],[82,48],[82,84],[50,84],[50,58]]},
@@ -55,7 +58,7 @@ function startOneStroke(n){
  $("oneStrokeTag").textContent="FASE "+current+" · UM SÓ TRAÇO";
  $("oneStrokeName").textContent=level.icon+" "+level.name;
  $("oneStrokeDifficulty").textContent=level.difficulty;
- $("oneStrokeInstruction").textContent="Comece em qualquer bolinha. Passe por todos os trechos sem levantar o dedo e sem repetir linhas.";
+ $("oneStrokeInstruction").textContent="Observe o desenho e percorra todos os seus traços em um único movimento, sem levantar o dedo nem repetir nenhum trecho.";
  $("oneStrokeFeedback").className="feedback";$("oneStrokeFeedback").textContent="";
  $("oneStrokeMoves").textContent="0";$("oneStrokeDone").textContent=doneCount()+"/50";
  $("oneStrokeBest").textContent=Number(localStorage.getItem("one_stroke_best")||0);
@@ -69,18 +72,18 @@ function draw(){
  svgElement=document.createElementNS("http://www.w3.org/2000/svg","svg");svgElement.setAttribute("viewBox","0 0 100 100");svgElement.setAttribute("role","img");svgElement.setAttribute("aria-label","Figura formada por linhas conectadas");
  lineElements=[];nodeElements=[];
  edges.forEach(e=>{const l=document.createElementNS(svgElement.namespaceURI,"line");l.setAttribute("x1",nodes[e.a].x);l.setAttribute("y1",nodes[e.a].y);l.setAttribute("x2",nodes[e.b].x);l.setAttribute("y2",nodes[e.b].y);l.setAttribute("class","one-stroke-edge");svgElement.appendChild(l);lineElements.push(l)});
- nodes.forEach(n=>{const dot=document.createElementNS(svgElement.namespaceURI,"circle");dot.setAttribute("cx",n.x);dot.setAttribute("cy",n.y);dot.setAttribute("r","2.8");dot.setAttribute("class","one-stroke-node");svgElement.appendChild(dot);nodeElements.push(dot)});
+ /* Vértices invisíveis para validar conexões: sem bolinhas ou pontos no desenho. */
  box.appendChild(svgElement);svgElement.addEventListener("pointerdown",onDown);svgElement.addEventListener("pointermove",onMove);svgElement.addEventListener("pointerup",onUp);svgElement.addEventListener("pointercancel",onUp);updateDrawing();
 }
 function updateDrawing(){
  lineElements.forEach((el,i)=>el.setAttribute("class","one-stroke-edge"+(visited.has(edges[i].key)?" used":"")));
- nodeElements.forEach((el,i)=>{el.setAttribute("r",active&&i===activeNode?"4.5":"2.8");el.setAttribute("class","one-stroke-node"+(active&&i===activeNode?" current":""))});
+ // Os vértices não têm marcadores visuais; o jogador segue somente o desenho.
 }
 let activeNode=null,pointerId=null;
 function nearestNode(evt){
  const svg=evt.currentTarget,rect=svg.getBoundingClientRect(),x=(evt.clientX-rect.left)/rect.width*100,y=(evt.clientY-rect.top)/rect.height*100;
  let best=-1,dist=Infinity;nodes.forEach(n=>{const d=Math.hypot(n.x-x,n.y-y);if(d<dist){dist=d;best=n.id}});
- return dist<8?best:-1;
+ return dist<10?best:-1;
 }
 function onDown(e){
  const n=nearestNode(e);if(n<0)return;

@@ -94,10 +94,10 @@
 
  // 50 fases adicionais com tabuleiros em silhuetas irregulares.
  function makeMask(kind,variant){
-  const N=20,m=[];
+  const N=10,m=[];
   const poly=(x,y,p)=>{let z=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])z=!z}return z};
   for(let r=0;r<N;r++){const row=[];for(let col=0;col<N;col++){
-   let x=(col+.5)/10-1,y=(r+.5)/10-1;if(variant%4===1)x=-x;else if(variant%4===2){const t=x;x=-y;y=t}else if(variant%4===3){const t=x;x=y;y=-t}let v=false;
+   let x=(col+.5)/5-1,y=(r+.5)/5-1;if(variant%4===1)x=-x;else if(variant%4===2){const t=x;x=-y;y=t}else if(variant%4===3){const t=x;x=y;y=-t}let v=false;
    if(kind==="CASA")v=(y>-.12&&y<.9&&Math.abs(x)<.72)||(y<=-.12&&y>-.9&&Math.abs(x)<.72*(y+.9)/.78);
    if(kind==="BARCO")v=(y>.02&&y<.58&&Math.abs(x)<.9-(y-.02)*.42)||poly(x,y,[[-.12,.05],[.12,.05],[.12,.9],[-.12,.9]]);
    if(kind==="ÁRVORE")v=(y>-.9&&y<.88&&Math.abs(x)<.82*(y+.9)/1.78)||(y>.48&&Math.abs(x)<.15);
@@ -114,12 +114,12 @@
   return m;
  }
  function tileMask(mask,phase){
-  const N=20,used=mask.map(r=>r.map(()=>false)),out=[];
+  const N=10,used=mask.map(r=>r.map(()=>false)),out=[];
   for(let r=0;r<N;r++)for(let x=0;x<N;x++)if(mask[r][x]&&!used[r][x]){
    let w=0;while(x+w<N&&mask[r][x+w]&&!used[r][x+w])w++;
    let h=1,ok=true;while(r+h<N&&ok){for(let k=0;k<w;k++)if(!mask[r+h][x+k]||used[r+h][x+k]){ok=false;break}if(ok)h++}
    for(let yy=r;yy<r+h;yy++)for(let xx=x;xx<x+w;xx++)used[yy][xx]=true;
-   const x0=x*5,x1=(x+w)*5,y0=r*5,y1=(r+h)*5;
+   const x0=x*10,x1=(x+w)*10,y0=r*10,y1=(r+h)*10;
    if(w*h>1&&(out.length+phase)%5===0){out.push([[x0,y0],[x1,y0],[x1,y1]]);out.push([[x0,y0],[x1,y1],[x0,y1]])}
    else out.push([[x0,y0],[x1,y0],[x1,y1],[x0,y1]]);
   }
@@ -161,7 +161,7 @@
   if(activeMask){
    const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.setAttribute("viewBox","0 0 100 100");svg.style.cssText="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0";
    let fill="",edge="";
-   for(let r=0;r<20;r++)for(let x=0;x<20;x++)if(activeMask[r][x]){const px=x*5,py=r*5;fill+=`<rect x="${px}" y="${py}" width="5" height="5"/>`;if(!activeMask[r-1]?.[x])edge+=`M${px} ${py}h5`;if(!activeMask[r+1]?.[x])edge+=`M${px} ${py+5}h5`;if(!activeMask[r][x-1])edge+=`M${px} ${py}v5`;if(!activeMask[r][x+1])edge+=`M${px+5} ${py}v5`;}
+   for(let r=0;r<10;r++)for(let x=0;x<10;x++)if(activeMask[r][x]){const px=x*10,py=r*10;fill+=`<rect x="${px}" y="${py}" width="10" height="10"/>`;if(!activeMask[r-1]?.[x])edge+=`M${px} ${py}h5`;if(!activeMask[r+1]?.[x])edge+=`M${px} ${py+5}h5`;if(!activeMask[r][x-1])edge+=`M${px} ${py}v5`;if(!activeMask[r][x+1])edge+=`M${px+5} ${py}v5`;}
    svg.innerHTML=`<g fill="#d5a36d">${fill}</g><path d="${edge}" fill="none" stroke="#80532e" stroke-width="1.5"/>`;board.appendChild(svg);
   }
   tray.style.setProperty("display","flex","important");
@@ -243,7 +243,7 @@
  function inside(p){
   const pts=absolute(p),eps=.01;if(!activeMask)return pts.every(([x,y])=>x>=-eps&&y>=-eps&&x<=100+eps&&y<=100+eps);
   const center=pts.reduce((a,v)=>[a[0]+v[0]/pts.length,a[1]+v[1]/pts.length],[0,0]);
-  const valid=(x,y)=>{if(x<0||y<0||x>100||y>100)return false;const col=Math.min(19,Math.max(0,Math.floor(x/5))),row=Math.min(19,Math.max(0,Math.floor(y/5)));return !!activeMask[row]?.[col]};
+  const valid=(x,y)=>{if(x<0||y<0||x>100||y>100)return false;const col=Math.min(9,Math.max(0,Math.floor(x/10))),row=Math.min(9,Math.max(0,Math.floor(y/10)));return !!activeMask[row]?.[col]};
   for(let i=0;i<pts.length;i++){const a=pts[i],b=pts[(i+1)%pts.length],steps=Math.max(2,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])*2));for(let k=0;k<=steps;k++){const t=k/steps,x=a[0]+(b[0]-a[0])*t,y=a[1]+(b[1]-a[1])*t,ix=x+(center[0]-x)*.002,iy=y+(center[1]-y)*.002;if(!valid(ix,iy))return false;}}
   return valid(center[0],center[1]);
  }

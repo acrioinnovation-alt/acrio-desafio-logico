@@ -25,7 +25,7 @@ jobs:
       - name: Prepare offline game assets
         run: |
           mkdir -p android/app/src/main/assets
-          cp index.html game.js fases.js visual-different.js matchsticks.js squares.js balance.js encaixe.js conte-figuras.js conte-cubos.js um-so-traco.js ligar-pontos.js organize-torres.js desafio-baldes.js copos-moedas.js memoria.js memoria.css android/app/src/main/assets/
+          cp index.html game.js fases.js visual-different.js matchsticks.js squares.js balance.js encaixe.js conte-figuras.js mover-linhas.js conte-cubos.js um-so-traco.js ligar-pontos.js organize-torres.js desafio-baldes.js copos-moedas.js memoria.js memoria.css android/app/src/main/assets/
           mkdir -p android/app/src/main/assets/balancas
       - name: Download today's 40 balance images from Dropbox for inspection
         continue-on-error: true
